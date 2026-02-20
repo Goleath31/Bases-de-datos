@@ -22,9 +22,11 @@ public class PruebaRegistrodePedido {
 
         DetalleDTO producto1 = new DetalleDTO(1, 5, 15.50, "Bien doradas");
         DetalleDTO producto2 = new DetalleDTO(2, 2, 25.00, "Sin sal"); 
+        DetalleDTO producto3 = new DetalleDTO(2, 2, 25.00, "Sin sal34"); 
 
         List<DetalleDTO> listaProductos = new ArrayList<>();
         listaProductos.add(producto1);
+        listaProductos.add(producto3);
         listaProductos.add(producto2);
 
         PedidoNuevoDTO pedidoNuevo = new PedidoNuevoDTO();
@@ -36,7 +38,7 @@ public class PruebaRegistrodePedido {
         System.out.println("--- Iniciando prueba de registro de pedido ---");
         try {
             pedidoBO.registrarPedido(pedidoNuevo);
-            System.out.println("ÉXITO: El pedido y sus detalles se guardaron correctamente.");
+            System.out.println("EXITO: El pedido y sus detalles se guardaron correctamente.");
             System.out.println("Se aplico la transacción y se valido el límite de 3 pedidos.");
             
         } catch (NegocioException e) {

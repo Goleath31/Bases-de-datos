@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package proyectopanaderia;
 
@@ -8,12 +8,12 @@ package proyectopanaderia;
  *
  * @author golea
  */
-public class Gestión_preparación_de_pedidos extends javax.swing.JFrame {
+public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
 
     /**
-     * Creates new form Gestión_preparación_de_pedidos
+     * Creates new form Gestion_preparacion_de_pedidos
      */
-    public Gestión_preparación_de_pedidos() {
+    public Gestion_preparacion_de_pedidos() {
         initComponents();
     }
 
@@ -26,17 +26,15 @@ public class Gestión_preparación_de_pedidos extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnregresarrr = new javax.swing.JButton();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        btnregresar = new javax.swing.JButton();
+        btnregresar1 = new javax.swing.JButton();
         lbltitulo = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        btnregresar = new javax.swing.JButton();
-        btnregresar1 = new javax.swing.JButton();
 
-        btnregresarrr.setText("Regresar");
+        btnregresar.setText("Regresar");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        btnregresar1.setText("Cambiar al siguiente estado");
 
         lbltitulo.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
         lbltitulo.setText("Tabla de pedidos:");
@@ -62,12 +60,8 @@ public class Gestión_preparación_de_pedidos extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        btnregresar.setText("Regresar");
-
-        btnregresar1.setText("Cambiar al siguiente estado");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -93,53 +87,15 @@ public class Gestión_preparación_de_pedidos extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnregresar)
                     .addComponent(btnregresar1))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Gestión_preparación_de_pedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Gestión_preparación_de_pedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Gestión_preparación_de_pedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Gestión_preparación_de_pedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Gestión_preparación_de_pedidos().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnregresar;
     private javax.swing.JButton btnregresar1;
-    private javax.swing.JButton btnregresarrr;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lbltitulo;
     // End of variables declaration//GEN-END:variables

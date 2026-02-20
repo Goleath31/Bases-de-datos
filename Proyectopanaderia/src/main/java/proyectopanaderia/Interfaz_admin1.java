@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package proyectopanaderia;
 
@@ -8,12 +8,12 @@ package proyectopanaderia;
  *
  * @author golea
  */
-public class Interfaz_admin extends javax.swing.JFrame {
+public class Interfaz_admin1 extends javax.swing.JPanel {
 
     /**
-     * Creates new form Interfaz_admin
+     * Creates new form Interfaz_admin1
      */
-    public Interfaz_admin() {
+    public Interfaz_admin1() {
         initComponents();
     }
 
@@ -26,16 +26,11 @@ public class Interfaz_admin extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenu1 = new javax.swing.JMenu();
         jLabel1 = new javax.swing.JLabel();
         btnentregaycobro = new javax.swing.JButton();
         btnpreparaciondepedidos = new javax.swing.JButton();
         btncatalogodeproductos = new javax.swing.JButton();
         btnregresar = new javax.swing.JButton();
-
-        jMenu1.setText("jMenu1");
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
         jLabel1.setText("Selecciona la Operacion a Realizar");
@@ -60,16 +55,16 @@ public class Interfaz_admin extends javax.swing.JFrame {
 
         btnregresar.setText("Regresar");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btncatalogodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(86, 86, 86)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(86, 86, 86)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btncatalogodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnpreparaciondepedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(115, 115, 115)
@@ -95,10 +90,8 @@ public class Interfaz_admin extends javax.swing.JFrame {
                 .addComponent(btnentregaycobro, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnregresar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnpreparaciondepedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnpreparaciondepedidosActionPerformed
@@ -109,40 +102,6 @@ public class Interfaz_admin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btncatalogodeproductosActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Interfaz_admin().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btncatalogodeproductos;
@@ -150,6 +109,5 @@ public class Interfaz_admin extends javax.swing.JFrame {
     private javax.swing.JButton btnpreparaciondepedidos;
     private javax.swing.JButton btnregresar;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu1;
     // End of variables declaration//GEN-END:variables
 }
