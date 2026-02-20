@@ -4,6 +4,8 @@
  */
 package proyectopanaderia;
 
+import javax.swing.JPanel;
+
 /**
  *
  * @author joser
@@ -16,6 +18,15 @@ public class FramePricipal extends javax.swing.JFrame {
     public FramePricipal() {
         initComponents();
     }
+    
+    public void mostrarPanel(JPanel nuevoPanel) {
+        contentArea.removeAll();
+
+        contentArea.add(nuevoPanel, java.awt.BorderLayout.CENTER);
+
+        contentArea.revalidate();
+        contentArea.repaint();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -26,18 +37,13 @@ public class FramePricipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        contentArea = new javax.swing.JPanel();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1024, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 768, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1024, 768));
+
+        contentArea.setLayout(new java.awt.BorderLayout());
+        getContentPane().add(contentArea, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -78,5 +84,6 @@ public class FramePricipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel contentArea;
     // End of variables declaration//GEN-END:variables
 }
