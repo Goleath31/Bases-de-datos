@@ -108,8 +108,7 @@ public class PanelAdminUsuario extends javax.swing.JPanel {
         btnCliente.setBackground(new Color(11, 37, 69));
         
         btnCliente.addActionListener(e -> {
-            System.out.println("Cambiando al panel de Ventas...");
-            //PONER AQUI EL ACCESO AL INDEX DE ADMIN
+            principal.mostrarPanel(new PanelIndexCliente(principal));
         });
 
         btnCliente.setMaximumSize(tamañoFijo);
