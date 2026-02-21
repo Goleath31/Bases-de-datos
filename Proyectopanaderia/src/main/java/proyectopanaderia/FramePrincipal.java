@@ -10,20 +10,19 @@ import javax.swing.JPanel;
  *
  * @author joser
  */
-public class FramePricipal extends javax.swing.JFrame {
+public class FramePrincipal extends javax.swing.JFrame {
 
     /**
      * Creates new form FramePricipal
      */
-    public FramePricipal() {
+    public FramePrincipal() {
         initComponents();
+        mostrarPanel(new PanelAdminUsuario(this));
     }
     
     public void mostrarPanel(JPanel nuevoPanel) {
         contentArea.removeAll();
-
         contentArea.add(nuevoPanel, java.awt.BorderLayout.CENTER);
-
         contentArea.revalidate();
         contentArea.repaint();
     }
@@ -40,12 +39,15 @@ public class FramePricipal extends javax.swing.JFrame {
         contentArea = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Panadería");
         setMinimumSize(new java.awt.Dimension(1024, 768));
 
+        contentArea.setName(""); // NOI18N
         contentArea.setLayout(new java.awt.BorderLayout());
         getContentPane().add(contentArea, java.awt.BorderLayout.CENTER);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -65,20 +67,21 @@ public class FramePricipal extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FramePricipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FramePricipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FramePricipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FramePricipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FramePricipal().setVisible(true);
+                new FramePrincipal().setVisible(true);
             }
         });
     }
