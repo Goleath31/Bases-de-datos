@@ -66,7 +66,9 @@ public class PanelIndexCliente extends javax.swing.JPanel {
 
         JButton btnAgendar = new JButton("<html><center>Agendar<br>pedido</center></html>");
         aplicarEstiloBoton(btnAgendar, tamañoBoton, fuenteBotones, colorBotonesTop);
-        btnAgendar.addActionListener(e -> { /* Acción pendiente */ });
+        btnAgendar.addActionListener(e -> {
+            principal.mostrarPanel(new PanelAgendarPedido(principal));
+        });
 
         JButton btnExpress = new JButton("<html><center>Pedido<br>Express</center></html>");
         aplicarEstiloBoton(btnExpress, tamañoBoton, fuenteBotones, colorBotonesTop);
