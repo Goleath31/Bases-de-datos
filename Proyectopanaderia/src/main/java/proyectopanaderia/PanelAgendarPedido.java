@@ -53,6 +53,9 @@ public class PanelAgendarPedido extends javax.swing.JPanel {
         iniciarComponentes();
     }
     
+    /**
+     * Crea los componentes de nuestro panel de forma directa con código
+     */
     public void iniciarComponentes() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(colorFondo);
@@ -174,6 +177,11 @@ public class PanelAgendarPedido extends javax.swing.JPanel {
         this.add(mainContent);
     }
     
+    /**
+     * Metodo de ayuda para crear paneles de producto a la hora de quere agregar un 
+     * producto en pantalla
+     * @return JPanel del producto buscado
+     */
     private JPanel crearPanelAgregarProducto() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -204,7 +212,7 @@ public class PanelAgendarPedido extends javax.swing.JPanel {
                 //Simula backend para comprobar que funciona la pantalla, modificar posteriormente
                 String[] productosBack = {"Conchas", "Pan de Muerto", "Baguette"};
                 String elegido = (String) JOptionPane.showInputDialog(PanelAgendarPedido.this, 
-                        "Seleccione un producto:", "Backend Simulado", 
+                        "Seleccione un producto:", "", 
                         JOptionPane.QUESTION_MESSAGE, null, productosBack, productosBack[0]);
                 
                 if (elegido != null) {
@@ -224,6 +232,10 @@ public class PanelAgendarPedido extends javax.swing.JPanel {
         return panel;
     }
     
+    /**
+     * Metodo de ayuda para agregar fila nueva del producto que se busca 
+     * @param nombreProducto 
+     */
     private void agregarFilaProducto(String nombreProducto) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
