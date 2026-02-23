@@ -10,7 +10,9 @@ package persistencia.fabrica;
  * @author golea
  */
 import persistencia.DAOs.IPedidoDAO;
+import persistencia.DAOs.IProductoDAO;
 import persistencia.DAOs.PedidoDAO;
+import persistencia.DAOs.ProductoDAO;
 import persistencia.conexion.ConexionBD;
 import persistencia.conexion.IConexionBD;
 
@@ -18,5 +20,11 @@ public class FabricaDAOs {
     public static IPedidoDAO obtenerPedidoDAO() {
         IConexionBD conexion = new ConexionBD();
         return new PedidoDAO(conexion);
+    }
+    
+    
+
+    public static IProductoDAO obtenerProductoDAO() {
+        return new ProductoDAO(new ConexionBD());
     }
 }

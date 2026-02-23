@@ -5,12 +5,16 @@
 package persistencia.DAOs;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import negocio.DTOs.DetalleDTO;
 import negocio.DTOs.DetallePedidoDTO;
+import negocio.DTOs.PedidoEntregaDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import persistencia.conexion.IConexionBD;
+import persistencia.dominio.Cupon;
 import persistencia.excepciones.PersistenciaException;
 
 /**
@@ -82,4 +86,279 @@ public class PedidoDAO implements IPedidoDAO {
             throw new PersistenciaException("Error de conexión", e);
         }
     }
+    
+    @Override
+    public void actualizarAEntregadoConPago(int idPedido, String metodoPago) throws PersistenciaException {
+        Connection conn = null;
+        try {
+            conn = conexionBD.crearConexion();
+            conn.setAutoCommit(false); // Transacción para asegurar ambos cambios
+
+            // 1. Obtener el estado anterior (será 'Listo')
+            String estadoAnterior = obtenerEstadoPedido(idPedido);
+
+            // 2. Actualizar estado del pedido a 'Entregado'
+            String sqlUpdate = "UPDATE Pedido SET estado = 'Entregado' WHERE id_pedido = ?";
+            try (PreparedStatement ps1 = conn.prepareStatement(sqlUpdate)) {
+                ps1.setInt(1, idPedido);
+                ps1.executeUpdate();
+            }
+
+            // 3. Registrar en Historial_Estado con tus columnas exactas
+            String sqlHistorial = "INSERT INTO Historial_Estado (id_pedido, estado_anterior, estado_nuevo, fecha_hora_cambio) VALUES (?, ?, 'Entregado', NOW())";
+            try (PreparedStatement ps2 = conn.prepareStatement(sqlHistorial)) {
+                ps2.setInt(1, idPedido);
+                ps2.setString(2, estadoAnterior);
+                ps2.executeUpdate();
+            }
+
+            conn.commit(); // Éxito total
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                }
+            }
+            throw new PersistenciaException("Fallo en BD: " + e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    @Override
+    public boolean verificarPin(int idPedido, String pin) throws PersistenciaException {
+        String sql = "SELECT COUNT(*) FROM Pedido_Express WHERE id_pedido = ? AND pin_seguridad = ?";
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idPedido);
+            ps.setString(2, pin);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al validar PIN");
+        }
+    }
+
+    @Override
+    public String obtenerEstadoPedido(int idPedido) throws PersistenciaException {
+        String sql = "SELECT estado FROM Pedido WHERE id_pedido = ?";
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idPedido);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("estado");
+            }
+            return "";
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al consultar estado");
+        }
+    }
+
+    @Override
+    public List<PedidoEntregaDTO> buscarPedidos(String filtro) throws PersistenciaException {
+        List<PedidoEntregaDTO> lista = new ArrayList<>();
+
+        // Consulta que incluye Folio, Nombre y Teléfono
+        String sql = "SELECT p.id_pedido, "
+                + "CASE WHEN pp.id_cliente IS NOT NULL THEN CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) "
+                + "ELSE 'Venta Express / Anónimo' END AS nombre_cliente, "
+                + "CASE WHEN pp.id_pedido IS NOT NULL THEN 'Programado' "
+                + "WHEN pe.id_pedido IS NOT NULL THEN 'Express' ELSE 'General' END AS tipo_pedido, "
+                + "p.total AS monto_total, p.estado "
+                + "FROM Pedido p "
+                + "LEFT JOIN Pedido_Programado pp ON p.id_pedido = pp.id_pedido "
+                + "LEFT JOIN Cliente c ON pp.id_cliente = c.id_cliente "
+                + "LEFT JOIN Telefono t ON c.id_cliente = t.id_cliente "
+                + // Union con telefonos
+                "LEFT JOIN Pedido_Express pe ON p.id_pedido = pe.id_pedido "
+                + "WHERE (pe.folio LIKE ? "
+                + // Filtro 1: Folio Express
+                "OR t.numero LIKE ? "
+                + // Filtro 2: Teléfono Cliente
+                "OR c.nombre LIKE ? "
+                + // Filtro 3: Nombre Cliente
+                "OR CAST(p.id_pedido AS CHAR) LIKE ?) "
+                + // Filtro 4: ID Pedido
+                "AND p.estado IN ('Listo', 'Pendiente') "
+                + "GROUP BY p.id_pedido"; // Agrupamos para evitar duplicados si un cliente tiene varios telefonos
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            String p = "%" + filtro + "%";
+            ps.setString(1, p);
+            ps.setString(2, p);
+            ps.setString(3, p);
+            ps.setString(4, p);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                lista.add(new PedidoEntregaDTO(
+                        rs.getInt("id_pedido"),
+                        rs.getString("nombre_cliente"),
+                        rs.getString("tipo_pedido"),
+                        rs.getFloat("monto_total"),
+                        rs.getString("estado")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error en la búsqueda avanzada: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    @Override
+    public List<Cupon> obtenerCuponesVigentes() throws PersistenciaException {
+        List<Cupon> lista = new ArrayList<>();
+        String sql = "SELECT id_cupon, codigo, descuento FROM Cupon WHERE fecha_vencimiento >= CURDATE()";
+        try (Connection conn = conexionBD.crearConexion(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                lista.add(new Cupon(rs.getInt("id_cupon"), rs.getString("codigo"), rs.getInt("descuento")));
+            }
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al cargar cupones");
+        }
+        return lista;
+    }
+
+    public List<PedidoEntregaDTO> listarPedidosPreparacion() throws PersistenciaException {
+        List<PedidoEntregaDTO> lista = new ArrayList<>();
+        // Tu consulta SQL optimizada
+        String sql = "SELECT p.id_pedido AS 'ID', "
+                + "CASE "
+                + "    WHEN pe.id_pedido IS NOT NULL THEN (SELECT numero FROM Telefono WHERE id_cliente = p.id_cliente LIMIT 1) "
+                + "    WHEN pp.id_pedido IS NOT NULL THEN CONCAT(c.nombre, ' ', c.apellido_paterno) "
+                + "    ELSE 'General' "
+                + "END AS 'Identificador', "
+                + "CASE "
+                + "    WHEN pp.id_pedido IS NOT NULL THEN 'Programado' "
+                + "    WHEN pe.id_pedido IS NOT NULL THEN 'Express' "
+                + "    ELSE 'Venta Directa' "
+                + "END AS 'Tipo', "
+                + "p.monto_total, p.estado AS 'Estado' "
+                + "FROM Pedido p "
+                + "LEFT JOIN Pedido_Programado pp ON p.id_pedido = pp.id_pedido "
+                + "LEFT JOIN Pedido_Express pe ON p.id_pedido = pe.id_pedido "
+                + "LEFT JOIN Cliente c ON pp.id_cliente = c.id_cliente "
+                + "WHERE p.estado IN ('Pendiente', 'En Preparacion') "
+                + "ORDER BY p.id_pedido DESC";
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                // Usamos el constructor de PedidoEntregaDTO(id, cliente/tel, tipo, monto, estado)
+                lista.add(new PedidoEntregaDTO(
+                        rs.getInt("ID"),
+                        rs.getString("Identificador"),
+                        rs.getString("Tipo"),
+                        rs.getFloat("monto_total"),
+                        rs.getString("Estado")
+                ));
+            }
+            return lista;
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al consultar pedidos: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<PedidoEntregaDTO> obtenerPedidosPreparacion() throws PersistenciaException {
+        List<PedidoEntregaDTO> lista = new ArrayList<>();
+        String sql = "SELECT p.id_pedido, "
+                + "CASE WHEN pe.id_pedido IS NOT NULL THEN COALESCE(pe.folio, 'Express s/n') "
+                + "WHEN pp.id_pedido IS NOT NULL THEN CONCAT(c.nombre, ' ', c.apellido_paterno) "
+                + "ELSE 'General' END AS identificador, "
+                + "CASE WHEN pp.id_pedido IS NOT NULL THEN 'Programado' "
+                + "WHEN pe.id_pedido IS NOT NULL THEN 'Express' "
+                + "ELSE 'Venta Directa' END AS tipo, "
+                + "p.estado "
+                + "FROM Pedido p "
+                + "LEFT JOIN Pedido_Programado pp ON p.id_pedido = pp.id_pedido "
+                + "LEFT JOIN Pedido_Express pe ON p.id_pedido = pe.id_pedido "
+                + "LEFT JOIN Cliente c ON pp.id_cliente = c.id_cliente "
+                + "ORDER BY p.id_pedido DESC"; // O por p.fecha_hora si tienes ese campo
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                // Reutilizamos PedidoEntregaDTO ya que tiene los campos id, cliente(identificador), tipo y estado
+                lista.add(new PedidoEntregaDTO(
+                        rs.getInt("id_pedido"),
+                        rs.getString("identificador"),
+                        rs.getString("tipo"),
+                        0, // El monto no se usa en esta tabla según tu .form
+                        rs.getString("estado")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al cargar pedidos de preparación: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    @Override
+    public void actualizarEstadoPedido(int idPedido, String nuevoEstado) throws PersistenciaException {
+        String sql = "UPDATE Pedido SET estado = ? WHERE id_pedido = ?";
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, idPedido);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al cambiar estado: " + e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void pasarAListo(int idPedido) throws PersistenciaException {
+        String sql = "UPDATE Pedido SET estado = 'Listo' WHERE id_pedido = ? AND estado = 'Pendiente'";
+        ejecutarUpdate(sql, idPedido);
+    }
+
+    @Override
+    public void pasarANoEntregado(int idPedido) throws PersistenciaException {
+        String sqlUpdate = "UPDATE Pedido SET estado = 'No Entregado' WHERE id_pedido = ? AND estado = 'Listo'";
+        String sqlHistorial = "INSERT INTO Historial_Estado (id_pedido, estado_anterior, estado_nuevo) VALUES (?, 'Listo', 'No Entregado')";
+
+        try (Connection conn = conexionBD.crearConexion()) {
+            conn.setAutoCommit(false); // Transacción para asegurar ambos inserts
+            try (PreparedStatement ps1 = conn.prepareStatement(sqlUpdate); PreparedStatement ps2 = conn.prepareStatement(sqlHistorial)) {
+
+                ps1.setInt(1, idPedido);
+                ps1.executeUpdate();
+
+                ps2.setInt(1, idPedido);
+                ps2.executeUpdate();
+
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al pasar a No Entregado: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void pasarACancelado(int idPedido) throws PersistenciaException {
+        String sql = "UPDATE Pedido SET estado = 'Cancelado' WHERE id_pedido = ? AND estado = 'No Entregado'";
+        ejecutarUpdate(sql, idPedido);
+    }
+
+// Método auxiliar para evitar repetir código
+    private void ejecutarUpdate(String sql, int idPedido) throws PersistenciaException {
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idPedido);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error de base de datos: " + e.getMessage());
+        }
+    }
+
+    
 }

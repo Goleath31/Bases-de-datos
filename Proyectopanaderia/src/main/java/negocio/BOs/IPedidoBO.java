@@ -3,13 +3,32 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package negocio.BOs;
+
+import java.util.List;
+import negocio.DTOs.PedidoEntregaDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import negocio.excepciones.NegocioException;
+import persistencia.dominio.Cupon;
+
 /**
  *
  * @author golea
  */
 
 public interface IPedidoBO {
+
     public void registrarPedido(PedidoNuevoDTO pedido) throws NegocioException;
+
+    public List<PedidoEntregaDTO> buscarPedidosPendientesEntrega(String filtro) throws NegocioException;
+
+    public void validarPinExpress(int idPedido, String pin) throws NegocioException;
+
+    public void procesarEntrega(int idPedido, String metodoPago) throws NegocioException;
+
+    public List<Cupon> obtenerCuponesVigentes() throws NegocioException;
+
+    public List<PedidoEntregaDTO> listarPedidosPreparacion() throws NegocioException;
+
+    public void avanzarEstado(int idPedido, String estadoActual) throws NegocioException;
+
 }
