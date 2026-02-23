@@ -12,12 +12,18 @@ import java.util.List;
 import negocio.DTOs.PedidoEntregaDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import persistencia.dominio.Cupon;
+import persistencia.dominio.DetallePedido;
+import persistencia.dominio.PedidoExpress;
+import persistencia.dominio.PedidoProgramado;
 import persistencia.excepciones.PersistenciaException;
 
 public interface IPedidoDAO {
+    
     public int contarPedidosActivos(int idCliente) throws PersistenciaException;
+    
     public void agregarPedido(PedidoNuevoDTO pedido) throws PersistenciaException;
-     public List<PedidoEntregaDTO> buscarPedidos(String filtro) throws PersistenciaException;
+    
+    public List<PedidoEntregaDTO> buscarPedidos(String filtro) throws PersistenciaException;
 
     public String obtenerEstadoPedido(int idPedido) throws PersistenciaException;
 
@@ -36,4 +42,11 @@ public interface IPedidoDAO {
     public void pasarANoEntregado(int idPedido) throws PersistenciaException;
     
     public void pasarACancelado(int idPedido) throws PersistenciaException;
+    
+    
+    
+    public void agregarPedidoProgramado(PedidoProgramado pedidoProgramado, List<DetallePedido> listaDetallePedido) throws PersistenciaException;
+    
+    public void agregarPedidoExpress(PedidoExpress pedidoExpress, List<DetallePedido> listaDetallePedido) throws PersistenciaException;
+    
 }

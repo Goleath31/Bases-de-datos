@@ -15,6 +15,10 @@ import negocio.DTOs.PedidoEntregaDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import persistencia.conexion.IConexionBD;
 import persistencia.dominio.Cupon;
+import persistencia.dominio.DetallePedido;
+import persistencia.dominio.Pedido;
+import persistencia.dominio.PedidoExpress;
+import persistencia.dominio.PedidoProgramado;
 import persistencia.excepciones.PersistenciaException;
 
 /**
@@ -354,5 +358,90 @@ public class PedidoDAO implements IPedidoDAO {
         }
     }
 
+    @Override
+    public void agregarPedidoProgramado(PedidoProgramado pedidoProgramado, List<DetallePedido> detalles) throws PersistenciaException {
+        String query =
+                """
+                {CALL sp_crear_pedido_programado(?, ?, ?, ?)}
+                """;
+        try(Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)){
+            conn.setAutoCommit(false);
+            
+            //AGREGAR VALIDACIONES DE DATOS
+            cs.setNull(1, java.sql.Types.INTEGER);
+            cs.setInt(2, pedidoProgramado.getIdCliente() );
+            
+            if (pedidoProgramado.getIdCupon() > 0) {
+            cs.setInt(3, pedidoProgramado.getIdCupon());
+            } else {
+                cs.setNull(3, java.sql.Types.INTEGER);
+            }
+            
+            cs.registerOutParameter(4, java.sql.Types.INTEGER);
+            cs.execute();
+            
+            int idGenerado = cs.getInt(4);
+            
+            String queryDetalle = "INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad) VALUES (?, ?, ?)";
+            PreparedStatement psDetalle = conn.prepareStatement(queryDetalle);
+
+            for (DetallePedido item : detalles) {
+                psDetalle.setInt(1, idGenerado);
+                psDetalle.setInt(2, item.getIdProducto());
+                psDetalle.setInt(3, item.getCantidad());
+                psDetalle.addBatch();
+            }
+            psDetalle.executeBatch();
+
+            conn.commit();
+            
+            
+        }
+        catch(SQLException e){
+            LOG.log(Level.SEVERE, "Error al conectar con la base de datos", e);
+            throw new PersistenciaException("Error al conectar con la base de datos: " + e.getMessage());
+        }
+        
+        
+    }
+
+    @Override
+    public void agregarPedidoExpress(PedidoExpress pedidoExpress, List<DetallePedido> listaDetallePedido) throws PersistenciaException {
+        String query = "{CALL sp_crear_pedido_programado(?, ?, ?, ?)}";
+        //AGREGAR VALIDACIONES DE DATOS
+        try(Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)){
+            conn.setAutoCommit(false);
+            
+            cs.setNull(1, java.sql.Types.INTEGER);
+            cs.setString(2, pedidoExpress.getFolio());
+            cs.setString(3, String.valueOf(pedidoExpress.getPinSeguridad()));
+            cs.registerOutParameter(4, java.sql.Types.INTEGER);
+        
+            cs.execute();
+            
+            int idPedidoGenerado = cs.getInt(4);
+
+            String sqlDetalle = "INSERT INTO Detalle_Pedido (id_pedido, id_producto, cantidad) VALUES (?, ?, ?)";
+            PreparedStatement psDetalle = conn.prepareStatement(sqlDetalle);
+
+            for (DetallePedido item : listaDetallePedido) {
+                psDetalle.setInt(1, idPedidoGenerado);
+                psDetalle.setInt(2, item.getIdProducto());
+                psDetalle.setInt(3, item.getCantidad());
+                psDetalle.addBatch();
+            }
+            psDetalle.executeBatch();
+
+            conn.commit();
+            
+            
+        }
+        catch(SQLException e){
+            LOG.log(Level.SEVERE, "Error al conectar con la base de datos", e);
+            throw new PersistenciaException("Error al conectar con la base de datos: " + e.getMessage());
+        }
+    }
+
+ 
     
 }

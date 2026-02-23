@@ -15,6 +15,28 @@ public class Pedido {
     private Date fecha;
     private float total;
     private String estado;
+    private int idEmpleado;
+
+    public Pedido(int id, Date fecha, float total, String estado, int idEmpleado) {
+        this.id = id;
+        this.fecha = fecha;
+        this.total = total;
+        this.estado = estado;
+        this.idEmpleado = idEmpleado;
+    }
+
+    public Pedido(Date fecha, float total, String estado, int idEmpleado) {
+        this.fecha = fecha;
+        this.total = total;
+        this.estado = estado;
+        this.idEmpleado = idEmpleado;
+    }
+
+    public Pedido(Date fecha, float total, String estado) {
+        this.fecha = fecha;
+        this.total = total;
+        this.estado = estado;
+    }
 
     public Pedido(int id, Date fecha, float total, String estado) {
         this.id = id;
@@ -23,15 +45,12 @@ public class Pedido {
         this.estado = estado;
     }
     
-    
-    public Pedido(Date fecha, float total, String estado) {
-        this.fecha = fecha;
-        this.total = total;
-        this.estado = estado;
-    }
-
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Date getFecha() {
@@ -57,4 +76,16 @@ public class Pedido {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+    public int getIdEmpleado() {
+        return idEmpleado;
+    }
+
+    public void setIdEmpleado(int idEmpleado) {
+        this.idEmpleado = idEmpleado;
+    }
+
+    
+
+ 
 }
