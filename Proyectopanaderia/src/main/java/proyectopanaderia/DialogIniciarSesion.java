@@ -37,9 +37,10 @@ public class DialogIniciarSesion extends javax.swing.JDialog {
      */
     public DialogIniciarSesion(FramePrincipal principal) {
         super(principal, "Aviso", true);
+        this.setUndecorated(true);
         this.principal = principal;
-        initComponents();
         iniciarComponentes();
+        this.setUndecorated(true); 
     }
 
     
