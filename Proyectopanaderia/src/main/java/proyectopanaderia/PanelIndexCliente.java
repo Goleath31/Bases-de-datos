@@ -72,7 +72,9 @@ public class PanelIndexCliente extends javax.swing.JPanel {
 
         JButton btnExpress = new JButton("<html><center>Pedido<br>Express</center></html>");
         aplicarEstiloBoton(btnExpress, tamañoBoton, fuenteBotones, colorBotonesTop);
-        btnExpress.addActionListener(e -> { /* Acción pendiente */ });
+        btnExpress.addActionListener(e ->  {
+            principal.mostrarPanel(new PanelPedidoExpress(principal));
+        });
 
         fila1.add(Box.createHorizontalGlue());
         fila1.add(btnAgendar);
