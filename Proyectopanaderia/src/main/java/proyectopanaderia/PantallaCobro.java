@@ -29,6 +29,7 @@ import negocio.BOs.IPedidoBO;
 import negocio.DTOs.PedidoEntregaDTO;
 import negocio.excepciones.NegocioException;
 import negocio.fabrica.FabricaBOs;
+
 /**
  *
  * @author golea
@@ -42,16 +43,18 @@ public class PantallaCobro extends javax.swing.JPanel {
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
+    private FramePrincipal principal;
 
-    public PantallaCobro(int idPedido) {
+    public PantallaCobro(int idPedido, FramePrincipal principal) {
         this.idPedido = idPedido;
+        this.principal = principal;
         this.pedidoBO = FabricaBOs.obtenerPedidoBO();
         initComponents();
         obtenerMontoDePedido();
         disenoManual();
         cargarCupones();
     }
-    
+
     private void disenoManual() {
         // Configuración del Panel Principal (1024x768)
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -84,10 +87,10 @@ public class PantallaCobro extends javax.swing.JPanel {
         estilizarLabelInfo(lblmontoapagar1, 24, true);
         estilizarLabelInfo(lblmostrarmontoapagar1, 48, true); // El monto resalta más
         lblmostrarmontoapagar1.setForeground(colorConfirmar);
-        
+
         estilizarLabelInfo(lbltextodescuento, 18, false);
         estilizarLabelInfo(lbldescuento, 20, true);
-        
+
         estilizarLabelInfo(lblIntroduceelmonto, 18, false);
 
         // Campo de Texto y ComboBox
@@ -112,15 +115,15 @@ public class PantallaCobro extends javax.swing.JPanel {
         mainContent.add(Box.createRigidArea(new Dimension(0, 30)));
         mainContent.add(new JSeparator());
         mainContent.add(Box.createRigidArea(new Dimension(0, 30)));
-        
+
         mainContent.add(lbltextodescuento);
         mainContent.add(Descuentoscuponera);
         mainContent.add(lbldescuento);
-        
+
         mainContent.add(Box.createRigidArea(new Dimension(0, 40)));
         mainContent.add(lblIntroduceelmonto);
         mainContent.add(txtMontoaintroducir);
-        
+
         mainContent.add(Box.createRigidArea(new Dimension(0, 50)));
         mainContent.add(btnpagar);
         mainContent.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -142,8 +145,6 @@ public class PantallaCobro extends javax.swing.JPanel {
 
     // Los métodos obtenerMontoDePedido(), cargarCupones() 
     // y los ActionPerformed se mantienen igual.
-
-
     private void obtenerMontoDePedido() {
         try {
             // Buscamos el pedido específico para traer su monto_total
@@ -332,7 +333,6 @@ public class PantallaCobro extends javax.swing.JPanel {
 
             JOptionPane.showMessageDialog(this, "Pago procesado. Cambio: $" + (pagoRecibido - montoTotal));
 
-            
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Ingrese un monto válido.");
         } catch (NegocioException e) {
@@ -342,6 +342,7 @@ public class PantallaCobro extends javax.swing.JPanel {
 
     private void btnregresar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresar1ActionPerformed
         // TODO add your handling code here:
+        principal.mostrarPanel(new Entrega_y_Cobro1(principal));
 
     }//GEN-LAST:event_btnregresar1ActionPerformed
 

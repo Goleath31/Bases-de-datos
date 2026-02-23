@@ -28,6 +28,7 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
     private Color colorBtnClaro = Color.decode("#8DA9C4");
     private Color colorBtnOscuro = Color.decode("#13315C");
     private Color colorBorde = Color.decode("#1C5282");
+    private FramePrincipal principal;
 
     private IProductoBO productoBO = FabricaBOs.obtenerProductoBO();
     private List<Producto> listaProductos;
@@ -35,7 +36,8 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
     /**
      * Creates new form Gestionar_catalogo_de_productos
      */
-    public Gestionar_catalogo_de_productos() {
+    public Gestionar_catalogo_de_productos(FramePrincipal principal) {
+        this.principal = principal;
         initComponents();
         Dimension size = new Dimension(1024, 768);
         this.setPreferredSize(size);
@@ -290,6 +292,11 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         });
 
         btnregresarrr2.setText("Regresar");
+        btnregresarrr2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnregresarrr2ActionPerformed(evt);
+            }
+        });
 
         btnConsultar.setText("Consultar");
         btnConsultar.addActionListener(new java.awt.event.ActionListener() {
@@ -518,6 +525,13 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         }
 
     }//GEN-LAST:event_btnagregar1ActionPerformed
+
+    private void btnregresarrr2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresarrr2ActionPerformed
+        // TODO add your handling code here:
+        btnregresarrr2.addActionListener(e -> {
+        principal.mostrarPanel(new Interfaz_admin1(principal));
+    });
+    }//GEN-LAST:event_btnregresarrr2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

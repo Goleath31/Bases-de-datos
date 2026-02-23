@@ -31,22 +31,24 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
-    
+    private FramePrincipal principal;
+
     /**
      * Creates new form Gestion_preparacion_de_pedidos
      */
-    public Gestion_preparacion_de_pedidos() {
+    public Gestion_preparacion_de_pedidos(FramePrincipal principal) {
+        this.principal = principal;
         initComponents();
         Dimension size = new Dimension(1024, 768);
         this.setPreferredSize(size);
         this.setMinimumSize(size);
         this.setMaximumSize(size);
         this.setSize(size);
-        disenoManual();             
+        disenoManual();
         cargarTabla();
 
     }
-    
+
     private void disenoManual() {
         // Configuración del Panel Principal
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -98,8 +100,8 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
         // Estilo botón Regresar
         btnregresar.setFont(new Font("SansSerif", Font.PLAIN, 18));
         btnregresar.addActionListener(e -> {
-             // Ajusta esto según tu panel de inicio de empleado/admin
-             // principal.mostrarPanel(new PanelIndexAdmin(principal)); 
+            // Ajusta esto según tu panel de inicio de empleado/admin
+            // principal.mostrarPanel(new PanelIndexAdmin(principal)); 
         });
 
         // Estilo botón Cambiar Estado
@@ -129,7 +131,6 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
         this.revalidate();
         this.repaint();
     }
-    
 
     private void cargarTabla() {
         try {
@@ -208,6 +209,11 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
         jTable1 = new javax.swing.JTable();
 
         btnregresar.setText("Regresar");
+        btnregresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnregresarActionPerformed(evt);
+            }
+        });
 
         btncambiarestado.setText("Cambiar al siguiente estado");
         btncambiarestado.addActionListener(new java.awt.event.ActionListener() {
@@ -293,6 +299,14 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }//GEN-LAST:event_btncambiarestadoActionPerformed
+
+    private void btnregresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresarActionPerformed
+        // TODO add your handling code here:
+        btnregresar.addActionListener(e -> {
+            // Al presionar regresar, volvemos a la interfaz anterior
+            principal.mostrarPanel(new Interfaz_admin1(principal));
+        });
+    }//GEN-LAST:event_btnregresarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

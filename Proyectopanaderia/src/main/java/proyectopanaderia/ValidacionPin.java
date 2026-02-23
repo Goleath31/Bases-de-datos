@@ -35,18 +35,22 @@ public class ValidacionPin extends javax.swing.JPanel {
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
+    private FramePrincipal principal;
+
     /**
+     *
      * Creates new form ValidacionPin
      */
-    public ValidacionPin(int idPedido) {
+    public ValidacionPin(int idPedido, FramePrincipal principal) {
         this.idPedido = idPedido;
+        this.principal = principal;
         this.pedidoBO = FabricaBOs.obtenerPedidoBO(); // Inicializamos
         initComponents();
         disenoManual(); // Aplicar diseño
         this.Iblidmostrar.setText(String.valueOf(idPedido));
 
     }
-    
+
     private void disenoManual() {
         // Configuración Principal
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -125,7 +129,7 @@ public class ValidacionPin extends javax.swing.JPanel {
         this.revalidate();
         this.repaint();
     }
-    
+
     private void cambiarPantalla(javax.swing.JPanel nuevoPanel) {
         // 1. Obtener el contenedor principal (JFrame o el que tenga el scroll/content pane)
         java.awt.Container parent = this.getParent();
@@ -247,35 +251,37 @@ public class ValidacionPin extends javax.swing.JPanel {
     private void btnvalidarpinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvalidarpinActionPerformed
         // TODO add your handling code here:
         // 1. Obtener el PIN del campo de texto (txtnombre según tu archivo .form)
-    String pinIngresado = txtnombre.getText().trim();
+        String pinIngresado = txtnombre.getText().trim();
 
-    // 2. Validación básica de campo vacío
-    if (pinIngresado.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, ingrese el PIN de seguridad.");
-        return;
-    }
+        // 2. Validación básica de campo vacío
+        if (pinIngresado.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese el PIN de seguridad.");
+            return;
+        }
 
-    try {
-        // 3. Llamar a la capa de negocio para validar
-        // Este método en PedidoBO lanza una NegocioException si el PIN es incorrecto
-        pedidoBO.validarPinExpress(idPedido, pinIngresado);
+        try {
+            // 3. Llamar a la capa de negocio para validar
+            // Este método en PedidoBO lanza una NegocioException si el PIN es incorrecto
+            pedidoBO.validarPinExpress(idPedido, pinIngresado);
 
-        // 4. Si no lanzó excepción, el PIN es correcto: Abrir Pantalla de Cobro
-        JOptionPane.showMessageDialog(this, "PIN Correcto. Procediendo al cobro.");
-        cambiarPantalla(new PantallaCobro(idPedido));
+            // 4. Si no lanzó excepción, el PIN es correcto: Abrir Pantalla de Cobro
+            JOptionPane.showMessageDialog(this, "PIN Correcto. Procediendo al cobro.");
+            cambiarPantalla(new PantallaCobro(idPedido, principal));
 
-    } catch (NegocioException ex) {
-        // 5. Si el PIN es incorrecto o hay error de BD, mostramos el mensaje de error
-        JOptionPane.showMessageDialog(this, "El PIN es incorrecto", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-        txtnombre.setText(""); // Limpiamos el campo para reintentar
-        txtnombre.requestFocus();
-    }
+        } catch (NegocioException ex) {
+            // 5. Si el PIN es incorrecto o hay error de BD, mostramos el mensaje de error
+            JOptionPane.showMessageDialog(this, "El PIN es incorrecto", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            txtnombre.setText(""); // Limpiamos el campo para reintentar
+            txtnombre.requestFocus();
+        }
 
 
     }//GEN-LAST:event_btnvalidarpinActionPerformed
 
     private void btnregresar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresar1ActionPerformed
         // TODO add your handling code here:
+        principal.mostrarPanel(new Entrega_y_Cobro1(principal));
+
 
     }//GEN-LAST:event_btnregresar1ActionPerformed
 

@@ -43,10 +43,12 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
+    private FramePrincipal principal;
     /**
      * Creates new form Entrega_y_Cobro1
      */
-    public Entrega_y_Cobro1() {
+    public Entrega_y_Cobro1(FramePrincipal principal) {
+        this.principal = principal;
         initComponents();
         // Inicializamos el BO usando la fábrica que ya tienes
         this.pedidoBO = FabricaBOs.obtenerPedidoBO();
@@ -337,6 +339,7 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
 
     private void btnregresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresarActionPerformed
         // TODO add your handling code here:
+        principal.mostrarPanel(new Interfaz_admin1(principal));
 
 
     }//GEN-LAST:event_btnregresarActionPerformed
@@ -367,9 +370,9 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
 
         // 4. Si pasó la validación, procedemos al cambio de pantalla
         if (tipo.equalsIgnoreCase("Express")) {
-            cambiarPantalla(new ValidacionPin(idPedido));
+            cambiarPantalla(new ValidacionPin(idPedido,  principal));
         } else {
-            cambiarPantalla(new PantallaCobro(idPedido));
+            cambiarPantalla(new PantallaCobro(idPedido,principal));
         }
     }//GEN-LAST:event_btncompletarpedidoActionPerformed
 
