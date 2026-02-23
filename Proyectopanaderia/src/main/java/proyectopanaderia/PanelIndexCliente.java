@@ -123,7 +123,9 @@ public class PanelIndexCliente extends javax.swing.JPanel {
         btnRegistrate.setFocusPainted(false);
         btnRegistrate.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnRegistrate.setMargin(new Insets(0, 0, 0, 0)); 
-        btnRegistrate.addActionListener(e -> { /* Acción para registro */ });
+        btnRegistrate.addActionListener(e -> { 
+            principal.mostrarPanel(new PanelCrearCuenta(principal));
+        });
 
         panelFooter.add(lblTexto);
         panelFooter.add(btnRegistrate);
