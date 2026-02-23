@@ -14,7 +14,6 @@ import persistencia.excepciones.PersistenciaException;
 
 public interface IProductoDAO {
 
-    // Método solicitado para obtener todos los productos del catálogo
     public List<Producto> obtenerTodosLosProductos() throws PersistenciaException;
 
     public void actualizarProducto(Producto producto) throws PersistenciaException;

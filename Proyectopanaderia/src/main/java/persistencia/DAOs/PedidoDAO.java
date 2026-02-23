@@ -92,19 +92,16 @@ public class PedidoDAO implements IPedidoDAO {
         Connection conn = null;
         try {
             conn = conexionBD.crearConexion();
-            conn.setAutoCommit(false); // Transacción para asegurar ambos cambios
+            conn.setAutoCommit(false); 
 
-            // 1. Obtener el estado anterior (será 'Listo')
             String estadoAnterior = obtenerEstadoPedido(idPedido);
 
-            // 2. Actualizar estado del pedido a 'Entregado'
             String sqlUpdate = "UPDATE Pedido SET estado = 'Entregado' WHERE id_pedido = ?";
             try (PreparedStatement ps1 = conn.prepareStatement(sqlUpdate)) {
                 ps1.setInt(1, idPedido);
                 ps1.executeUpdate();
             }
 
-            // 3. Registrar en Historial_Estado con tus columnas exactas
             String sqlHistorial = "INSERT INTO Historial_Estado (id_pedido, estado_anterior, estado_nuevo, fecha_hora_cambio) VALUES (?, ?, 'Entregado', NOW())";
             try (PreparedStatement ps2 = conn.prepareStatement(sqlHistorial)) {
                 ps2.setInt(1, idPedido);
@@ -112,7 +109,7 @@ public class PedidoDAO implements IPedidoDAO {
                 ps2.executeUpdate();
             }
 
-            conn.commit(); // Éxito total
+            conn.commit();
         } catch (SQLException e) {
             if (conn != null) {
                 try {
@@ -163,7 +160,7 @@ public class PedidoDAO implements IPedidoDAO {
     public List<PedidoEntregaDTO> buscarPedidos(String filtro) throws PersistenciaException {
         List<PedidoEntregaDTO> lista = new ArrayList<>();
 
-        // Consulta que incluye Folio, Nombre y Teléfono
+ 
         String sql = "SELECT p.id_pedido, "
                 + "CASE WHEN pp.id_cliente IS NOT NULL THEN CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) "
                 + "ELSE 'Venta Express / Anónimo' END AS nombre_cliente, "
@@ -185,7 +182,7 @@ public class PedidoDAO implements IPedidoDAO {
                 "OR CAST(p.id_pedido AS CHAR) LIKE ?) "
                 + // Filtro 4: ID Pedido
                 "AND p.estado IN ('Listo', 'Pendiente') "
-                + "GROUP BY p.id_pedido"; // Agrupamos para evitar duplicados si un cliente tiene varios telefonos
+                + "GROUP BY p.id_pedido"; 
 
         try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -227,7 +224,6 @@ public class PedidoDAO implements IPedidoDAO {
 
     public List<PedidoEntregaDTO> listarPedidosPreparacion() throws PersistenciaException {
         List<PedidoEntregaDTO> lista = new ArrayList<>();
-        // Tu consulta SQL optimizada
         String sql = "SELECT p.id_pedido AS 'ID', "
                 + "CASE "
                 + "    WHEN pe.id_pedido IS NOT NULL THEN (SELECT numero FROM Telefono WHERE id_cliente = p.id_cliente LIMIT 1) "
@@ -250,7 +246,6 @@ public class PedidoDAO implements IPedidoDAO {
         try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                // Usamos el constructor de PedidoEntregaDTO(id, cliente/tel, tipo, monto, estado)
                 lista.add(new PedidoEntregaDTO(
                         rs.getInt("ID"),
                         rs.getString("Identificador"),
@@ -280,17 +275,17 @@ public class PedidoDAO implements IPedidoDAO {
                 + "LEFT JOIN Pedido_Programado pp ON p.id_pedido = pp.id_pedido "
                 + "LEFT JOIN Pedido_Express pe ON p.id_pedido = pe.id_pedido "
                 + "LEFT JOIN Cliente c ON pp.id_cliente = c.id_cliente "
-                + "ORDER BY p.id_pedido DESC"; // O por p.fecha_hora si tienes ese campo
+                + "ORDER BY p.id_pedido DESC";
 
         try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                // Reutilizamos PedidoEntregaDTO ya que tiene los campos id, cliente(identificador), tipo y estado
+               
                 lista.add(new PedidoEntregaDTO(
                         rs.getInt("id_pedido"),
                         rs.getString("identificador"),
                         rs.getString("tipo"),
-                        0, // El monto no se usa en esta tabla según tu .form
+                        0,
                         rs.getString("estado")
                 ));
             }
@@ -325,7 +320,7 @@ public class PedidoDAO implements IPedidoDAO {
         String sqlHistorial = "INSERT INTO Historial_Estado (id_pedido, estado_anterior, estado_nuevo) VALUES (?, 'Listo', 'No Entregado')";
 
         try (Connection conn = conexionBD.crearConexion()) {
-            conn.setAutoCommit(false); // Transacción para asegurar ambos inserts
+            conn.setAutoCommit(false); 
             try (PreparedStatement ps1 = conn.prepareStatement(sqlUpdate); PreparedStatement ps2 = conn.prepareStatement(sqlHistorial)) {
 
                 ps1.setInt(1, idPedido);
@@ -350,7 +345,6 @@ public class PedidoDAO implements IPedidoDAO {
         ejecutarUpdate(sql, idPedido);
     }
 
-// Método auxiliar para evitar repetir código
     private void ejecutarUpdate(String sql, int idPedido) throws PersistenciaException {
         try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idPedido);

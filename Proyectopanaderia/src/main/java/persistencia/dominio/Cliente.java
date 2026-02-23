@@ -27,7 +27,6 @@ public class Cliente {
     public Cliente() {
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }

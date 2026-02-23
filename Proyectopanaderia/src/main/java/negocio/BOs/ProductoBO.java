@@ -35,7 +35,7 @@ public class ProductoBO implements IProductoBO {
         }
 
         try {
-            productoDAO.actualizarProducto(producto); // Llama al DAO
+            productoDAO.actualizarProducto(producto); 
         } catch (PersistenciaException e) {
             throw new NegocioException("No se pudo actualizar el producto en la base de datos.", e);
         }
@@ -43,7 +43,6 @@ public class ProductoBO implements IProductoBO {
     
     @Override
 public void agregar(Producto producto) throws NegocioException {
-    // Validaciones básicas de negocio
     if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
         throw new NegocioException("El nombre del producto es obligatorio.");
     }
