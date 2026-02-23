@@ -89,7 +89,9 @@ public class PanelIndexCliente extends javax.swing.JPanel {
 
         JButton btnPerfil = new JButton("<html><center>Gestionar<br>perfil</center></html>");
         aplicarEstiloBoton(btnPerfil, tamañoBoton, fuenteBotones, colorBotonesBot);
-        btnPerfil.addActionListener(e -> { /* Acción pendiente */ });
+        btnPerfil.addActionListener(e -> { 
+            principal.mostrarPanel(new PanelGestionarPerfil(principal));
+        });
 
         JButton btnHistorial = new JButton("<html><center>Historial<br>pedidos</center></html>");
         aplicarEstiloBoton(btnHistorial, tamañoBoton, fuenteBotones, colorBotonesBot);
