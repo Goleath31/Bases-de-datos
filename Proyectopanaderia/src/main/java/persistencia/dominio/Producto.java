@@ -17,6 +17,14 @@ public class Producto {
     private float precio;
     private String estado;
 
+    public Producto(String nombre, String tipo, String descripcion, float precio, String estado) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.estado = estado;
+    }
+    
     public Producto() {
     }
 
