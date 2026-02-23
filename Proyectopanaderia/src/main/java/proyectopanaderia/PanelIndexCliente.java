@@ -95,7 +95,9 @@ public class PanelIndexCliente extends javax.swing.JPanel {
 
         JButton btnHistorial = new JButton("<html><center>Historial<br>pedidos</center></html>");
         aplicarEstiloBoton(btnHistorial, tamañoBoton, fuenteBotones, colorBotonesBot);
-        btnHistorial.addActionListener(e -> { /* Acción pendiente */ });
+        btnHistorial.addActionListener(e -> { 
+            principal.mostrarPanel(new PanelHistorialPedido(principal));
+        });
         
         fila2.add(Box.createHorizontalGlue());
         fila2.add(btnPerfil);
