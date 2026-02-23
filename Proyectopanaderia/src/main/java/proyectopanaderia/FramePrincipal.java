@@ -11,6 +11,9 @@ import javax.swing.JPanel;
  * @author joser
  */
 public class FramePrincipal extends javax.swing.JFrame {
+    //Crear hilo que esté contando el tiempo de inactividad para cerrar sesion
+    public int TIEMPO_SESION;
+    public boolean sesionIniciada = false;
 
     /**
      * Creates new form FramePricipal
