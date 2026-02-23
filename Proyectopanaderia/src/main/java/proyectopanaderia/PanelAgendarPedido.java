@@ -155,7 +155,8 @@ public class PanelAgendarPedido extends javax.swing.JPanel {
         btnConfirmar.setForeground(Color.WHITE);
         btnConfirmar.setFocusPainted(false);
         btnConfirmar.addActionListener(e -> {
-            //Agregar accion al enviar el pedido, registrar los datos capturados.
+            //agregar datos a constructor (?)
+            principal.mostrarPanel(new PanelConfirmarPedidoAgendado(principal));
         
         });
 

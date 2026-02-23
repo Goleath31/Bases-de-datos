@@ -65,24 +65,12 @@ public class PanelHistorialPedido extends javax.swing.JPanel {
     public void iniciarComponentes(){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(colorFondo);
-        this.setBorder(new EmptyBorder(20, 40, 20, 40));
-
-        JLabel lblMiga = new JLabel("Historial pedidos");
-        lblMiga.setForeground(Color.GRAY);
-        lblMiga.setFont(new Font("Arial", Font.PLAIN, 12));
-        lblMiga.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        JPanel panelMiga = new JPanel();
-        panelMiga.setLayout(new BoxLayout(panelMiga, BoxLayout.X_AXIS));
-        panelMiga.setOpaque(false);
-        panelMiga.add(lblMiga);
-        panelMiga.add(Box.createHorizontalGlue()); // Empuja el texto a la izquierda
-        panelMiga.setMaximumSize(new Dimension(800, 20));
-
         JPanel panelCabecera = new JPanel();
         panelCabecera.setLayout(new BoxLayout(panelCabecera, BoxLayout.X_AXIS));
         panelCabecera.setBackground(colorHeader);
-        panelCabecera.setMaximumSize(new Dimension(800, 60));
+        panelCabecera.setMaximumSize(new Dimension(1024, 100));
+        panelCabecera.setPreferredSize(new Dimension(1024,100 ));
         panelCabecera.setBorder(new EmptyBorder(15, 30, 15, 30));
 
         JLabel lblTitulo = new JLabel("Historial de mis pedidos");
@@ -147,7 +135,6 @@ public class PanelHistorialPedido extends javax.swing.JPanel {
         panelPie.add(btnRegresar);
         panelPie.add(Box.createHorizontalGlue());
 
-        this.add(panelMiga);
         this.add(Box.createRigidArea(new Dimension(0, 5)));
         this.add(panelCabecera);
         this.add(Box.createRigidArea(new Dimension(0, 30)));

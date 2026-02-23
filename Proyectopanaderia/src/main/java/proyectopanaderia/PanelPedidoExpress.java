@@ -114,11 +114,14 @@ public class PanelPedidoExpress extends javax.swing.JPanel {
         btnConfirmar.setBackground(colorConfirmar);
         btnConfirmar.setForeground(Color.WHITE);
         btnConfirmar.setFocusPainted(false);
-
+        btnConfirmar.addActionListener(e -> {
+            principal.mostrarPanel(new PanelConfirmarPedidoExpress(principal));
+        });
+        
         bottomPanel.add(btnRegresar);
         bottomPanel.add(Box.createHorizontalGlue());
         bottomPanel.add(btnConfirmar);
-
+        
         mainContent.add(panelSubtitulo);
         mainContent.add(Box.createRigidArea(new Dimension(0, 15)));
         mainContent.add(sep1);
