@@ -161,14 +161,14 @@ public class interfaz_admin extends javax.swing.JFrame {
     private void btnregresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresarActionPerformed
         // TODO add your handling code here:
 
-        Interfaz_admin1 In = new Interfaz_admin1();
+        //Interfaz_admin1 In = new Interfaz_admin1();
 
-        // Limpiar el contenido actual del frame
+        //Limpiar el contenido actual del frame
         this.getContentPane().removeAll();
 
         // Cambiar el Layout si es necesario para que el panel ocupe todo el espacio
         this.setLayout(new java.awt.BorderLayout());
-        this.add(In, java.awt.BorderLayout.CENTER);
+        //this.add(In, java.awt.BorderLayout.CENTER);
 
         // CRITICO: Refrescar la interfaz para que los cambios sean visibles
         this.revalidate();
