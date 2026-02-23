@@ -23,10 +23,24 @@ public class Cliente {
     private String domicilio;
     private Date fechaNacimiento;
     private String correo;
+    private String contraseña;
 
     public Cliente() {
     }
 
+    public Cliente(int id, String nombre, String apellidoPaterno, String apellidoMaterno, String domicilio, Date fechaNacimiento, String correo, String contraseña) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.domicilio = domicilio;
+        this.fechaNacimiento = fechaNacimiento;
+        this.correo = correo;
+        this.contraseña = contraseña;
+    }
+
+    
+    
     public int getId() {
         return id;
     }

@@ -4,20 +4,29 @@
  */
 package persistencia.dominio;
 
+import java.util.Date;
+
 /**
  *
  * @author golea
  */
 public class Pedido {
     private int id;
-    private String folio;
-    private int idCliente;
+    private Date fecha;
+    private float total;
     private String estado;
 
-    public Pedido(int id, String folio, int idCliente, String estado) {
+    public Pedido(int id, Date fecha, float total, String estado) {
         this.id = id;
-        this.folio = folio;
-        this.idCliente = idCliente;
+        this.fecha = fecha;
+        this.total = total;
+        this.estado = estado;
+    }
+    
+    
+    public Pedido(Date fecha, float total, String estado) {
+        this.fecha = fecha;
+        this.total = total;
         this.estado = estado;
     }
 
@@ -25,24 +34,20 @@ public class Pedido {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public String getFolio() {
-        return folio;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
-    public void setFolio(String folio) {
-        this.folio = folio;
+    public float getTotal() {
+        return total;
     }
 
-    public int getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
+    public void setTotal(float total) {
+        this.total = total;
     }
 
     public String getEstado() {
@@ -52,5 +57,4 @@ public class Pedido {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
 }
