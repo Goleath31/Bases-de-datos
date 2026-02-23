@@ -8,6 +8,19 @@ import javax.swing.JOptionPane;
 import negocio.BOs.IPedidoBO;
 import negocio.excepciones.NegocioException;
 import negocio.fabrica.FabricaBOs;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Cursor;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import negocio.BOs.IPedidoBO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -17,22 +30,111 @@ public class ValidacionPin extends javax.swing.JPanel {
 
     private int idPedido;
     private final IPedidoBO pedidoBO;
-   
+    // Colores corporativos
+    private Color colorHeader = Color.decode("#13315C");
+    private Color colorFondo = Color.decode("#EEF4ED");
+    private Color colorPaneles = Color.decode("#8DA9C4");
+    private Color colorConfirmar = Color.decode("#134074");
+    /**
+     * Creates new form ValidacionPin
+     */
     public ValidacionPin(int idPedido) {
         this.idPedido = idPedido;
-        this.pedidoBO = FabricaBOs.obtenerPedidoBO(); 
+        this.pedidoBO = FabricaBOs.obtenerPedidoBO(); // Inicializamos
         initComponents();
+        disenoManual(); // Aplicar diseño
         this.Iblidmostrar.setText(String.valueOf(idPedido));
 
     }
     
+    private void disenoManual() {
+        // Configuración Principal
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBackground(colorFondo);
+        this.setPreferredSize(new Dimension(1024, 768));
+
+        // --- HEADER ---
+        JPanel panelHeader = new JPanel();
+        panelHeader.setLayout(new BoxLayout(panelHeader, BoxLayout.X_AXIS));
+        panelHeader.setBackground(colorHeader);
+        panelHeader.setMaximumSize(new Dimension(1024, 120));
+        panelHeader.setPreferredSize(new Dimension(1024, 120));
+        panelHeader.setBorder(new EmptyBorder(0, 50, 0, 0));
+
+        JLabel lblTituloHeader = new JLabel("Seguridad - Pedido Express");
+        lblTituloHeader.setFont(new Font("SansSerif", Font.PLAIN, 36));
+        lblTituloHeader.setForeground(Color.WHITE);
+        panelHeader.add(lblTituloHeader);
+
+        // --- CONTENIDO CENTRAL (Cuadro de validación) ---
+        JPanel mainContent = new JPanel();
+        mainContent.setLayout(new BoxLayout(mainContent, BoxLayout.Y_AXIS));
+        mainContent.setOpaque(false);
+        mainContent.setBorder(new EmptyBorder(100, 300, 100, 300)); // Muy centrado
+
+        // ID del pedido pequeño arriba
+        lblNombre1.setText("Validando Pedido ID:");
+        lblNombre1.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        lblNombre1.setForeground(colorPaneles);
+        lblNombre1.setAlignmentX(CENTER_ALIGNMENT);
+
+        Iblidmostrar.setFont(new Font("SansSerif", Font.BOLD, 20));
+        Iblidmostrar.setForeground(colorHeader);
+        Iblidmostrar.setAlignmentX(CENTER_ALIGNMENT);
+
+        // Instrucción principal
+        lblNombre.setText("Introduce el PIN de validación:");
+        lblNombre.setFont(new Font("SansSerif", Font.BOLD, 22));
+        lblNombre.setForeground(colorHeader);
+        lblNombre.setAlignmentX(CENTER_ALIGNMENT);
+
+        // Campo de texto (PIN)
+        txtnombre.setFont(new Font("SansSerif", Font.PLAIN, 30));
+        txtnombre.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtnombre.setMaximumSize(new Dimension(250, 60));
+        txtnombre.setBackground(Color.WHITE);
+
+        // Botón Validar
+        btnvalidarpin.setBackground(colorConfirmar);
+        btnvalidarpin.setForeground(Color.WHITE);
+        btnvalidarpin.setFont(new Font("SansSerif", Font.BOLD, 20));
+        btnvalidarpin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnvalidarpin.setMaximumSize(new Dimension(250, 60));
+        btnvalidarpin.setAlignmentX(CENTER_ALIGNMENT);
+
+        // Botón Regresar
+        btnregresar1.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        btnregresar1.setAlignmentX(CENTER_ALIGNMENT);
+
+        // Ensamblar
+        mainContent.add(lblNombre1);
+        mainContent.add(Iblidmostrar);
+        mainContent.add(Box.createRigidArea(new Dimension(0, 40)));
+        mainContent.add(lblNombre);
+        mainContent.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainContent.add(txtnombre);
+        mainContent.add(Box.createRigidArea(new Dimension(0, 40)));
+        mainContent.add(btnvalidarpin);
+        mainContent.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainContent.add(btnregresar1);
+
+        // Actualizar Panel
+        this.removeAll();
+        this.add(panelHeader);
+        this.add(mainContent);
+        this.revalidate();
+        this.repaint();
+    }
+    
     private void cambiarPantalla(javax.swing.JPanel nuevoPanel) {
+        // 1. Obtener el contenedor principal (JFrame o el que tenga el scroll/content pane)
         java.awt.Container parent = this.getParent();
 
         if (parent != null) {
-            parent.remove(this); 
-            parent.add(nuevoPanel); 
+            parent.remove(this); // Quita la pantalla actual (Entrega y Cobro)
+            parent.add(nuevoPanel); // Agrega la nueva (Cobro o PIN)
 
+            // 2. Forzar al Swing a dibujar de nuevo y recalcular tamaños
             parent.revalidate();
             parent.repaint();
         }
@@ -144,24 +246,28 @@ public class ValidacionPin extends javax.swing.JPanel {
 
     private void btnvalidarpinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvalidarpinActionPerformed
         // TODO add your handling code here:
-       
+        // 1. Obtener el PIN del campo de texto (txtnombre según tu archivo .form)
     String pinIngresado = txtnombre.getText().trim();
 
+    // 2. Validación básica de campo vacío
     if (pinIngresado.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Por favor, ingrese el PIN de seguridad.");
         return;
     }
 
     try {
-        
+        // 3. Llamar a la capa de negocio para validar
+        // Este método en PedidoBO lanza una NegocioException si el PIN es incorrecto
         pedidoBO.validarPinExpress(idPedido, pinIngresado);
 
+        // 4. Si no lanzó excepción, el PIN es correcto: Abrir Pantalla de Cobro
         JOptionPane.showMessageDialog(this, "PIN Correcto. Procediendo al cobro.");
         cambiarPantalla(new PantallaCobro(idPedido));
 
     } catch (NegocioException ex) {
+        // 5. Si el PIN es incorrecto o hay error de BD, mostramos el mensaje de error
         JOptionPane.showMessageDialog(this, "El PIN es incorrecto", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-        txtnombre.setText(""); 
+        txtnombre.setText(""); // Limpiamos el campo para reintentar
         txtnombre.requestFocus();
     }
 

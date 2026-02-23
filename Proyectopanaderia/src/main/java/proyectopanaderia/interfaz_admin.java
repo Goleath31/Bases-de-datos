@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package proyectopanaderia;
 
@@ -8,12 +8,12 @@ package proyectopanaderia;
  *
  * @author golea
  */
-public class Interfaz_admin1_1 extends javax.swing.JPanel {
+public class interfaz_admin extends javax.swing.JFrame {
 
     /**
-     * Creates new form Interfaz_admin1
+     * Creates new form interfaz_admin
      */
-    public Interfaz_admin1_1() {
+    public interfaz_admin() {
         initComponents();
     }
 
@@ -32,10 +32,17 @@ public class Interfaz_admin1_1 extends javax.swing.JPanel {
         btncatalogodeproductos = new javax.swing.JButton();
         btnregresar = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
         jLabel1.setText("Selecciona la Operacion a Realizar");
 
         btnentregaycobro.setText("Entrega y Cobro");
+        btnentregaycobro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnentregaycobroActionPerformed(evt);
+            }
+        });
 
         btnpreparaciondepedidos.setText("Gestión Preparación de Pedidos");
         btnpreparaciondepedidos.setToolTipText("");
@@ -54,9 +61,14 @@ public class Interfaz_admin1_1 extends javax.swing.JPanel {
         });
 
         btnregresar.setText("Regresar");
+        btnregresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnregresarActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -92,16 +104,111 @@ public class Interfaz_admin1_1 extends javax.swing.JPanel {
                 .addComponent(btnregresar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnpreparaciondepedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnpreparaciondepedidosActionPerformed
         // TODO add your handling code here:
+        Gestion_preparacion_de_pedidos panelPreparacion = new Gestion_preparacion_de_pedidos();
+
+        // Limpiar el contenido actual del frame
+        this.getContentPane().removeAll();
+
+        // Cambiar el Layout si es necesario para que el panel ocupe todo el espacio
+        this.setLayout(new java.awt.BorderLayout());
+        this.add(panelPreparacion, java.awt.BorderLayout.CENTER);
+
+        // CRITICO: Refrescar la interfaz para que los cambios sean visibles
+        this.revalidate();
+        this.repaint();
     }//GEN-LAST:event_btnpreparaciondepedidosActionPerformed
 
     private void btncatalogodeproductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncatalogodeproductosActionPerformed
         // TODO add your handling code here:
+        Gestionar_catalogo_de_productos PanelCatalogo = new Gestionar_catalogo_de_productos();
+
+        // Limpiar el contenido actual del frame
+        this.getContentPane().removeAll();
+
+        // Cambiar el Layout si es necesario para que el panel ocupe todo el espacio
+        this.setLayout(new java.awt.BorderLayout());
+        this.add(PanelCatalogo, java.awt.BorderLayout.CENTER);
+
+        // CRITICO: Refrescar la interfaz para que los cambios sean visibles
+        this.revalidate();
+        this.repaint();
+                                                  
+
     }//GEN-LAST:event_btncatalogodeproductosActionPerformed
 
+    private void btnentregaycobroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnentregaycobroActionPerformed
+        // TODO add your handling code here:
+        Entrega_y_Cobro1 panelEntrega = new Entrega_y_Cobro1();
+
+        // Limpiar el contenido actual del frame
+        this.getContentPane().removeAll();
+
+        // Cambiar el Layout si es necesario para que el panel ocupe todo el espacio
+        this.setLayout(new java.awt.BorderLayout());
+        this.add(panelEntrega, java.awt.BorderLayout.CENTER);
+
+        // CRITICO: Refrescar la interfaz para que los cambios sean visibles
+        this.revalidate();
+        this.repaint();
+    }//GEN-LAST:event_btnentregaycobroActionPerformed
+
+    private void btnregresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresarActionPerformed
+        // TODO add your handling code here:
+
+        Interfaz_admin1 In = new Interfaz_admin1();
+
+        // Limpiar el contenido actual del frame
+        this.getContentPane().removeAll();
+
+        // Cambiar el Layout si es necesario para que el panel ocupe todo el espacio
+        this.setLayout(new java.awt.BorderLayout());
+        this.add(In, java.awt.BorderLayout.CENTER);
+
+        // CRITICO: Refrescar la interfaz para que los cambios sean visibles
+        this.revalidate();
+        this.repaint();
+    }//GEN-LAST:event_btnregresarActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(interfaz_admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new interfaz_admin().setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btncatalogodeproductos;

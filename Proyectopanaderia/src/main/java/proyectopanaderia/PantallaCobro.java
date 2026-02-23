@@ -12,7 +12,23 @@ import negocio.DTOs.PedidoEntregaDTO;
 import negocio.excepciones.NegocioException;
 import negocio.fabrica.FabricaBOs;
 import persistencia.dominio.Cupon;
-
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Cursor;
+import java.util.List;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.border.EmptyBorder;
+import negocio.BOs.IPedidoBO;
+import negocio.DTOs.PedidoEntregaDTO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 /**
  *
  * @author golea
@@ -21,23 +37,122 @@ public class PantallaCobro extends javax.swing.JPanel {
 
     private int idPedido;
     private final IPedidoBO pedidoBO;
-    private float montoTotal = 0; 
+    private float montoTotal = 0; // Guardamos el valor que viene de la BD
+    private Color colorHeader = Color.decode("#13315C");
+    private Color colorFondo = Color.decode("#EEF4ED");
+    private Color colorPaneles = Color.decode("#8DA9C4");
+    private Color colorConfirmar = Color.decode("#134074");
 
     public PantallaCobro(int idPedido) {
         this.idPedido = idPedido;
         this.pedidoBO = FabricaBOs.obtenerPedidoBO();
         initComponents();
         obtenerMontoDePedido();
+        disenoManual();
         cargarCupones();
     }
+    
+    private void disenoManual() {
+        // Configuración del Panel Principal (1024x768)
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBackground(colorFondo);
+        Dimension size = new Dimension(1024, 768);
+        this.setPreferredSize(size);
+        this.setMinimumSize(size);
+        this.setMaximumSize(size);
+
+        // --- HEADER ---
+        JPanel panelHeader = new JPanel();
+        panelHeader.setLayout(new BoxLayout(panelHeader, BoxLayout.X_AXIS));
+        panelHeader.setBackground(colorHeader);
+        panelHeader.setMaximumSize(new Dimension(1024, 120));
+        panelHeader.setPreferredSize(new Dimension(1024, 120));
+        panelHeader.setBorder(new EmptyBorder(0, 50, 0, 0));
+
+        JLabel lblTituloHeader = new JLabel("Proceso de Pago");
+        lblTituloHeader.setFont(new Font("SansSerif", Font.PLAIN, 36));
+        lblTituloHeader.setForeground(Color.WHITE);
+        panelHeader.add(lblTituloHeader);
+
+        // --- CONTENIDO CENTRAL ---
+        JPanel mainContent = new JPanel();
+        mainContent.setLayout(new BoxLayout(mainContent, BoxLayout.Y_AXIS));
+        mainContent.setOpaque(false);
+        mainContent.setBorder(new EmptyBorder(40, 150, 40, 150));
+
+        // Estilizar Labels de información
+        estilizarLabelInfo(lblmontoapagar1, 24, true);
+        estilizarLabelInfo(lblmostrarmontoapagar1, 48, true); // El monto resalta más
+        lblmostrarmontoapagar1.setForeground(colorConfirmar);
+        
+        estilizarLabelInfo(lbltextodescuento, 18, false);
+        estilizarLabelInfo(lbldescuento, 20, true);
+        
+        estilizarLabelInfo(lblIntroduceelmonto, 18, false);
+
+        // Campo de Texto y ComboBox
+        txtMontoaintroducir.setFont(new Font("SansSerif", Font.PLAIN, 24));
+        txtMontoaintroducir.setMaximumSize(new Dimension(400, 50));
+        Descuentoscuponera.setMaximumSize(new Dimension(400, 40));
+
+        // Botones
+        btnpagar.setBackground(colorConfirmar);
+        btnpagar.setForeground(Color.WHITE);
+        btnpagar.setFont(new Font("SansSerif", Font.BOLD, 22));
+        btnpagar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnpagar.setMaximumSize(new Dimension(300, 60));
+        btnpagar.setAlignmentX(CENTER_ALIGNMENT);
+
+        btnregresar1.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        btnregresar1.setAlignmentX(CENTER_ALIGNMENT);
+
+        // Ensamblar
+        mainContent.add(lblmontoapagar1);
+        mainContent.add(lblmostrarmontoapagar1);
+        mainContent.add(Box.createRigidArea(new Dimension(0, 30)));
+        mainContent.add(new JSeparator());
+        mainContent.add(Box.createRigidArea(new Dimension(0, 30)));
+        
+        mainContent.add(lbltextodescuento);
+        mainContent.add(Descuentoscuponera);
+        mainContent.add(lbldescuento);
+        
+        mainContent.add(Box.createRigidArea(new Dimension(0, 40)));
+        mainContent.add(lblIntroduceelmonto);
+        mainContent.add(txtMontoaintroducir);
+        
+        mainContent.add(Box.createRigidArea(new Dimension(0, 50)));
+        mainContent.add(btnpagar);
+        mainContent.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainContent.add(btnregresar1);
+
+        // Reconstrucción de la vista
+        this.removeAll();
+        this.add(panelHeader);
+        this.add(mainContent);
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void estilizarLabelInfo(JLabel lbl, int size, boolean bold) {
+        lbl.setFont(new Font("SansSerif", bold ? Font.BOLD : Font.PLAIN, size));
+        lbl.setForeground(colorHeader);
+        lbl.setAlignmentX(CENTER_ALIGNMENT);
+    }
+
+    // Los métodos obtenerMontoDePedido(), cargarCupones() 
+    // y los ActionPerformed se mantienen igual.
+
 
     private void obtenerMontoDePedido() {
         try {
+            // Buscamos el pedido específico para traer su monto_total
             List<PedidoEntregaDTO> lista = pedidoBO.buscarPedidosPendientesEntrega(String.valueOf(idPedido));
 
             for (PedidoEntregaDTO p : lista) {
                 if (p.getIdPedido() == idPedido) {
                     this.montoTotal = p.getMontoTotal();
+                    // Actualizamos el label (que por defecto decía 00)
                     lbldescuento.setText(String.format("%.2f", montoTotal));
                     break;
                 }
@@ -51,11 +166,12 @@ public class PantallaCobro extends javax.swing.JPanel {
         try {
             List<Cupon> cupones = pedidoBO.obtenerCuponesVigentes();
 
+            // Creamos un modelo para el ComboBox
             DefaultComboBoxModel model = new DefaultComboBoxModel();
-            model.addElement("Selecciona un cupón...");
+            model.addElement("Selecciona un cupón..."); // Opción por defecto
 
             for (Cupon c : cupones) {
-                model.addElement(c);
+                model.addElement(c); // Agregamos el objeto Cupon directamente
             }
 
             Descuentoscuponera.setModel(model);
@@ -211,6 +327,7 @@ public class PantallaCobro extends javax.swing.JPanel {
                 return;
             }
 
+            // Llamada al proceso de negocio
             pedidoBO.procesarEntrega(idPedido, "Efectivo");
 
             JOptionPane.showMessageDialog(this, "Pago procesado. Cambio: $" + (pagoRecibido - montoTotal));
