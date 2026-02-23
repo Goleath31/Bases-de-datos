@@ -166,6 +166,7 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
 
         //LOGICA DAO AQUI
         System.out.println("Simulando validación en BD para: " + correo);
+        principal.setSesionIniciada(true);
         
         
         JOptionPane.showMessageDialog(this, "¡Sesión iniciada correctamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);

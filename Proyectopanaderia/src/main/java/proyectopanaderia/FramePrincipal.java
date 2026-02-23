@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 public class FramePrincipal extends javax.swing.JFrame {
     //Crear hilo que esté contando el tiempo de inactividad para cerrar sesion
     public int TIEMPO_SESION;
-    public boolean sesionIniciada;
+    private boolean sesionIniciada;
 
     /**
      * Creates new form FramePricipal
@@ -22,6 +22,16 @@ public class FramePrincipal extends javax.swing.JFrame {
         initComponents();
         mostrarPanel(new PanelAdminUsuario(this));
     }
+
+    public boolean isSesionIniciada() {
+        return sesionIniciada;
+    }
+
+    public void setSesionIniciada(boolean sesionIniciada) {
+        this.sesionIniciada = sesionIniciada;
+    }
+    
+    
     
     public void iniciarComponentes(){
         sesionIniciada = false;
