@@ -52,25 +52,12 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
     public void iniciarComponentes(){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(colorFondo);
-        this.setBorder(new EmptyBorder(20, 40, 20, 40));
-
         
-        JLabel lblMiga = new JLabel("Index cliente");
-        lblMiga.setForeground(Color.GRAY);
-        lblMiga.setFont(new Font("Arial", Font.PLAIN, 12));
-        
-        JPanel panelMiga = new JPanel();
-        panelMiga.setLayout(new BoxLayout(panelMiga, BoxLayout.X_AXIS));
-        panelMiga.setOpaque(false);
-        panelMiga.setMaximumSize(new Dimension(800, 20));
-        panelMiga.add(lblMiga);
-        panelMiga.add(Box.createHorizontalGlue()); 
-
         
         JPanel panelCabecera = new JPanel();
         panelCabecera.setLayout(new BoxLayout(panelCabecera, BoxLayout.X_AXIS));
         panelCabecera.setBackground(colorHeader);
-        panelCabecera.setMaximumSize(new Dimension(800, 100)); 
+        panelCabecera.setMaximumSize(new Dimension(1024, 100)); 
         panelCabecera.setBorder(new EmptyBorder(20, 30, 20, 30));
 
         JLabel lblTitulo = new JLabel("Iniciar sesión");
@@ -87,6 +74,8 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
 
         JPanel panelCorreo = crearBloqueInput("Correo", txtCorreo);
         JPanel panelPassword = crearBloqueInput("Contraseña", txtPassword);
+        panelCorreo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel panelBotones = new JPanel();
         panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
@@ -113,7 +102,6 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
         panelBotones.add(btnIniciar);
         panelBotones.add(Box.createHorizontalGlue());
 
-        this.add(panelMiga);
         this.add(Box.createRigidArea(new Dimension(0, 5)));
         this.add(panelCabecera);
         this.add(Box.createRigidArea(new Dimension(0, 40)));
