@@ -121,8 +121,10 @@ public class DialogOpcionesTelefono extends javax.swing.JDialog {
         btnEditar.setBorderPainted(false);
         btnEditar.setFocusPainted(false);
         btnEditar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
         btnEditar.addActionListener(e -> {
             String nuevoNumero = JOptionPane.showInputDialog(this, "Editar número:", numeroActual[0]);
+            //AÑADIR VALIACION REGEX
             if (nuevoNumero != null && !nuevoNumero.trim().isEmpty()) {
                 numeroActual[0] = nuevoNumero;
                 lblNumero.setText(nuevoNumero);

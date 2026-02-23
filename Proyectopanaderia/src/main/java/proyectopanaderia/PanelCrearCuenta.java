@@ -53,23 +53,13 @@ public class PanelCrearCuenta extends javax.swing.JPanel {
     
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(colorFondo);
-        this.setBorder(new EmptyBorder(20, 40, 20, 40));
 
-        JLabel lblMiga = new JLabel("Pedido Express");
-        lblMiga.setForeground(Color.GRAY);
-        lblMiga.setFont(new Font("Arial", Font.PLAIN, 12));
         
-        JPanel panelMiga = new JPanel();
-        panelMiga.setLayout(new BoxLayout(panelMiga, BoxLayout.X_AXIS));
-        panelMiga.setOpaque(false);
-        panelMiga.setMaximumSize(new Dimension(800, 20));
-        panelMiga.add(lblMiga);
-        panelMiga.add(Box.createHorizontalGlue());
 
         JPanel panelCabecera = new JPanel();
         panelCabecera.setLayout(new BoxLayout(panelCabecera, BoxLayout.X_AXIS));
         panelCabecera.setBackground(colorHeader);
-        panelCabecera.setMaximumSize(new Dimension(800, 80));
+        panelCabecera.setMaximumSize(new Dimension(1024, 100));
         panelCabecera.setBorder(new EmptyBorder(15, 30, 15, 30));
 
         JLabel lblTitulo = new JLabel("Crear cuenta");
@@ -121,8 +111,6 @@ public class PanelCrearCuenta extends javax.swing.JPanel {
         panelBoton.add(Box.createHorizontalGlue());
         panelBoton.add(btnCrear);
 
-        
-        this.add(panelMiga);
         this.add(Box.createRigidArea(new Dimension(0, 5)));
         this.add(panelCabecera);
         this.add(Box.createRigidArea(new Dimension(0, 30)));

@@ -25,6 +25,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         contentArea.add(nuevoPanel, java.awt.BorderLayout.CENTER);
         contentArea.revalidate();
         contentArea.repaint();
+        //QUITAR QUE SE PUEDA MAXIMIZAR
     }
 
     /**

@@ -84,7 +84,8 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
         btnEngrane.setFocusPainted(false);
         btnEngrane.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEngrane.addActionListener(e -> { 
-            /* Acción pendiente para el engrane */ 
+            DialogOpcionesCuenta dialog = new DialogOpcionesCuenta(principal); // 'principal' es tu JFrame
+            dialog.setVisible(true);
         });
 
         JLabel lblSubtitulo = new JLabel("Mis datos");
@@ -151,6 +152,7 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
         mainContent.add(sep2);
         mainContent.add(Box.createRigidArea(new Dimension(0, 30)));
         mainContent.add(bottomPanel);
+        //EDITAR MODIFICACION DE FECHA 
 
         this.add(panelHeader);
         this.add(mainContent);
