@@ -67,7 +67,14 @@ public class PanelIndexCliente extends javax.swing.JPanel {
         JButton btnAgendar = new JButton("<html><center>Agendar<br>pedido</center></html>");
         aplicarEstiloBoton(btnAgendar, tamañoBoton, fuenteBotones, colorBotonesTop);
         btnAgendar.addActionListener(e -> {
-            principal.mostrarPanel(new PanelAgendarPedido(principal));
+            if (verificarSesionIniciada()) {
+                principal.mostrarPanel(new PanelAgendarPedido(principal));
+            }
+            else{
+                DialogIniciarSesion dialog = new DialogIniciarSesion(principal);
+                dialog.setVisible(true);
+            }
+            
         });
 
         JButton btnExpress = new JButton("<html><center>Pedido<br>Express</center></html>");
@@ -90,13 +97,31 @@ public class PanelIndexCliente extends javax.swing.JPanel {
         JButton btnPerfil = new JButton("<html><center>Gestionar<br>perfil</center></html>");
         aplicarEstiloBoton(btnPerfil, tamañoBoton, fuenteBotones, colorBotonesBot);
         btnPerfil.addActionListener(e -> { 
-            principal.mostrarPanel(new PanelGestionarPerfil(principal));
+            
+            
+            if (verificarSesionIniciada()) {
+                principal.mostrarPanel(new PanelGestionarPerfil(principal));
+            }
+            else{
+                DialogIniciarSesion dialog = new DialogIniciarSesion(principal);
+                dialog.setVisible(true);
+            }
+            
         });
 
         JButton btnHistorial = new JButton("<html><center>Historial<br>pedidos</center></html>");
         aplicarEstiloBoton(btnHistorial, tamañoBoton, fuenteBotones, colorBotonesBot);
         btnHistorial.addActionListener(e -> { 
-            principal.mostrarPanel(new PanelHistorialPedido(principal));
+            
+            if (verificarSesionIniciada()) {
+                principal.mostrarPanel(new PanelHistorialPedido(principal));
+            }
+            else{
+                DialogIniciarSesion dialog = new DialogIniciarSesion(principal);
+                dialog.setVisible(true);
+            }
+            
+            
         });
         
         fila2.add(Box.createHorizontalGlue());
@@ -149,6 +174,10 @@ public class PanelIndexCliente extends javax.swing.JPanel {
         boton.setMaximumSize(dim);
         boton.setMinimumSize(dim);
         boton.setFocusPainted(false);
+    }
+    
+    public boolean verificarSesionIniciada(){
+        return principal.sesionIniciada;
     }
     
     /**
