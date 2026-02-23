@@ -124,7 +124,11 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
 
         JButton btnOpcionesTel = new JButton("Opciones de telefono");
         estilarBotonInferior(btnOpcionesTel);
-        btnOpcionesTel.addActionListener(e -> { /* Acción pendiente */ });
+        btnOpcionesTel.addActionListener(e -> { 
+            DialogOpcionesTelefono dialog = new DialogOpcionesTelefono(principal);
+            dialog.setVisible(true);
+        
+        });
 
         JButton btnRegresar = new JButton("Regresar");
         estilarBotonInferior(btnRegresar);
