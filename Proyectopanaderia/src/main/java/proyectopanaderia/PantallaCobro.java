@@ -127,7 +127,7 @@ public class PantallaCobro extends javax.swing.JPanel {
         // Campo de Texto y ComboBox
         txtMontoaintroducir.setFont(new Font("SansSerif", Font.PLAIN, 24));
         txtMontoaintroducir.setMaximumSize(new Dimension(400, 50));
-        Descuentoscuponera.setMaximumSize(new Dimension(400, 40));
+       
 
         // Botones
         btnpagar.setBackground(colorConfirmar);
@@ -148,7 +148,7 @@ public class PantallaCobro extends javax.swing.JPanel {
         mainContent.add(Box.createRigidArea(new Dimension(0, 30)));
 
         mainContent.add(lbltextodescuento);
-        mainContent.add(Descuentoscuponera);
+       
         mainContent.add(lbldescuento);
 
         mainContent.add(Box.createRigidArea(new Dimension(0, 40)));
@@ -212,7 +212,6 @@ public class PantallaCobro extends javax.swing.JPanel {
         btnregresar1 = new javax.swing.JButton();
         lbltextodescuento = new javax.swing.JLabel();
         lblmostrarmontoapagar1 = new javax.swing.JLabel();
-        Descuentoscuponera = new javax.swing.JComboBox();
 
         lbldescuento.setBackground(new java.awt.Color(141, 169, 196));
         lbldescuento.setFont(new java.awt.Font("Segoe UI Historic", 0, 14)); // NOI18N
@@ -259,13 +258,6 @@ public class PantallaCobro extends javax.swing.JPanel {
         lblmostrarmontoapagar1.setFont(new java.awt.Font("Segoe UI Historic", 0, 14)); // NOI18N
         lblmostrarmontoapagar1.setText("00");
 
-        Descuentoscuponera.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Descuentos" }));
-        Descuentoscuponera.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DescuentoscuponeraActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -299,10 +291,6 @@ public class PantallaCobro extends javax.swing.JPanel {
                                 .addComponent(btnpagar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Descuentoscuponera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -321,9 +309,7 @@ public class PantallaCobro extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblIntroduceelmonto)
                     .addComponent(txtMontoaintroducir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Descuentoscuponera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnregresar1)
                     .addComponent(btnpagar))
@@ -367,33 +353,8 @@ public class PantallaCobro extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnregresar1ActionPerformed
 
-    /**
-     * Evento que se dispara al seleccionar una opción en el ComboBox de
-     * cupones. Calcula el nuevo total basándose en el porcentaje de descuento
-     * del cupón seleccionado.
-     */
-    private void DescuentoscuponeraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DescuentoscuponeraActionPerformed
-        // TODO add your handling code here:
-        Object seleccionado = Descuentoscuponera.getSelectedItem();
-        float nuevoTotal = montoTotal; // montoTotal es el precio original sin descuento
-
-        if (seleccionado instanceof Cupon) {
-            Cupon cupon = (Cupon) seleccionado;
-            float porcentaje = cupon.getDescuento();
-            float cantidadADescontar = montoTotal * (porcentaje / 100);
-            nuevoTotal = montoTotal - cantidadADescontar;
-
-            // Mostramos cuánto se descontó en la etiqueta de descuento
-            lbldescuento.setText(String.format("-$%.2f", cantidadADescontar));
-        } else {
-            lbldescuento.setText("$0.00");
-        }
-        lblmostrarmontoapagar1.setText(String.format("%.2f", nuevoTotal));
-    }//GEN-LAST:event_DescuentoscuponeraActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox Descuentoscuponera;
     private javax.swing.JButton btnpagar;
     private javax.swing.JButton btnregresar1;
     private javax.swing.JLabel lblIntroduceelmonto;
