@@ -31,21 +31,50 @@ import negocio.excepciones.NegocioException;
 import negocio.fabrica.FabricaBOs;
 
 /**
+ * Panel de interfaz gráfica para procesar el cobro de un pedido específico.
+ * Gestiona la aplicación de cupones de descuento y la confirmación del pago.
  *
- * @author golea
+ * * @author golea
  */
 public class PantallaCobro extends javax.swing.JPanel {
 
+    /**
+     * Identificador del pedido que se va a cobrar
+     */
     private int idPedido;
+    /**
+     * Interfaz de lógica de negocio para pedidos y cupones
+     */
     private final IPedidoBO pedidoBO;
+    /**
+     * Almacena el tipo de pedido (Express o Programado)
+     */
     private String tipoPedido;
+    /**
+     * Monto base del pedido antes de aplicar descuentos
+     */
     private float montoTotal = 0;
+    /**
+     * Colores institucionales para el diseño
+     */
     private Color colorHeader = Color.decode("#13315C");
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
+    /**
+     * Referencia para la navegación entre paneles
+     */
     private FramePrincipal principal;
 
+    /**
+     * Constructor que inicializa la pantalla de cobro para un pedido
+     * particular.
+     *
+     * @param principal Frame contenedor.
+     * @param idPedido ID del pedido a cobrar.
+     * @param tipo Tipo de pedido.
+     * @param monto Monto total inicial.
+     */
     public PantallaCobro(int idPedido, FramePrincipal principal) {
         this.idPedido = idPedido;
         this.principal = principal;
@@ -54,7 +83,7 @@ public class PantallaCobro extends javax.swing.JPanel {
         initComponents();
         obtenerMontoDePedido();
         disenoManual();
-        
+
     }
 
     private void disenoManual() {
@@ -164,8 +193,6 @@ public class PantallaCobro extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Error al cargar el monto: " + ex.getMessage());
         }
     }
-
-   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -340,6 +367,11 @@ public class PantallaCobro extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnregresar1ActionPerformed
 
+    /**
+     * Evento que se dispara al seleccionar una opción en el ComboBox de
+     * cupones. Calcula el nuevo total basándose en el porcentaje de descuento
+     * del cupón seleccionado.
+     */
     private void DescuentoscuponeraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DescuentoscuponeraActionPerformed
         // TODO add your handling code here:
         Object seleccionado = Descuentoscuponera.getSelectedItem();
@@ -356,11 +388,6 @@ public class PantallaCobro extends javax.swing.JPanel {
         } else {
             lbldescuento.setText("$0.00");
         }
-
-        // AQUÍ ESTÁ EL CAMBIO:
-        // Asigna el nuevoTotal a la etiqueta de ARRIBA (la que tú desees)
-        // Si la de arriba se llama 'lblmostrarmontoapagar1', déjalo así. 
-        // Si tiene otro nombre, cámbialo aquí:
         lblmostrarmontoapagar1.setText(String.format("%.2f", nuevoTotal));
     }//GEN-LAST:event_DescuentoscuponeraActionPerformed
 
