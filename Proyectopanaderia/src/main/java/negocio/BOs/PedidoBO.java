@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package negocio.BOs;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,14 +22,15 @@ import persistencia.dominio.DetallePedido;
 import persistencia.dominio.PedidoExpress;
 import persistencia.dominio.PedidoProgramado;
 import persistencia.excepciones.PersistenciaException;
+
 /**
  *
  * @author golea
  */
 public class PedidoBO implements IPedidoBO {
+
     private final IPedidoDAO pedidoDAO;
     private static final Logger LOG = Logger.getLogger(PedidoBO.class.getName());
-    
 
     public PedidoBO(IPedidoDAO pedidoDAO) {
         this.pedidoDAO = pedidoDAO;
@@ -42,12 +44,12 @@ public class PedidoBO implements IPedidoBO {
                 throw new NegocioException("El cliente ya tiene 3 pedidos activos. No puede pedir más.");
             }
             pedidoDAO.agregarPedido(pedidoDTO);
-            
+
         } catch (PersistenciaException e) {
             throw new NegocioException("Error en el sistema de datos: " + e.getMessage());
         }
     }
-    
+
     @Override
     public void procesarEntrega(int idPedido, String metodoPago) throws NegocioException {
         try {
@@ -121,7 +123,7 @@ public class PedidoBO implements IPedidoBO {
             default:
                 return;
         }
-       
+
         try {
             pedidoDAO.actualizarEstadoPedido(idPedido, nuevoEstado);
         } catch (PersistenciaException e) {
@@ -135,38 +137,37 @@ public class PedidoBO implements IPedidoBO {
             LOG.warning("Se intento ingresar un parametro no valido o nulo");
             throw new NegocioException("Error con los parametros del pedido");
         }
-        
+
         validarPedidoExpress(pedidoExpressDTO);
-        
+
         for (DetallePedidoDTO item : detallesDTO) {
             validarItemPedidoExpress(item);
         }
-        
+
         PedidoExpress pedidoExpress = new PedidoExpress();
         pedidoExpress.setFolio(pedidoExpressDTO.getFolio());
         pedidoExpress.setPinSeguridad(pedidoExpressDTO.getPinSeguridad());
-        
+
         List<DetallePedido> detalles = new ArrayList<>();
-        
+
         for (DetallePedidoDTO item : detallesDTO) {
             DetallePedido detalleItem = new DetallePedido();
-            
+
             detalleItem.setIdProducto(item.getIdProducto());
             detalleItem.setCantidad(item.getCantidad());
             detalleItem.setNotas(item.getNotas());
-            
+
             detalles.add(detalleItem);
         }
-        
-        try{
+
+        try {
             pedidoDAO.agregarPedidoExpress(pedidoExpress, detalles);
-            
-        }
-        catch(PersistenciaException ex ){
-            LOG.log( Level.WARNING, "Error al tratar de registrar un pedido express: " + ex.getMessage());
+
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.WARNING, "Error al tratar de registrar un pedido express: " + ex.getMessage());
             throw new NegocioException("Error al tratar de registrar un pedido express" + ex.getMessage());
         }
-        
+
     }
 
     @Override
@@ -175,60 +176,56 @@ public class PedidoBO implements IPedidoBO {
             LOG.warning("Se intento ingresar un parametro no valido o nulo");
             throw new NegocioException("Error con los parametros del pedido");
         }
-        
+
         validarPedidoAgendado(pedidoAgendadoDTO);
-        
+
         for (DetallePedidoDTO item : detallesDTO) {
             validarItemPedidoAgendado(item);
         }
-        
+
         PedidoProgramado pedidoAgendado = new PedidoProgramado();
         pedidoAgendado.setIdCliente(pedidoAgendadoDTO.getIdCliente());
         pedidoAgendado.setIdCupon(pedidoAgendadoDTO.getIdCupon());
-        
+
         //en caso de no tener cupon asignaremos id 0 pq xD olvide validar eso me estoy volviendo loco walalala
-        
         List<DetallePedido> detalles = new ArrayList<>();
-        
+
         for (DetallePedidoDTO item : detallesDTO) {
             DetallePedido detalleItem = new DetallePedido();
-            
+
             detalleItem.setIdPedido(item.getIdPedido());
             detalleItem.setIdProducto(item.getIdProducto());
             detalleItem.setCantidad(item.getCantidad());
             detalleItem.setNotas(item.getNotas());
-            
+
             detalles.add(detalleItem);
         }
-        
-        try{
+
+        try {
             pedidoDAO.agregarPedidoProgramado(pedidoAgendado, detalles);
-            
-        }
-        catch(PersistenciaException ex ){
-            LOG.log( Level.WARNING, "Error al tratar de registrar un pedido agendado: " + ex.getMessage());
+
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.WARNING, "Error al tratar de registrar un pedido agendado: " + ex.getMessage());
             throw new NegocioException("Error al tratar de registrar un pedido express" + ex.getMessage());
         }
-        
+
     }
 
-    @Override
-    public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException {
-        if (idCliente <= 0) {
-            LOG.log( Level.WARNING, "Error con el id del cliente");
-            throw new NegocioException("El id del cliente no es valido");
-        }
-        List
-        try{
-        }
-        
-    }
-    
-    
-    
+//    @Override
+//    public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException {
+//        if (idCliente <= 0) {
+//            LOG.log(Level.WARNING, "Error con el id del cliente");
+//            throw new NegocioException("El id del cliente no es valido");
+//        }
+//        List
+//        try {
+//        }
+//
+//    }
+
     /**
-    * Valida los datos de un DTO de Pedido Exprés antes de enviarlos al DAO.
-    */
+     * Valida los datos de un DTO de Pedido Exprés antes de enviarlos al DAO.
+     */
     public void validarPedidoExpress(PedidoExpressDTO pedidoExpress) throws NegocioException {
 
         // 1. Validar que el objeto en sí no sea nulo
@@ -257,17 +254,16 @@ public class PedidoBO implements IPedidoBO {
         if (!pin.matches("\\d{4,6}")) {
             throw new ValidacionException("El PIN debe contener entre 4 y 6 dígitos numéricos.");
         }
-        */
-
+         */
         if (pin.length() > 255) {
             throw new NegocioException("El PIN de seguridad excede la longitud permitida.");
         }
     }
-    
+
     /**
-    * Valida los datos de un artículo a agregar en el pedido exprés.
-    * Lanza una excepción si algún dato rompe las reglas de negocio.
-    */
+     * Valida los datos de un artículo a agregar en el pedido exprés. Lanza una
+     * excepción si algún dato rompe las reglas de negocio.
+     */
     public void validarItemPedidoExpress(DetallePedidoDTO item) throws NegocioException {
 
         // 1. Validar que el objeto no venga nulo
@@ -275,7 +271,6 @@ public class PedidoBO implements IPedidoBO {
             throw new NegocioException("El artículo del pedido no puede estar vacío.");
         }
 
-        
         // 2. Validar que el producto sea válido (los IDs en BD empiezan en 1)
         if (item.getIdProducto() <= 0) {
             throw new NegocioException("El identificador del producto no es válido.");
@@ -291,7 +286,6 @@ public class PedidoBO implements IPedidoBO {
             throw new NegocioException("La cantidad excede el límite permitido de 500 piezas por pedido.");
         }
 
-
         // 5. Validar la longitud de las notas para evitar desbordamiento en la BD
         // Aunque tu BD usa TEXT, es buena práctica limitar la entrada del usuario (ej. 500 caracteres)
         if (item.getNotas() != null && !item.getNotas().trim().isEmpty()) {
@@ -300,31 +294,32 @@ public class PedidoBO implements IPedidoBO {
             }
         }
     }
-    
-    /**
-    * Valida los datos principales de un Pedido Agendado (Programado).
-    */
-   private void validarPedidoAgendado(PedidoAgendadoDTO pedidoDTO) throws NegocioException {
-
-       // 1. Validar que el objeto no venga nulo
-       if (pedidoDTO == null) {
-           throw new NegocioException("Los datos del pedido agendado no pueden estar vacíos.");
-       }
-
-       // 2. Validar que el cliente sea válido (los IDs en BD empiezan en 1)
-       if (pedidoDTO.getIdCliente() <= 0) {
-           throw new NegocioException("El identificador del cliente no es válido.");
-       }
-
-       // 3. Validar el cupón (Opcional)
-       // Si es 0, asumimos que no hay cupón. Si es menor a 0, es un dato corrupto.
-       if (pedidoDTO.getIdCupon() < 0) {
-           throw new NegocioException("El identificador del cupón no es válido.");
-       }
-   }
 
     /**
-     * Valida los datos de un artículo individual a agregar en el pedido agendado.
+     * Valida los datos principales de un Pedido Agendado (Programado).
+     */
+    private void validarPedidoAgendado(PedidoAgendadoDTO pedidoDTO) throws NegocioException {
+
+        // 1. Validar que el objeto no venga nulo
+        if (pedidoDTO == null) {
+            throw new NegocioException("Los datos del pedido agendado no pueden estar vacíos.");
+        }
+
+        // 2. Validar que el cliente sea válido (los IDs en BD empiezan en 1)
+        if (pedidoDTO.getIdCliente() <= 0) {
+            throw new NegocioException("El identificador del cliente no es válido.");
+        }
+
+        // 3. Validar el cupón (Opcional)
+        // Si es 0, asumimos que no hay cupón. Si es menor a 0, es un dato corrupto.
+        if (pedidoDTO.getIdCupon() < 0) {
+            throw new NegocioException("El identificador del cupón no es válido.");
+        }
+    }
+
+    /**
+     * Valida los datos de un artículo individual a agregar en el pedido
+     * agendado.
      */
     private void validarItemPedidoAgendado(DetallePedidoDTO item) throws NegocioException {
 
@@ -355,4 +350,14 @@ public class PedidoBO implements IPedidoBO {
             }
         }
     }
+
+    @Override
+    public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws NegocioException {
+        try {
+            return pedidoDAO.buscarPedidosAvanzado(filtro);
+        } catch (PersistenciaException e) {
+            throw new NegocioException("Error al filtrar la lista de pedidos: " + e.getMessage());
+        }
+    }
+
 }

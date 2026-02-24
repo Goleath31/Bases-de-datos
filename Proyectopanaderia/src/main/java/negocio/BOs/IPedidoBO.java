@@ -15,10 +15,6 @@ import negocio.excepciones.NegocioException;
 import persistencia.dominio.Cupon;
 import persistencia.dominio.DetallePedido;
 
-/**
- *
- * @author golea
- */
 
 public interface IPedidoBO {
 
@@ -35,13 +31,13 @@ public interface IPedidoBO {
     public List<PedidoEntregaDTO> listarPedidosPreparacion() throws NegocioException;
 
     public void avanzarEstado(int idPedido, String estadoActual) throws NegocioException;
-    
-    
-    
-    public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException;
-    
-    public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles ) throws NegocioException;
-    
+
+    //public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException;
+
+    public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles) throws NegocioException;
+
     public void registrarPedidoExpress(PedidoExpressDTO pedidoExpress, List<DetallePedidoDTO> detalles) throws NegocioException;
+
+    public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws NegocioException;
 
 }

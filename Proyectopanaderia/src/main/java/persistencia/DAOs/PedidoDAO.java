@@ -90,13 +90,13 @@ public class PedidoDAO implements IPedidoDAO {
             throw new PersistenciaException("Error de conexión", e);
         }
     }
-    
+
     @Override
     public void actualizarAEntregadoConPago(int idPedido, String metodoPago) throws PersistenciaException {
         Connection conn = null;
         try {
             conn = conexionBD.crearConexion();
-            conn.setAutoCommit(false); 
+            conn.setAutoCommit(false);
 
             String estadoAnterior = obtenerEstadoPedido(idPedido);
 
@@ -164,7 +164,6 @@ public class PedidoDAO implements IPedidoDAO {
     public List<PedidoEntregaDTO> buscarPedidos(String filtro) throws PersistenciaException {
         List<PedidoEntregaDTO> lista = new ArrayList<>();
 
- 
         String sql = "SELECT p.id_pedido, "
                 + "CASE WHEN pp.id_cliente IS NOT NULL THEN CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) "
                 + "ELSE 'Venta Express / Anónimo' END AS nombre_cliente, "
@@ -186,7 +185,7 @@ public class PedidoDAO implements IPedidoDAO {
                 "OR CAST(p.id_pedido AS CHAR) LIKE ?) "
                 + // Filtro 4: ID Pedido
                 "AND p.estado IN ('Listo', 'Pendiente') "
-                + "GROUP BY p.id_pedido"; 
+                + "GROUP BY p.id_pedido";
 
         try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -284,7 +283,7 @@ public class PedidoDAO implements IPedidoDAO {
         try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-               
+
                 lista.add(new PedidoEntregaDTO(
                         rs.getInt("id_pedido"),
                         rs.getString("identificador"),
@@ -324,7 +323,7 @@ public class PedidoDAO implements IPedidoDAO {
         String sqlHistorial = "INSERT INTO Historial_Estado (id_pedido, estado_anterior, estado_nuevo) VALUES (?, 'Listo', 'No Entregado')";
 
         try (Connection conn = conexionBD.crearConexion()) {
-            conn.setAutoCommit(false); 
+            conn.setAutoCommit(false);
             try (PreparedStatement ps1 = conn.prepareStatement(sqlUpdate); PreparedStatement ps2 = conn.prepareStatement(sqlHistorial)) {
 
                 ps1.setInt(1, idPedido);
@@ -361,28 +360,28 @@ public class PedidoDAO implements IPedidoDAO {
     @Override
     public void agregarPedidoProgramado(PedidoProgramado pedidoProgramado, List<DetallePedido> detalles) throws PersistenciaException {
         //(id_empleado, id_cliente, id_cupon)
-        String query =
-                """
+        String query
+                = """
                 {CALL sp_crear_pedido_programado(?, ?, ?, ?)}
                 """;
-        try(Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)){
+        try (Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)) {
             conn.setAutoCommit(false);
-            
+
             //AGREGAR VALIDACIONES DE DATOS
             cs.setNull(1, java.sql.Types.INTEGER);
-            cs.setInt(2, pedidoProgramado.getIdCliente() );
-            
+            cs.setInt(2, pedidoProgramado.getIdCliente());
+
             if (pedidoProgramado.getIdCupon() > 0) {
-            cs.setInt(3, pedidoProgramado.getIdCupon());
+                cs.setInt(3, pedidoProgramado.getIdCupon());
             } else {
                 cs.setNull(3, java.sql.Types.INTEGER);
             }
-            
+
             cs.registerOutParameter(4, java.sql.Types.INTEGER);
             cs.execute();
-            
+
             int idGenerado = cs.getInt(4);
-            
+
             String queryDetalle = "INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad) VALUES (?, ?, ?)";
             PreparedStatement psDetalle = conn.prepareStatement(queryDetalle);
 
@@ -395,15 +394,12 @@ public class PedidoDAO implements IPedidoDAO {
             psDetalle.executeBatch();
 
             conn.commit();
-            
-            
-        }
-        catch(SQLException e){
+
+        } catch (SQLException e) {
             LOG.log(Level.SEVERE, "Error al conectar con la base de datos", e);
             throw new PersistenciaException("Error al conectar con la base de datos: " + e.getMessage());
         }
-        
-        
+
     }
 
     @Override
@@ -411,15 +407,15 @@ public class PedidoDAO implements IPedidoDAO {
         //(id_empleado, folio, pin_seguridad)
         String query = "{CALL sp_crear_pedido_express(?, ?, ?, ?)}";
         //AGREGAR VALIDACIONES DE DATOS
-        try(Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)){
+        try (Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)) {
             conn.setAutoCommit(false);
-            
+
             cs.setNull(1, java.sql.Types.INTEGER);
             cs.setString(2, pedidoExpress.getFolio());
             cs.setString(3, String.valueOf(pedidoExpress.getPinSeguridad()));
             cs.registerOutParameter(4, java.sql.Types.INTEGER);
             cs.execute();
-            
+
             int idPedidoGenerado = cs.getInt(4);
 
             String sqlDetalle = "INSERT INTO Detalle_Pedido (id_pedido, id_producto, cantidad) VALUES (?, ?, ?)";
@@ -434,15 +430,36 @@ public class PedidoDAO implements IPedidoDAO {
             psDetalle.executeBatch();
 
             conn.commit();
-            
-            
-        }
-        catch(SQLException e){
+
+        } catch (SQLException e) {
             LOG.log(Level.SEVERE, "Error al conectar con la base de datos", e);
             throw new PersistenciaException("Error al conectar con la base de datos: " + e.getMessage());
         }
     }
 
- 
-    
+    @Override
+    public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws PersistenciaException {
+        List<PedidoEntregaDTO> lista = new ArrayList<>();
+        String sql = "{CALL BuscarPedidoTabla(?)}";
+        try (Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setString(1, filtro);
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    // Mapeamos los alias definidos en tu procedimiento SQL
+                    lista.add(new PedidoEntregaDTO(
+                            rs.getInt("ID"),
+                            rs.getString("Nombre/Folio"),
+                            rs.getString("Tipo de pedido"),
+                            0, // El monto no se solicita en este SP, se puede poner 0 o null
+                            rs.getString("Estado")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al buscar pedidos: " + e.getMessage());
+        }
+        return lista;
+    }
+
 }

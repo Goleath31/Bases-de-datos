@@ -49,4 +49,6 @@ public interface IPedidoDAO {
     
     public void agregarPedidoExpress(PedidoExpress pedidoExpress, List<DetallePedido> listaDetallePedido) throws PersistenciaException;
     
+    public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws PersistenciaException;
+    
 }

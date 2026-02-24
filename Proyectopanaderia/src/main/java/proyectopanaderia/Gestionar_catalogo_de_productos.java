@@ -29,7 +29,7 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
     private Color colorBtnOscuro = Color.decode("#13315C");
     private Color colorBorde = Color.decode("#1C5282");
     private FramePrincipal principal;
-
+    private int estadoFiltro = 0;
     private IProductoBO productoBO = FabricaBOs.obtenerProductoBO();
     private List<Producto> listaProductos;
 
@@ -52,7 +52,6 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         // 1. Fondo del panel principal
         this.setBackground(colorFondo);
 
-       
         // 3. Estilo para los Botones Principales (Agregar, Modificar, Consultar)
         JButton[] botonesPrincipales = {btnagregar1, btnmodificar1, btnConsultar};
         for (JButton btn : botonesPrincipales) {
@@ -166,6 +165,9 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         btnConsultar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         Tablaproductos = new javax.swing.JTable();
+        txtBuscar = new javax.swing.JTextField();
+        btnbuscar = new javax.swing.JButton();
+        btnestatado = new javax.swing.JButton();
 
         txtdescripcion.setFont(new java.awt.Font("Segoe UI Historic", 0, 14)); // NOI18N
 
@@ -334,10 +336,31 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         });
         jScrollPane3.setViewportView(Tablaproductos);
 
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarActionPerformed(evt);
+            }
+        });
+
+        btnbuscar.setText("Buscar");
+        btnbuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnbuscarActionPerformed(evt);
+            }
+        });
+
+        btnestatado.setText("Estado");
+        btnestatado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnestatadoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lbltitulo1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -370,8 +393,14 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
                                     .addComponent(txttipo1))
                                 .addGap(18, 18, 18)))
                         .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addComponent(lbltitulo1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnbuscar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnestatado)
+                        .addGap(54, 54, 54))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -400,7 +429,12 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
                         .addComponent(txtdisponibilidad1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(txttipo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnbuscar)
+                    .addComponent(btnestatado))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -529,9 +563,97 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
     private void btnregresarrr2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresarrr2ActionPerformed
         // TODO add your handling code here:
         btnregresarrr2.addActionListener(e -> {
-        principal.mostrarPanel(new Interfaz_admin1(principal));
-    });
+            principal.mostrarPanel(new Interfaz_admin1(principal));
+        });
     }//GEN-LAST:event_btnregresarrr2ActionPerformed
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
+
+    private void btnbuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbuscarActionPerformed
+        // TODO add your handling code here:
+        String busqueda = txtBuscar.getText().trim();
+
+        try {
+            // Llamamos al BO que a su vez llama al procedimiento almacenado
+            List<Producto> resultados = productoBO.buscarProductos(busqueda);
+
+            // Actualizamos el modelo de la JTable
+            DefaultTableModel modelo = (DefaultTableModel) Tablaproductos.getModel();
+            modelo.setRowCount(0); // Limpiamos la tabla
+
+            for (Producto p : resultados) {
+                Object[] fila = {
+                    p.getId(),
+                    p.getNombre(),
+                    p.getTipo(),
+                    p.getDescripcion(),
+                    p.getPrecio(),
+                    p.getEstado()
+                };
+                modelo.addRow(fila);
+            }
+
+            if (resultados.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No se encontraron productos con: " + busqueda);
+            }
+
+        } catch (NegocioException ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void actualizarTabla(List<Producto> productos) {
+        DefaultTableModel modelo = (DefaultTableModel) Tablaproductos.getModel();
+        modelo.setRowCount(0); // Limpiar tabla
+
+        for (Producto p : productos) {
+            Object[] fila = {
+                p.getId(),
+                p.getNombre(),
+                p.getTipo(),
+                p.getDescripcion(),
+                p.getPrecio(),
+                p.getEstado()
+            };
+            modelo.addRow(fila);
+        }
+    }//GEN-LAST:event_btnbuscarActionPerformed
+
+    private void btnestatadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnestatadoActionPerformed
+        // TODO add your handling code here:
+        try {
+            estadoFiltro++; // Incrementamos el estado del ciclo
+            if (estadoFiltro > 2) {
+                estadoFiltro = 0; // Reiniciamos al llegar al tercer click
+            }
+            List<Producto> listaFiltrada;
+
+            switch (estadoFiltro) {
+                case 1: // Primer click: No disponibles
+                    btnestatado.setText("Filtro: No Disponibles");
+                    listaFiltrada = productoBO.filtrarPorEstado("No disponible");
+                    break;
+                case 2: // Segundo click: Disponibles
+                    btnestatado.setText("Filtro: Disponibles");
+                    listaFiltrada = productoBO.filtrarPorEstado("Disponible");
+                    break;
+                default: // Tercer click: Normal (Todos)
+                    btnestatado.setText("Estados: Todos");
+                    listaFiltrada = productoBO.listarProductos();
+                    estadoFiltro = 0;
+                    break;
+            }
+
+            actualizarTabla(listaFiltrada);
+
+        } catch (NegocioException ex) {
+            JOptionPane.showMessageDialog(this, "Error al filtrar: " + ex.getMessage());
+        }
+
+
+    }//GEN-LAST:event_btnestatadoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -539,6 +661,8 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
     private javax.swing.JButton btnConsultar;
     private javax.swing.JButton btnagregar;
     private javax.swing.JButton btnagregar1;
+    private javax.swing.JButton btnbuscar;
+    private javax.swing.JButton btnestatado;
     private javax.swing.JButton btnmodificar;
     private javax.swing.JButton btnmodificar1;
     private javax.swing.JButton btnregresarrr;
@@ -560,6 +684,7 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
     private javax.swing.JLabel lbltipo1;
     private javax.swing.JLabel lbltitulo;
     private javax.swing.JLabel lbltitulo1;
+    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtdescripcion;
     private javax.swing.JTextField txtdescripcion1;
     private javax.swing.JTextField txtdisponibilidad;

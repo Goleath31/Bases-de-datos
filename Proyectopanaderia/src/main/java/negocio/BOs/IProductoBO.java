@@ -15,4 +15,8 @@ public interface IProductoBO {
     public void actualizar(Producto producto) throws NegocioException;
 
     public void agregar(Producto producto) throws NegocioException;
+
+    public List<Producto> buscarProductos(String filtro) throws NegocioException;
+
+    public List<Producto> filtrarPorEstado(String estado) throws NegocioException;
 }

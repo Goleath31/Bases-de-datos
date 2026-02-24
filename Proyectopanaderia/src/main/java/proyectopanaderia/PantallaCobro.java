@@ -38,7 +38,8 @@ public class PantallaCobro extends javax.swing.JPanel {
 
     private int idPedido;
     private final IPedidoBO pedidoBO;
-    private float montoTotal = 0; // Guardamos el valor que viene de la BD
+    private String tipoPedido;
+    private float montoTotal = 0;
     private Color colorHeader = Color.decode("#13315C");
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
@@ -48,11 +49,12 @@ public class PantallaCobro extends javax.swing.JPanel {
     public PantallaCobro(int idPedido, FramePrincipal principal) {
         this.idPedido = idPedido;
         this.principal = principal;
+        this.tipoPedido = tipoPedido;
         this.pedidoBO = FabricaBOs.obtenerPedidoBO();
         initComponents();
         obtenerMontoDePedido();
         disenoManual();
-        cargarCupones();
+        
     }
 
     private void disenoManual() {
@@ -163,24 +165,7 @@ public class PantallaCobro extends javax.swing.JPanel {
         }
     }
 
-    private void cargarCupones() {
-        try {
-            List<Cupon> cupones = pedidoBO.obtenerCuponesVigentes();
-
-            // Creamos un modelo para el ComboBox
-            DefaultComboBoxModel model = new DefaultComboBoxModel();
-            model.addElement("Selecciona un cupón..."); // Opción por defecto
-
-            for (Cupon c : cupones) {
-                model.addElement(c); // Agregamos el objeto Cupon directamente
-            }
-
-            Descuentoscuponera.setModel(model);
-
-        } catch (NegocioException e) {
-            JOptionPane.showMessageDialog(this, "No se pudieron cargar los cupones: " + e.getMessage());
-        }
-    }
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -248,6 +233,11 @@ public class PantallaCobro extends javax.swing.JPanel {
         lblmostrarmontoapagar1.setText("00");
 
         Descuentoscuponera.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Descuentos" }));
+        Descuentoscuponera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DescuentoscuponeraActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -321,20 +311,24 @@ public class PantallaCobro extends javax.swing.JPanel {
     private void btnpagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnpagarActionPerformed
         // TODO add your handling code here:
         try {
-            float pagoRecibido = Float.parseFloat(txtMontoaintroducir.getText().trim());
+            float pagoRecibido = Float.parseFloat(txtMontoaintroducir.getText());
 
             if (pagoRecibido < montoTotal) {
-                JOptionPane.showMessageDialog(this, "Dinero insuficiente.");
+                JOptionPane.showMessageDialog(this, "Dinero insuficiente. El total es: $" + montoTotal);
                 return;
             }
 
-            // Llamada al proceso de negocio
+            // Procesar la entrega en la base de datos
             pedidoBO.procesarEntrega(idPedido, "Efectivo");
 
-            JOptionPane.showMessageDialog(this, "Pago procesado. Cambio: $" + (pagoRecibido - montoTotal));
+            float cambio = pagoRecibido - montoTotal;
+            JOptionPane.showMessageDialog(this, "Pago exitoso. Su cambio es: $" + String.format("%.2f", cambio));
+
+            // Regresar a la pantalla anterior
+            principal.mostrarPanel(new Entrega_y_Cobro1(principal));
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Ingrese un monto válido.");
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese una cantidad numérica válida.");
         } catch (NegocioException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
@@ -345,6 +339,30 @@ public class PantallaCobro extends javax.swing.JPanel {
         principal.mostrarPanel(new Entrega_y_Cobro1(principal));
 
     }//GEN-LAST:event_btnregresar1ActionPerformed
+
+    private void DescuentoscuponeraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DescuentoscuponeraActionPerformed
+        // TODO add your handling code here:
+        Object seleccionado = Descuentoscuponera.getSelectedItem();
+        float nuevoTotal = montoTotal; // montoTotal es el precio original sin descuento
+
+        if (seleccionado instanceof Cupon) {
+            Cupon cupon = (Cupon) seleccionado;
+            float porcentaje = cupon.getDescuento();
+            float cantidadADescontar = montoTotal * (porcentaje / 100);
+            nuevoTotal = montoTotal - cantidadADescontar;
+
+            // Mostramos cuánto se descontó en la etiqueta de descuento
+            lbldescuento.setText(String.format("-$%.2f", cantidadADescontar));
+        } else {
+            lbldescuento.setText("$0.00");
+        }
+
+        // AQUÍ ESTÁ EL CAMBIO:
+        // Asigna el nuevoTotal a la etiqueta de ARRIBA (la que tú desees)
+        // Si la de arriba se llama 'lblmostrarmontoapagar1', déjalo así. 
+        // Si tiene otro nombre, cámbialo aquí:
+        lblmostrarmontoapagar1.setText(String.format("%.2f", nuevoTotal));
+    }//GEN-LAST:event_DescuentoscuponeraActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -17,7 +17,6 @@ public class ProductoDAO implements IProductoDAO {
 
     private final IConexionBD conexionBD;
     private static final Logger LOG = Logger.getLogger(ProductoDAO.class.getName());
-    
 
     public ProductoDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
@@ -65,23 +64,49 @@ public class ProductoDAO implements IProductoDAO {
             throw new PersistenciaException("Error al actualizar producto: " + e.getMessage());
         }
     }
-    
+
     @Override
-public void agregarProducto(Producto producto) throws PersistenciaException {
-    String sql = "INSERT INTO Producto (nombre, tipo, descripcion, precio, estado) VALUES (?, ?, ?, ?, ?)";
-    
-    try (Connection conn = conexionBD.crearConexion(); 
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        
-        ps.setString(1, producto.getNombre());
-        ps.setString(2, producto.getTipo());
-        ps.setString(3, producto.getDescripcion());
-        ps.setFloat(4, producto.getPrecio());
-        ps.setString(5, producto.getEstado());
-        
-        ps.executeUpdate();
-    } catch (SQLException e) {
-        throw new PersistenciaException("Error al insertar el producto: " + e.getMessage());
+    public void agregarProducto(Producto producto) throws PersistenciaException {
+        String sql = "INSERT INTO Producto (nombre, tipo, descripcion, precio, estado) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, producto.getNombre());
+            ps.setString(2, producto.getTipo());
+            ps.setString(3, producto.getDescripcion());
+            ps.setFloat(4, producto.getPrecio());
+            ps.setString(5, producto.getEstado());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al insertar el producto: " + e.getMessage());
+        }
     }
-}
+
+    @Override
+    public List<Producto> buscarProductos(String filtro) throws PersistenciaException {
+        List<Producto> lista = new ArrayList<>();
+        String sql = "{CALL BuscarProductoCompleto(?)}";
+
+        try (Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setString(1, filtro);
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    Producto p = new Producto();
+                    p.setId(rs.getInt("id_producto"));
+                    p.setNombre(rs.getString("nombre"));
+                    p.setTipo(rs.getString("tipo"));
+                    p.setDescripcion(rs.getString("descripcion"));
+                    p.setPrecio(rs.getFloat("precio"));
+                    p.setEstado(rs.getString("estado"));
+                    lista.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al ejecutar búsqueda avanzada: " + e.getMessage());
+        }
+        return lista;
+    }
 }
