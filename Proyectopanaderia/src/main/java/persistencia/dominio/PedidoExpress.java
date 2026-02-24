@@ -13,17 +13,20 @@ import java.util.Date;
 public class PedidoExpress extends Pedido{
     private int idPedidoExpress;
     private String folio;
-    private int pinSeguridad;
+    private String pinSeguridad;
     
     public PedidoExpress(int id, Date fecha, float total, String estado) {
         super(id, fecha, total, estado);
     }
 
-    public PedidoExpress(int idPedidoExpress, String folio, int pinSeguridad, int id, Date fecha, float total, String estado) {
+    public PedidoExpress(int idPedidoExpress, String folio, String pinSeguridad, int id, Date fecha, float total, String estado) {
         super(id, fecha, total, estado);
         this.idPedidoExpress = idPedidoExpress;
         this.folio = folio;
         this.pinSeguridad = pinSeguridad;
+    }
+
+    public PedidoExpress() {
     }
 
     public PedidoExpress(Date fecha, float total, String estado) {
@@ -46,11 +49,11 @@ public class PedidoExpress extends Pedido{
         this.folio = folio;
     }
 
-    public int getPinSeguridad() {
+    public String getPinSeguridad() {
         return pinSeguridad;
     }
 
-    public void setPinSeguridad(int pinSeguridad) {
+    public void setPinSeguridad(String pinSeguridad) {
         this.pinSeguridad = pinSeguridad;
     }
     

@@ -14,6 +14,9 @@ public class PedidoProgramado extends Pedido {
     private int idPedidoProgramado;
     private int idCliente;
     private int idCupon;
+
+    public PedidoProgramado() {
+    }
     
     
     public PedidoProgramado(int id, Date fecha, float total, String estado) {

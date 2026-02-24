@@ -409,7 +409,7 @@ public class PedidoDAO implements IPedidoDAO {
     @Override
     public void agregarPedidoExpress(PedidoExpress pedidoExpress, List<DetallePedido> listaDetallePedido) throws PersistenciaException {
         //(id_empleado, folio, pin_seguridad)
-        String query = "{CALL sp_crear_pedido_programado(?, ?, ?, ?)}";
+        String query = "{CALL sp_crear_pedido_express(?, ?, ?, ?)}";
         //AGREGAR VALIDACIONES DE DATOS
         try(Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)){
             conn.setAutoCommit(false);
@@ -418,7 +418,6 @@ public class PedidoDAO implements IPedidoDAO {
             cs.setString(2, pedidoExpress.getFolio());
             cs.setString(3, String.valueOf(pedidoExpress.getPinSeguridad()));
             cs.registerOutParameter(4, java.sql.Types.INTEGER);
-        
             cs.execute();
             
             int idPedidoGenerado = cs.getInt(4);

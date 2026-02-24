@@ -9,6 +9,7 @@ import negocio.DTOs.DetallePedidoDTO;
 import negocio.DTOs.PedidoAgendadoDTO;
 import negocio.DTOs.PedidoDTO;
 import negocio.DTOs.PedidoEntregaDTO;
+import negocio.DTOs.PedidoExpressDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import negocio.excepciones.NegocioException;
 import persistencia.dominio.Cupon;
@@ -35,10 +36,12 @@ public interface IPedidoBO {
 
     public void avanzarEstado(int idPedido, String estadoActual) throws NegocioException;
     
-    public List<PedidoDTO> obtenerPedidosPorCliente() throws NegocioException;
+    
+    
+    public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException;
     
     public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles ) throws NegocioException;
     
-    public void registrarPedidoExpress() throws NegocioException;
+    public void registrarPedidoExpress(PedidoExpressDTO pedidoExpress, List<DetallePedidoDTO> detalles) throws NegocioException;
 
 }

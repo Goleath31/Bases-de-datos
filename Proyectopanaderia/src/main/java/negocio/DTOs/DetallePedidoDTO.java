@@ -9,22 +9,30 @@ package negocio.DTOs;
  * @author golea
  */
 public class DetallePedidoDTO {
+    private int idPedido;
     private int idProducto;
     private int cantidad;
-    private double precioUnitario;
     private String notas;
+    private double precioUnitario;
 
     public DetallePedidoDTO() {
     }
 
-    public DetallePedidoDTO(int idProducto, int cantidad, double precioUnitario, String notas) {
+    public DetallePedidoDTO(int idPedido, int idProducto, int cantidad, String notas, double precioUnitario) {
+        this.idPedido = idPedido;
         this.idProducto = idProducto;
         this.cantidad = cantidad;
-        this.precioUnitario = precioUnitario;
         this.notas = notas;
+        this.precioUnitario = precioUnitario;
     }
 
-    
+    public int getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
+    }
 
     public int getIdProducto() {
         return idProducto;
@@ -42,6 +50,14 @@ public class DetallePedidoDTO {
         this.cantidad = cantidad;
     }
 
+    public String getNotas() {
+        return notas;
+    }
+
+    public void setNotas(String notas) {
+        this.notas = notas;
+    }
+
     public double getPrecioUnitario() {
         return precioUnitario;
     }
@@ -50,12 +66,6 @@ public class DetallePedidoDTO {
         this.precioUnitario = precioUnitario;
     }
 
-    public String getNotas() {
-        return notas;
-    }
-
-    public void setNotas(String notas) {
-        this.notas = notas;
-    }
+    
     
 }

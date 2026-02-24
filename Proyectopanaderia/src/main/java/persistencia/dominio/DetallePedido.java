@@ -48,6 +48,9 @@ public class DetallePedido {
         this.notas = notas;
     }
 
+    public DetallePedido() {
+    }
+
     
     
     
