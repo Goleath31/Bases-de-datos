@@ -112,6 +112,7 @@ public class ClienteDAO implements IClienteDAO{
             LOG.log(Level.SEVERE, "Error al conectar con la base de datos", ex);
             throw new PersistenciaException("Se ha producido un error al conectar con las base de datos: " + ex.getMessage());
         }
+        return false;
     }
     
 }
