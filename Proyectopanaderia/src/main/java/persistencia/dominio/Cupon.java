@@ -32,14 +32,23 @@ public class Cupon {
         this.usosActuales = usosActuales;
     }
 
-    public int getId() {
-        return id;
+    public Cupon() {
     }
 
     public Cupon(int id, String codigo, float descuento) {
         this.id = id;
         this.codigo = codigo;
         this.descuento = descuento;
+    }
+
+    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCodigo() {
@@ -57,6 +66,34 @@ public class Cupon {
     public void setDescuento(float descuento) {
         this.descuento = descuento;
     }
+
+    public Date getFechaVigencia() {
+        return fechaVigencia;
+    }
+
+    public void setFechaVigencia(Date fechaVigencia) {
+        this.fechaVigencia = fechaVigencia;
+    }
+
+    public int getLimiteUsos() {
+        return limiteUsos;
+    }
+
+    public void setLimiteUsos(int limiteUsos) {
+        this.limiteUsos = limiteUsos;
+    }
+
+    public int getUsosActuales() {
+        return usosActuales;
+    }
+
+    public void setUsosActuales(int usosActuales) {
+        this.usosActuales = usosActuales;
+    }
+    
+    
+
+    
     
     
     
