@@ -19,6 +19,7 @@ import persistencia.DAOs.IPedidoDAO;
 import persistencia.DAOs.PedidoDAO;
 import persistencia.dominio.Cupon;
 import persistencia.dominio.DetallePedido;
+import persistencia.dominio.Pedido;
 import persistencia.dominio.PedidoExpress;
 import persistencia.dominio.PedidoProgramado;
 import persistencia.excepciones.PersistenciaException;
@@ -211,17 +212,6 @@ public class PedidoBO implements IPedidoBO {
 
     }
 
-//    @Override
-//    public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException {
-//        if (idCliente <= 0) {
-//            LOG.log(Level.WARNING, "Error con el id del cliente");
-//            throw new NegocioException("El id del cliente no es valido");
-//        }
-//        List
-//        try {
-//        }
-//
-//    }
 
     /**
      * Valida los datos de un DTO de Pedido Exprés antes de enviarlos al DAO.

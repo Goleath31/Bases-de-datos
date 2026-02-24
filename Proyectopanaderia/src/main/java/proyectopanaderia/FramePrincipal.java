@@ -20,6 +20,8 @@ public class FramePrincipal extends javax.swing.JFrame {
      */
     public FramePrincipal() {
         initComponents();
+        this.setResizable(false);
+        this.setLocationRelativeTo(null);
         mostrarPanel(new PanelAdminUsuario(this));
     }
 

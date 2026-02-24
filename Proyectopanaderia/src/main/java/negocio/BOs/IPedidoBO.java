@@ -32,7 +32,6 @@ public interface IPedidoBO {
 
     public void avanzarEstado(int idPedido, String estadoActual) throws NegocioException;
 
-    //public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException;
 
     public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles) throws NegocioException;
 

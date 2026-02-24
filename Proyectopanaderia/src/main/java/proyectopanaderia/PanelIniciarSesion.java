@@ -86,7 +86,7 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
         JButton btnIniciar = crearBoton("Iniciar Sesion");
 
         btnRegresar.addActionListener(e -> {
-        
+            principal.mostrarPanel(new PanelIndexCliente(principal));
         }); 
         
         btnIniciar.addActionListener(new ActionListener() {

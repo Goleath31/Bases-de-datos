@@ -45,6 +45,9 @@ public class PedidoDTO {
         this.estado = estado;
     }
 
+    public PedidoDTO() {
+    }
+
     public int getIdPedido() {
         return idPedido;
     }
