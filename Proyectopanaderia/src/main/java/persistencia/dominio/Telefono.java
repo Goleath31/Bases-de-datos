@@ -29,6 +29,10 @@ public class Telefono {
         this.etiqueta = etiqueta;
         this.id_cliente = id_cliente;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     
     
 
