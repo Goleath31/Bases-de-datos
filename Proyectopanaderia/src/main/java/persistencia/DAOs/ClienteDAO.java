@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import persistencia.conexion.IConexionBD;
@@ -89,7 +90,33 @@ public class ClienteDAO implements IClienteDAO{
 
     @Override
     public Cliente leerClientePorCorreo(String correo) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String query = """
+                      SELECT id_cliente, nombre, apellido_paterno, apellido_materno, domicilio, fecha_nacimiento FROM cliente WHERE correo = ?
+                      """;
+        try(Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setString(1, correo);
+            try(ResultSet rs = ps.executeQuery()){
+                if (rs.next()) {
+                    Cliente clienteRetornable = new Cliente();
+                    clienteRetornable.setId(rs.getInt("id_cliente"));
+                    clienteRetornable.setNombre(rs.getString("nombre"));
+                    clienteRetornable.setApellidoPaterno(rs.getString("apellido_paterno"));
+                    clienteRetornable.setApellidoMaterno(rs.getString("apellido_materno"));
+                    clienteRetornable.setCorreo(correo);
+                    clienteRetornable.setDomicilio(rs.getString("domicilio"));
+                    java.sql.Date fechaSql = rs.getDate("fecha_nacimiento");
+                    if(fechaSql != null) {
+                        clienteRetornable.setFechaNacimiento(fechaSql);
+                    }
+                    return clienteRetornable;
+                }
+            }
+            return null;
+        }
+        catch(SQLException ex){
+            LOG.log(Level.SEVERE, "Error al conectar con la base de datos", ex);
+            throw new PersistenciaException("Se ha producido un error al conectar con las base de datos: " + ex.getMessage());
+        }
     }
 
     @Override
