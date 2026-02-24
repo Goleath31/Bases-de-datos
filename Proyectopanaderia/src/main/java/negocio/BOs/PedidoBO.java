@@ -197,15 +197,31 @@ public class PedidoBO implements IPedidoBO {
             detalleItem.setIdProducto(item.getIdProducto());
             detalleItem.setCantidad(item.getCantidad());
             detalleItem.setNotas(item.getNotas());
+            
+            detalles.add(detalleItem);
         }
         
-        
+        try{
+            pedidoDAO.agregarPedidoProgramado(pedidoAgendado, detalles);
+            
+        }
+        catch(PersistenciaException ex ){
+            LOG.log( Level.WARNING, "Error al tratar de registrar un pedido agendado: " + ex.getMessage());
+            throw new NegocioException("Error al tratar de registrar un pedido express" + ex.getMessage());
+        }
         
     }
 
     @Override
     public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (idCliente <= 0) {
+            LOG.log( Level.WARNING, "Error con el id del cliente");
+            throw new NegocioException("El id del cliente no es valido");
+        }
+        List
+        try{
+        }
+        
     }
     
     
