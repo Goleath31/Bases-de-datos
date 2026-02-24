@@ -21,8 +21,14 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author joser
  */
 public class ClienteDAO implements IClienteDAO{
-    private final IConexionBD conexionBD = null;
+    private final IConexionBD conexionBD;
     private static final Logger LOG = Logger.getLogger(PedidoDAO.class.getName());
+
+    public ClienteDAO(IConexionBD conexionBD) {
+        this.conexionBD = conexionBD;
+    }
+    
+    
 
     @Override
     public Cliente agregarCliente(Cliente cliente) throws PersistenciaException {

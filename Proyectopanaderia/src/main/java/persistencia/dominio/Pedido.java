@@ -5,6 +5,7 @@
 package persistencia.dominio;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -16,6 +17,7 @@ public class Pedido {
     private float total;
     private String estado;
     private int idEmpleado;
+    //private List<DetallePedido> detalles;
 
     public Pedido(int id, Date fecha, float total, String estado, int idEmpleado) {
         this.id = id;
@@ -43,6 +45,9 @@ public class Pedido {
         this.fecha = fecha;
         this.total = total;
         this.estado = estado;
+    }
+
+    public Pedido() {
     }
     
     public int getId() {

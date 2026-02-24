@@ -21,8 +21,12 @@ import persistencia.excepciones.PersistenciaException;
  * @author joser
  */
 public class TelefonoDAO implements ITelefonoDAO{
-    private final IConexionBD conexionBD = null;
+    private final IConexionBD conexionBD;
     private static final Logger LOG = Logger.getLogger(TelefonoDAO.class.getName());
+
+    public TelefonoDAO(IConexionBD conexionBD) {
+        this.conexionBD = conexionBD;
+    }
 
     
     

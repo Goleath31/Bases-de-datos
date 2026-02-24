@@ -19,10 +19,14 @@ import persistencia.excepciones.PersistenciaException;
  * @author joser
  */
 public class CuponDAO implements ICuponDAO{
-    private final IConexionBD conexionBD = null;
+    private final IConexionBD conexionBD;
     private static final Logger LOG = Logger.getLogger(TelefonoDAO.class.getName());
-    
 
+    public CuponDAO(IConexionBD conexionBD) {
+        this.conexionBD = conexionBD;
+    }
+    
+    
 
     @Override
     public Cupon consultarCupon(String codigo) throws PersistenciaException {

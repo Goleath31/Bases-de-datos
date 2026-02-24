@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import negocio.DTOs.DetallePedidoDTO;
 import negocio.DTOs.PedidoAgendadoDTO;
+import negocio.DTOs.PedidoDTO;
 import negocio.DTOs.PedidoEntregaDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import negocio.excepciones.NegocioException;
@@ -128,6 +129,11 @@ public class PedidoBO implements IPedidoBO {
 
     @Override
     public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles) throws NegocioException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<PedidoDTO> obtenerPedidosPorCliente() throws NegocioException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

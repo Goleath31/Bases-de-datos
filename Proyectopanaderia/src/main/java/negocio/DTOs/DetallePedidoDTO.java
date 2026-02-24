@@ -24,6 +24,8 @@ public class DetallePedidoDTO {
         this.notas = notas;
     }
 
+    
+
     public int getIdProducto() {
         return idProducto;
     }
