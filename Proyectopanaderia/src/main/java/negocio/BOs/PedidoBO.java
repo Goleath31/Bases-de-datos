@@ -4,6 +4,9 @@
  */
 package negocio.BOs;
 import java.util.List;
+import java.util.logging.Logger;
+import negocio.DTOs.DetallePedidoDTO;
+import negocio.DTOs.PedidoAgendadoDTO;
 import negocio.DTOs.PedidoEntregaDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import negocio.excepciones.NegocioException;
@@ -16,6 +19,8 @@ import persistencia.excepciones.PersistenciaException;
  */
 public class PedidoBO implements IPedidoBO {
     private final IPedidoDAO pedidoDAO;
+    private static final Logger LOG = Logger.getLogger(PedidoBO.class.getName());
+    
 
     public PedidoBO(IPedidoDAO pedidoDAO) {
         this.pedidoDAO = pedidoDAO;
@@ -114,5 +119,15 @@ public class PedidoBO implements IPedidoBO {
         } catch (PersistenciaException e) {
             throw new NegocioException(e.getMessage());
         }
+    }
+
+    @Override
+    public void registrarPedidoExpress() throws NegocioException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles) throws NegocioException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

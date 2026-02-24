@@ -360,6 +360,7 @@ public class PedidoDAO implements IPedidoDAO {
 
     @Override
     public void agregarPedidoProgramado(PedidoProgramado pedidoProgramado, List<DetallePedido> detalles) throws PersistenciaException {
+        //(id_empleado, id_cliente, id_cupon)
         String query =
                 """
                 {CALL sp_crear_pedido_programado(?, ?, ?, ?)}
@@ -407,6 +408,7 @@ public class PedidoDAO implements IPedidoDAO {
 
     @Override
     public void agregarPedidoExpress(PedidoExpress pedidoExpress, List<DetallePedido> listaDetallePedido) throws PersistenciaException {
+        //(id_empleado, folio, pin_seguridad)
         String query = "{CALL sp_crear_pedido_programado(?, ?, ?, ?)}";
         //AGREGAR VALIDACIONES DE DATOS
         try(Connection conn = conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(query)){

@@ -5,10 +5,13 @@
 package negocio.BOs;
 
 import java.util.List;
+import negocio.DTOs.DetallePedidoDTO;
+import negocio.DTOs.PedidoAgendadoDTO;
 import negocio.DTOs.PedidoEntregaDTO;
 import negocio.DTOs.PedidoNuevoDTO;
 import negocio.excepciones.NegocioException;
 import persistencia.dominio.Cupon;
+import persistencia.dominio.DetallePedido;
 
 /**
  *
@@ -30,5 +33,9 @@ public interface IPedidoBO {
     public List<PedidoEntregaDTO> listarPedidosPreparacion() throws NegocioException;
 
     public void avanzarEstado(int idPedido, String estadoActual) throws NegocioException;
+    
+    public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles ) throws NegocioException;
+    
+    public void registrarPedidoExpress() throws NegocioException;
 
 }

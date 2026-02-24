@@ -7,6 +7,8 @@ package persistencia.DAOs;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import persistencia.conexion.IConexionBD;
 import persistencia.dominio.Producto;
 import persistencia.excepciones.PersistenciaException;
@@ -14,6 +16,8 @@ import persistencia.excepciones.PersistenciaException;
 public class ProductoDAO implements IProductoDAO {
 
     private final IConexionBD conexionBD;
+    private static final Logger LOG = Logger.getLogger(ProductoDAO.class.getName());
+    
 
     public ProductoDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
@@ -38,6 +42,7 @@ public class ProductoDAO implements IProductoDAO {
             }
             return lista;
         } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "Error al conectar con la base de datos", e);
             throw new PersistenciaException("Error al consultar el catálogo de productos: " + e.getMessage());
         }
 
