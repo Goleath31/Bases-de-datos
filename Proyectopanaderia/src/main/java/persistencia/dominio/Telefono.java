@@ -17,6 +17,12 @@ public class Telefono {
     public Telefono() {
     }
 
+    public Telefono(String numero, String etiqueta, int id_cliente) {
+        this.numero = numero;
+        this.etiqueta = etiqueta;
+        this.id_cliente = id_cliente;
+    }
+
     public int getId() {
         return id;
     }
