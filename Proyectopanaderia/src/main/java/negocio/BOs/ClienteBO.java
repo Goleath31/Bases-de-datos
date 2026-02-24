@@ -56,19 +56,94 @@ public class ClienteBO implements IClienteBO{
         
     }
 
-    @Override
-    public ClienteDTO editarCliente(int id, ClienteDTO cliente) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    @Override 
+    public ClienteDTO editarCliente(int id, ClienteDTO clienteDTO) throws NegocioException {
+        if (id <= 0) {
+            throw new NegocioException("El ID del cliente no es válido para edición.");
+        }
+
+        if (clienteDTO == null) {
+            throw new NegocioException("Los datos de actualización no pueden ser nulos.");
+        }
+
+        validarCliente(clienteDTO);
+
+        Cliente clienteEntidad = new Cliente();
+        clienteEntidad.setId(id);
+        clienteEntidad.setNombre(clienteDTO.getNombre());
+        clienteEntidad.setApellidoPaterno(clienteDTO.getApellidoPaterno());
+        clienteEntidad.setApellidoMaterno(clienteDTO.getApellidoMaterno());
+        clienteEntidad.setDomicilio(clienteDTO.getDomicilio());
+        clienteEntidad.setFechaNacimiento(clienteDTO.getFechaNacimiento());
+
+        try {
+            Cliente resultado = clienteDAO.editarCliente(id, clienteEntidad);
+
+            if (resultado == null) {
+                throw new NegocioException("No se encontró el cliente con ID " + id + " para editar.");
+            }
+            return clienteDTO;
+
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, "Error al editar cliente con ID: " + id, ex);
+            throw new NegocioException("Error al actualizar los datos: " + ex.getMessage());
+        }
     }
 
     @Override
     public ClienteDTO leerClientePorCorreo(String correo) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String regexCorreo = "^[A-Za-z0-9+_.-]+@(.+)$";
+        if (correo == null || !correo.matches(regexCorreo)) {
+            throw new NegocioException("El formato del correo electrónico proporcionado no es válido.");
+        }
+
+        try {
+            Cliente cliente = clienteDAO.leerClientePorCorreo(correo);
+
+            if (cliente == null) {
+                throw new NegocioException("No se encontró ningún cliente registrado con ese correo.");
+            }
+
+            ClienteDTO dto = new ClienteDTO();
+            dto.setIdCliente(cliente.getId());
+            dto.setNombre(cliente.getNombre());
+            dto.setApellidoPaterno(cliente.getApellidoPaterno());
+            dto.setApellidoMaterno(cliente.getApellidoMaterno());
+            dto.setCorreo(cliente.getCorreo());
+            dto.setDomicilio(cliente.getDomicilio());
+            dto.setFechaNacimiento(cliente.getFechaNacimiento());
+
+            return dto;
+
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, "Error al consultar cliente por correo: " + correo, ex);
+            throw new NegocioException("Error técnico al recuperar los datos del cliente.");
+        }
     }
 
     @Override
     public boolean validarCliente(String correo, String contraseña) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (correo == null || correo.trim().isEmpty()) {
+            throw new NegocioException("El correo es obligatorio para iniciar sesión.");
+        }
+        if (contraseña == null || contraseña.trim().isEmpty()) {
+            throw new NegocioException("La contraseña es obligatoria.");
+        }
+
+        try {
+            boolean esValido = clienteDAO.validarCliente(correo, contraseña);
+
+            if (!esValido) {
+
+                throw new NegocioException("Correo o contraseña incorrectos.");
+            }
+
+            return true;
+
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, "Error durante el login del correo: " + correo, ex);
+            throw new NegocioException("Error al intentar validar las credenciales.");
+        }
     }
     
     public void validarCliente(ClienteDTO clienteDTO) throws NegocioException {
