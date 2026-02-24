@@ -23,30 +23,44 @@ import negocio.excepciones.NegocioException;
 import negocio.fabrica.FabricaBOs;
 
 /**
+ * Panel de interfaz gráfica para la validación de seguridad de pedidos express.
+ * Solicita un PIN al usuario y lo contrasta con la base de datos antes de
+ * permitir el cobro.
  *
- * @author golea
+ * * @author golea
  */
 public class ValidacionPin extends javax.swing.JPanel {
 
+    /**
+     * ID del pedido que se está intentando validar
+     */
     private int idPedido;
+    /**
+     * Referencia a la lógica de negocio de pedidos
+     */
     private final IPedidoBO pedidoBO;
     // Colores corporativos
     private Color colorHeader = Color.decode("#13315C");
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
+    /**
+     * Referencia al frame principal para el intercambio de paneles
+     */
     private FramePrincipal principal;
 
     /**
+     * Constructor que prepara la validación para un pedido específico.
      *
-     * Creates new form ValidacionPin
+     * @param idPedido Identificador único del pedido express.
+     * @param principal Marco contenedor de la aplicación.
      */
     public ValidacionPin(int idPedido, FramePrincipal principal) {
         this.idPedido = idPedido;
         this.principal = principal;
-        this.pedidoBO = FabricaBOs.obtenerPedidoBO(); // Inicializamos
+        this.pedidoBO = FabricaBOs.obtenerPedidoBO();
         initComponents();
-        disenoManual(); // Aplicar diseño
+        disenoManual();
         this.Iblidmostrar.setText(String.valueOf(idPedido));
 
     }
@@ -248,6 +262,10 @@ public class ValidacionPin extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Evento ejecutado al presionar el botón "Validar PIN". Envía el texto
+     * ingresado a la capa de negocio para su verificación.
+     */
     private void btnvalidarpinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvalidarpinActionPerformed
         // TODO add your handling code here:
         // 1. Obtener el PIN del campo de texto (txtnombre según tu archivo .form)
@@ -278,6 +296,9 @@ public class ValidacionPin extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnvalidarpinActionPerformed
 
+    /**
+     * Cancela la operación actual y regresa a la pantalla de listado de entregas.
+     */
     private void btnregresar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregresar1ActionPerformed
         // TODO add your handling code here:
         principal.mostrarPanel(new Entrega_y_Cobro1(principal));
