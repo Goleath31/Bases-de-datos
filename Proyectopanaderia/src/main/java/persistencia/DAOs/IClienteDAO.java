@@ -12,7 +12,7 @@ import persistencia.excepciones.PersistenciaException;
  * @author joser
  */
 public interface IClienteDAO {
-    public void agregarCliente(Cliente cliente) throws PersistenciaException;
+    public Cliente agregarCliente(Cliente cliente) throws PersistenciaException;
     
     public Cliente editarCliente(int id, Cliente cliente) throws PersistenciaException;
     

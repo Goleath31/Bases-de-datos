@@ -24,7 +24,7 @@ public class ClienteDAO implements IClienteDAO{
     private static final Logger LOG = Logger.getLogger(PedidoDAO.class.getName());
 
     @Override
-    public void agregarCliente(Cliente cliente) throws PersistenciaException {
+    public Cliente agregarCliente(Cliente cliente) throws PersistenciaException {
         //(nombre, apellidop, apellidom, domicilio, fechanacimiento, correo, contraseña)
         String query = """  
                        INSERT INTO cliente (nombre, apellido_paterno, apellido_materno, domicilio, fecha_nacimiento, correo, contrasena) VALUES(?, ?, ?, ?, ?, ?, ?)
@@ -34,13 +34,22 @@ public class ClienteDAO implements IClienteDAO{
             
             ps.setString(1, cliente.getNombre());
             ps.setString(2, cliente.getApellidoPaterno());
-            ps.setString(3, cliente.getApellidoPaterno());
+            ps.setString(3, cliente.getApellidoMaterno());
             ps.setString(4, cliente.getDomicilio());
             ps.setDate(5, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
-            ps.setString(6, cliente.getDomicilio());
+            ps.setString(6, cliente.getCorreo());
             String contrasenaHash = BCrypt.hashpw(cliente.getContraseña(), BCrypt.gensalt(12));
             ps.setString(7, contrasenaHash);
             
+            ps.executeUpdate();
+    
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    cliente.setId(rs.getInt(1));
+                }
+            }
+
+            return cliente;
         
         }
         catch(SQLException ex){
@@ -63,7 +72,12 @@ public class ClienteDAO implements IClienteDAO{
             ps.setString(4, cliente.getDomicilio());
             ps.setDate(5, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
             ps.setInt(6, cliente.getId());
-            return cliente;
+            int filasAfectadas = ps.executeUpdate();
+            if (filasAfectadas > 0) {
+                return cliente; 
+            } else {
+                return null; 
+            }
             
         }
         catch(SQLException ex){
