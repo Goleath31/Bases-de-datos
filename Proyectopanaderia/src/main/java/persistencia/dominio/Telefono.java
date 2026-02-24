@@ -23,6 +23,15 @@ public class Telefono {
         this.id_cliente = id_cliente;
     }
 
+    public Telefono(int id, String numero, String etiqueta, int id_cliente) {
+        this.id = id;
+        this.numero = numero;
+        this.etiqueta = etiqueta;
+        this.id_cliente = id_cliente;
+    }
+    
+    
+
     public int getId() {
         return id;
     }
