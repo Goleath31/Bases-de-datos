@@ -87,6 +87,7 @@
     <Component class="javax.swing.JButton" name="Btningresar">
       <Properties>
         <Property name="text" type="java.lang.String" value="Ingresar"/>
+        <Property name="borderPainted" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtningresarActionPerformed"/>
@@ -95,6 +96,7 @@
     <Component class="javax.swing.JButton" name="BtnRegresar">
       <Properties>
         <Property name="text" type="java.lang.String" value="Regresar"/>
+        <Property name="borderPainted" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnRegresarActionPerformed"/>
