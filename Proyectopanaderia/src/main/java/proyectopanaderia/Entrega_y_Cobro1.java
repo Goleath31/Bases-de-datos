@@ -32,23 +32,44 @@ import javax.swing.JOptionPane;
 import negocio.excepciones.NegocioException;
 
 /**
+ * Panel de interfaz gráfica para el proceso de entrega de pedidos y cobro.
+ * Permite filtrar pedidos listos, validar PIN de seguridad y completar la
+ * transacción.
  *
- * @author golea
+ * * @author golea
  */
 public class Entrega_y_Cobro1 extends javax.swing.JPanel {
 
+    /**
+     * Interfaz de lógica de negocio para gestionar pedidos
+     */
     private final IPedidoBO pedidoBO;
+    /**
+     * Contador cíclico para alternar entre diferentes tipos de ordenamiento en
+     * la tabla
+     */
     private int contadorFiltros = 0;
+    /**
+     * Definición de colores institucionales para la coherencia visual
+     */
     private Color colorHeader = Color.decode("#13315C");
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
-    private FramePrincipal principal;
     /**
-     * Creates new form Entrega_y_Cobro1
+     * Referencia al frame principal para navegación entre pantallas
+     */
+    private FramePrincipal principal;
+
+    /**
+     * Constructor del panel Entrega y Cobro.
+     *
+     * @param principal Instancia del marco contenedor para gestionar cambios de
+     * vista.
      */
     public Entrega_y_Cobro1(FramePrincipal principal) {
         this.principal = principal;
+        // Se obtiene la implementación del BO desde la fábrica
         initComponents();
         // Inicializamos el BO usando la fábrica que ya tienes
         this.pedidoBO = FabricaBOs.obtenerPedidoBO();
@@ -56,7 +77,7 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
         cargarPedidos(""); // Carga inicial sin filtro
 
     }
-    
+
     private void disenoManual() {
         // Configuración General
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -86,14 +107,14 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
         JPanel searchBar = new JPanel();
         searchBar.setLayout(new BoxLayout(searchBar, BoxLayout.X_AXIS));
         searchBar.setOpaque(false);
-        
+
         lblNombre.setText("Buscar Cliente: ");
         lblNombre.setFont(new Font("SansSerif", Font.BOLD, 16));
         txtnombre.setMaximumSize(new Dimension(400, 40));
-        
+
         btnbuscar.setBackground(colorConfirmar);
         btnbuscar.setForeground(Color.WHITE);
-        
+
         btnfiltrar.setBackground(colorPaneles);
         btnfiltrar.setForeground(Color.WHITE);
 
@@ -157,6 +178,10 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Consulta al BO los pedidos que están marcados como "Listos" para ser
+     * entregados.
+     */
     private void cargarPedidos(String filtro) {
         try {
             List<PedidoEntregaDTO> pedidos = pedidoBO.buscarPedidosPendientesEntrega(filtro);
@@ -178,6 +203,11 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Mapea la lista de DTOs al modelo de la tabla (jTable1).
+     *
+     * @param lista Lista de pedidos a renderizar.
+     */
     private void actualizarTablaConLista(List<PedidoEntregaDTO> lista) {
         DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
         modelo.setRowCount(0); // Limpiar
@@ -344,6 +374,10 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnregresarActionPerformed
 
+    /**
+     * Procesa la entrega del pedido seleccionado. Si es Express, solicita y
+     * valida el PIN. Finalmente, registra el método de pago.
+     */
     private void btncompletarpedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncompletarpedidoActionPerformed
         int fila = jTable1.getSelectedRow();
 
@@ -370,12 +404,17 @@ public class Entrega_y_Cobro1 extends javax.swing.JPanel {
 
         // 4. Si pasó la validación, procedemos al cambio de pantalla
         if (tipo.equalsIgnoreCase("Express")) {
-            cambiarPantalla(new ValidacionPin(idPedido,  principal));
+            cambiarPantalla(new ValidacionPin(idPedido, principal));
         } else {
-            cambiarPantalla(new PantallaCobro(idPedido,principal));
+            cambiarPantalla(new PantallaCobro(idPedido, principal));
         }
     }//GEN-LAST:event_btncompletarpedidoActionPerformed
 
+    /**
+     * Implementa un ciclo de ordenamiento (Sort) sobre la lista de pedidos
+     * actual. Clic 1: Por Nombre | Clic 2: Express primero | Clic 3: Programado
+     * primero | Clic 4: ID.
+     */
     private void btnfiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnfiltrarActionPerformed
         // TODO add your handling code here:
         try {
