@@ -23,11 +23,15 @@ import javax.swing.border.EmptyBorder;
 import negocio.excepciones.NegocioException;
 
 /**
+ * Panel de interfaz gráfica para la gestión y monitoreo de pedidos en
+ * preparación. Permite visualizar una tabla con pedidos activos, realizar
+ * búsquedas y avanzar estados.
  *
- * @author golea
+ * * @author golea
  */
 public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
 
+    // Definición de la paleta de colores institucional para la interfazs
     private Color colorHeader = Color.decode("#13315C");
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
@@ -37,7 +41,10 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
     private FramePrincipal principal;
 
     /**
-     * Creates new form Gestion_preparacion_de_pedidos
+     * Constructor de la clase.
+     *
+     * @param principal Instancia del FramePrincipal para la gestión de
+     * navegación.
      */
     public Gestion_preparacion_de_pedidos(FramePrincipal principal) {
         this.principal = principal;
@@ -181,6 +188,11 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
         btnBuscar.setFont(new Font("Arial", Font.BOLD, 14));
     }
 
+    /**
+     * Limpia la tabla actual y la rellena con una nueva lista de pedidos.
+     *
+     * @param pedidos Lista de objetos DTO provenientes de la capa de negocio.
+     */
     private void actualizarTabla(List<PedidoEntregaDTO> lista) {
         DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
         modelo.setRowCount(0); // Limpia la tabla actual
@@ -315,6 +327,10 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Evento disparado al hacer clic en "Cambiar Estado". Obtiene el pedido
+     * seleccionado de la tabla y solicita al BO avanzar su estado.
+     */
     private void btncambiarestadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncambiarestadoActionPerformed
         // TODO add your handling code here:
         int fila = jTable1.getSelectedRow();
@@ -323,13 +339,15 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
             return;
         }
 
+        // Recupera datos de la fila seleccionada (ID y Estado Actual)
         int id = Integer.parseInt(jTable1.getValueAt(fila, 0).toString());
         String estadoActual = jTable1.getValueAt(fila, 3).toString();
 
         try {
+            // Se comunica con la capa de negocio a través de la fábrica
             FabricaBOs.obtenerPedidoBO().avanzarEstado(id, estadoActual);
             JOptionPane.showMessageDialog(this, "Estado actualizado correctamente.");
-            cargarTabla(); // Refresca la tabla con los nuevos estados
+            cargarTabla(); // Refresca la tabla para mostrar el cambio
         } catch (NegocioException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
@@ -343,6 +361,10 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
         });
     }//GEN-LAST:event_btnregresarActionPerformed
 
+    /**
+     * Evento para filtrar los pedidos mediante una cadena de texto. Si el texto
+     * está vacío, muestra todos los pedidos en preparación.
+     */
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
         String filtro = txtbuscar.getText().trim();
@@ -358,7 +380,7 @@ public class Gestion_preparacion_de_pedidos extends javax.swing.JPanel {
                 resultados = FabricaBOs.obtenerPedidoBO().buscarPedidosAvanzado(filtro);
             }
 
-            actualizarTabla(resultados);
+            actualizarTabla(resultados); // Renderiza los nuevos datos
 
         } catch (NegocioException ex) {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
