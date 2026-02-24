@@ -19,4 +19,8 @@ public interface IClienteDAO {
     public Cliente leerClientePorCorreo(String correo) throws PersistenciaException;
     
     public boolean validarCliente(String correo, String contraseña) throws PersistenciaException;
+    
+    public void desactivarCliente(int idCliente) throws PersistenciaException;
+    
+    public Cliente leerClientePorId(int idCliente) throws PersistenciaException;
 }

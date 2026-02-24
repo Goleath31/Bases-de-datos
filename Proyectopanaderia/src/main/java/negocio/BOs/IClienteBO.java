@@ -23,4 +23,6 @@ public interface IClienteBO {
     public ClienteDTO leerClientePorCorreo(String correo) throws NegocioException;
     
     public boolean validarCliente(String correo, String contraseña) throws NegocioException;
+    
+    public void desactivarCuenta(int idCliente) throws NegocioException;
 }

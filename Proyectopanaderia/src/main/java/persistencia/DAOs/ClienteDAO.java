@@ -147,5 +147,56 @@ public class ClienteDAO implements IClienteDAO{
         }
         return false;
     }
+
+    @Override
+    public void desactivarCliente(int idCliente) throws PersistenciaException {
+        String query = "UPDATE Clientes SET contraseña = CONCAT(contraseña, 'DESACTIVADO') WHERE id_cliente = ?";
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, idCliente);
+            ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            LOG.log(Level.SEVERE, "Error al concatenar bloqueo al hash", ex);
+            throw new PersistenciaException("No se pudo bloquear la cuenta.");
+        }
+    }
+
+    @Override
+    public Cliente leerClientePorId(int idCliente) throws PersistenciaException {
+        String query =
+                """
+                SELECT id_cliente, nombre, apellido_paterno, apellido_materno, correo, contraseña, domicilio, fecha_nacimiento
+                FROM Clientes WHERE id_cliente = ?
+                """;
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, idCliente);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Cliente cliente = new Cliente();
+                    cliente.setId(rs.getInt("id_cliente"));
+                    cliente.setNombre(rs.getString("nombre"));
+                    cliente.setApellidoPaterno(rs.getString("apellido_paterno"));
+                    cliente.setApellidoMaterno(rs.getString("apellido_materno"));
+                    cliente.setCorreo(rs.getString("correo"));
+                    cliente.setContraseña(rs.getString("contraseña")); //contraseña en hash 
+                    cliente.setDomicilio(rs.getString("domicilio"));
+                    cliente.setFechaNacimiento(rs.getDate("fecha_nacimiento"));
+
+                    return cliente;
+                }
+            }
+
+            return null; // Si no se encuentra el ID
+
+        } catch (SQLException ex) {
+            LOG.log(Level.SEVERE, "Error al leer cliente por ID: " + idCliente, ex);
+            throw new PersistenciaException("Error al consultar los datos del cliente.");
+        }
+    }
     
 }

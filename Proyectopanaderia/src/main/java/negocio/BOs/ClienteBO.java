@@ -190,5 +190,38 @@ public class ClienteBO implements IClienteBO{
             throw new NegocioException("El domicilio debe ser más específico (mínimo 10 caracteres).");
         }
     }
+
+    @Override
+    public void desactivarCuenta(int idCliente) throws NegocioException {
+        if (idCliente <= 0) {
+            throw new NegocioException("ID de cliente no válido.");
+        }
+
+        try {
+            Cliente cliente = clienteDAO.leerClientePorId(idCliente);
+
+            if (cliente == null) {
+                throw new NegocioException("El cliente no existe.");
+            }
+
+            String prefijo = "DESACTIVADO";
+            String hashActual = cliente.getContraseña();
+
+            if (hashActual.startsWith(prefijo)) {
+                throw new NegocioException("La cuenta ya se encuentra desactivada.");
+            }
+
+            String hashEnsuciado = prefijo + hashActual;
+            cliente.setContraseña(hashEnsuciado);
+
+            clienteDAO.desactivarCliente(idCliente);
+
+            LOG.log(Level.INFO, "Cliente con ID {0} ha sido desactivado exitosamente.", idCliente);
+
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, "Error al desactivar cliente: " + idCliente, ex);
+            throw new NegocioException("No se pudo desactivar la cuenta en este momento.");
+        }
+    }
     
 }
