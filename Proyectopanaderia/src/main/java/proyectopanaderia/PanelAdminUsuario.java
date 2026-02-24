@@ -94,7 +94,7 @@ public class PanelAdminUsuario extends javax.swing.JPanel {
         btnAdmin.addActionListener(e -> {
             System.out.println("Cambiando al panel de Ventas...");
             //PONER AQUI EL ACCESO AL INDEX DE ADMIN
-            principal.mostrarPanel(new Interfaz_admin1(principal));
+            principal.mostrarPanel(new PanerAdminLogin(principal));
         });
         
         Dimension tamañoFijo = new Dimension(310, 100);

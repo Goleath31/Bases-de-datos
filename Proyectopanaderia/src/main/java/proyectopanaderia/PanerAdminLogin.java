@@ -13,7 +13,10 @@ public class PanerAdminLogin extends javax.swing.JPanel {
     /**
      * Creates new form PanerAdminLogin
      */
-    public PanerAdminLogin() {
+    private FramePrincipal principal;
+
+    public PanerAdminLogin(FramePrincipal principal) {
+        this.principal = principal;
         initComponents();
     }
 
@@ -36,6 +39,11 @@ public class PanerAdminLogin extends javax.swing.JPanel {
         lbltitulo = new javax.swing.JLabel();
 
         Btningresar.setText("Ingresar");
+        Btningresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtningresarActionPerformed(evt);
+            }
+        });
 
         BtnRegresar.setText("Regresar");
         BtnRegresar.addActionListener(new java.awt.event.ActionListener() {
@@ -108,29 +116,36 @@ public class PanerAdminLogin extends javax.swing.JPanel {
 
     private void BtnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegresarActionPerformed
         // TODO add your handling code here:
-        String correo = txtingresarcorreo.getText().trim();
-    String password = txtingresarcontrasena.getText().trim();
+        principal.mostrarPanel(new PanelAdminUsuario(principal));
 
-    if (correo.isEmpty() || password.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Campos obligatorios", "Aviso", 0);
-        return;
-    }
 
-    try {
-        // LLAMADA REAL A LA BASE DE DATOS
-        persistencia.DAOs.IEmpleadoDAO empleadoDAO = persistencia.fabrica.FabricaDAOs.obtenerEmpleadoDAO();
-        boolean esValido = empleadoDAO.validarCredenciales(correo, password);
-
-        if (esValido) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Acceso Correcto");
-            //irSiguientePantalla();
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Correo o contraseña inválidos", "Error", 0);
-        }
-    } catch (Exception e) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error de conexión: " + e.getMessage());
-    }
     }//GEN-LAST:event_BtnRegresarActionPerformed
+
+    private void BtningresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtningresarActionPerformed
+        // TODO add your handling code here:
+        String correo = txtingresarcorreo.getText().trim();
+        String password = txtingresarcontrasena.getText().trim();
+
+        if (correo.isEmpty() || password.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Campos obligatorios", "Aviso", 0);
+            return;
+        }
+
+        try {
+            // LLAMADA REAL A LA BASE DE DATOS
+            persistencia.DAOs.IEmpleadoDAO empleadoDAO = persistencia.fabrica.FabricaDAOs.obtenerEmpleadoDAO();
+            boolean esValido = empleadoDAO.validarCredenciales(correo, password);
+
+            if (esValido) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Acceso Correcto");
+                principal.mostrarPanel(new Interfaz_admin1(principal));
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Correo o contraseña inválidos", "Error", 0);
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error de conexión: " + e.getMessage());
+        }
+    }//GEN-LAST:event_BtningresarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
