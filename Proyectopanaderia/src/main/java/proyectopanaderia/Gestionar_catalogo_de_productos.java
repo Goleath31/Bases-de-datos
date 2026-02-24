@@ -19,18 +19,36 @@ import negocio.fabrica.FabricaBOs;
 import persistencia.dominio.Producto;
 
 /**
+ * Panel de administración para el catálogo de productos. Permite listar,
+ * filtrar por estado y buscar productos específicos dentro del sistema.
  *
- * @author golea
+ * *
  */
 public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
 
+    /**
+     * Colores para mantener la consistencia visual de la aplicación
+     */
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorBtnClaro = Color.decode("#8DA9C4");
     private Color colorBtnOscuro = Color.decode("#13315C");
     private Color colorBorde = Color.decode("#1C5282");
+    /**
+     * Referencia al frame principal para navegación
+     */
     private FramePrincipal principal;
+    /**
+     * Controla el ciclo de filtrado: 0 (Todos), 1 (Disponibles), 2 (No
+     * Disponibles)
+     */
     private int estadoFiltro = 0;
+    /**
+     * Acceso a la lógica de negocio de productos
+     */
     private IProductoBO productoBO = FabricaBOs.obtenerProductoBO();
+    /**
+     * Cache local de la lista de productos obtenida
+     */
     private List<Producto> listaProductos;
 
     /**
@@ -84,6 +102,10 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
 
     }
 
+    /**
+     * Consulta todos los productos al BO y refresca la tabla. Captura errores
+     * de negocio y los muestra al usuario mediante diálogos.
+     */
     private void cargarTablaProductos() {
         DefaultTableModel modelo = (DefaultTableModel) Tablaproductos.getModel();
         modelo.setRowCount(0);
@@ -571,6 +593,10 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarActionPerformed
 
+    /**
+     * Realiza una búsqueda filtrada basándose en el texto ingresado en
+     * txtBuscar. Llama al método buscarProductos de la lógica de negocio.
+     */
     private void btnbuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbuscarActionPerformed
         // TODO add your handling code here:
         String busqueda = txtBuscar.getText().trim();
@@ -604,11 +630,17 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Limpia la tabla y agrega los productos de la lista proporcionada.
+     *
+     * @param productos Lista de productos a mostrar.
+     */
     private void actualizarTabla(List<Producto> productos) {
         DefaultTableModel modelo = (DefaultTableModel) Tablaproductos.getModel();
         modelo.setRowCount(0); // Limpiar tabla
 
         for (Producto p : productos) {
+            // Mapea los atributos del objeto Producto a las columnas de la tabla
             Object[] fila = {
                 p.getId(),
                 p.getNombre(),
@@ -621,6 +653,11 @@ public class Gestionar_catalogo_de_productos extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnbuscarActionPerformed
 
+    /**
+     * Cicla entre tres estados de filtrado: 0: Muestra todos los productos. 1:
+     * Muestra solo los productos en estado "Disponible". 2: Muestra solo los
+     * productos en estado "No Disponible".
+     */
     private void btnestatadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnestatadoActionPerformed
         // TODO add your handling code here:
         try {
