@@ -12,6 +12,7 @@ import persistencia.DAOs.IClienteDAO;
 import persistencia.DAOs.IPedidoDAO;
 import persistencia.dominio.Cliente;
 import persistencia.excepciones.PersistenciaException;
+import proyectopanaderia.SesionCliente;
 
 /**
  *
@@ -137,7 +138,16 @@ public class ClienteBO implements IClienteBO{
 
                 throw new NegocioException("Correo o contraseña incorrectos.");
             }
+            Cliente clienteEntidad = clienteDAO.leerClientePorCorreo(correo);
+            ClienteDTO clienteDTO = new ClienteDTO();
+            clienteDTO.setIdCliente(clienteEntidad.getId());
+            clienteDTO.setNombre(clienteEntidad.getNombre());
+            clienteDTO.setApellidoPaterno(clienteEntidad.getApellidoPaterno());
+            clienteDTO.setApellidoMaterno(clienteEntidad.getApellidoMaterno());
+            clienteDTO.setDomicilio(clienteEntidad.getDomicilio());
+            clienteDTO.setCorreo(clienteEntidad.getCorreo());
 
+            SesionCliente.iniciarSesion(clienteDTO);
             return true;
 
         } catch (PersistenciaException ex) {
