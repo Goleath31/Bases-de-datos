@@ -28,11 +28,13 @@ public class DialogOpcionesCuenta extends javax.swing.JDialog {
     private Color colorBtnOscuro = Color.decode("#13315C");
     private Color colorBorde = Color.decode("#1C5282");
     
+    private FramePrincipal principal;
     /**
      * Creates new form DialogOpcionesCuenta
      */
-    public DialogOpcionesCuenta(JFrame parent) {
+    public DialogOpcionesCuenta(FramePrincipal parent) {
         super(parent, true);
+        this.principal = parent;
         this.setUndecorated(true);
         iniciarComponentes();
         this.setUndecorated(true); 
@@ -93,8 +95,17 @@ public class DialogOpcionesCuenta extends javax.swing.JDialog {
         btnCerrar.setPreferredSize(new Dimension(300, 130));
 
         btnCerrar.addActionListener(e -> {
-            //logica cerrar sesion
-            this.dispose(); 
+            int confirmacion = JOptionPane.showConfirmDialog(this,
+                    "¿Estás seguro de que deseas cerrar sesión?",
+                    "Confirmar", JOptionPane.YES_NO_OPTION);
+
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                SesionCliente.cerrarSesion();
+
+                this.dispose();
+
+                principal.mostrarPanel(new PanelIndexCliente(principal));
+            }
         });
 
         panelBotones.add(btnDesactivar);

@@ -21,6 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import negocio.BOs.IClienteBO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -92,7 +95,7 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
         btnIniciar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                simularLogin();
+                Login();
             }
         });
 
@@ -154,8 +157,7 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
     }
 
     
-    //METODO DE DEBUG TEMPORAL
-    private void simularLogin() {
+    private void Login() {
         String correo = txtCorreo.getText().trim();
         String password = new String(txtPassword.getPassword());
 
@@ -164,13 +166,20 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
             return;
         }
 
-        //LOGICA DAO AQUI
-        System.out.println("Simulando validación en BD para: " + correo);
-        principal.setSesionIniciada(true);
+        try {
+            IClienteBO bo = FabricaBOs.obtenerClienteBO();
+
+            bo.validarCliente(correo, password);
+
+            JOptionPane.showMessageDialog(this, "Bienvenido " + SesionCliente.getCliente().getNombre());
+
+            principal.mostrarPanel(new PanelIndexCliente(principal));
+
+        } catch (NegocioException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         
-        
-        JOptionPane.showMessageDialog(this, "¡Sesión iniciada correctamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        principal.mostrarPanel(new PanelIndexCliente(principal)); 
+
     }
     
     /**

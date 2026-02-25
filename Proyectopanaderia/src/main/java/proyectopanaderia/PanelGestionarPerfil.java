@@ -84,7 +84,7 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
         btnEngrane.setFocusPainted(false);
         btnEngrane.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEngrane.addActionListener(e -> { 
-            DialogOpcionesCuenta dialog = new DialogOpcionesCuenta(principal); // 'principal' es tu JFrame
+            DialogOpcionesCuenta dialog = new DialogOpcionesCuenta(principal); 
             dialog.setVisible(true);
         });
 

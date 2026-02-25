@@ -67,7 +67,7 @@ public class PanelIndexCliente extends javax.swing.JPanel {
         JButton btnAgendar = new JButton("<html><center>Agendar<br>pedido</center></html>");
         aplicarEstiloBoton(btnAgendar, tamañoBoton, fuenteBotones, colorBotonesTop);
         btnAgendar.addActionListener(e -> {
-            if (principal.isSesionIniciada()) {
+            if (SesionCliente.estaLogueado()) {
                 principal.mostrarPanel(new PanelAgendarPedido(principal));
             }
             else{
@@ -99,7 +99,7 @@ public class PanelIndexCliente extends javax.swing.JPanel {
         btnPerfil.addActionListener(e -> { 
             
             
-            if (principal.isSesionIniciada()) {
+            if (SesionCliente.estaLogueado()) {
                 principal.mostrarPanel(new PanelGestionarPerfil(principal));
             }
             else{
@@ -113,7 +113,7 @@ public class PanelIndexCliente extends javax.swing.JPanel {
         aplicarEstiloBoton(btnHistorial, tamañoBoton, fuenteBotones, colorBotonesBot);
         btnHistorial.addActionListener(e -> { 
             
-            if (principal.isSesionIniciada()) {
+            if (SesionCliente.estaLogueado()) {
                 principal.mostrarPanel(new PanelHistorialPedido(principal));
             }
             else{

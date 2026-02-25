@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,10 +21,15 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import negocio.BOs.IPedidoAgendadoBO;
+import negocio.DTOs.PedidoDTO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -43,7 +49,8 @@ public class PanelHistorialPedido extends javax.swing.JPanel {
     
     
     //LISTA SOLO DEBUG
-    private List<Pedido> listaPedidos;
+    private List<PedidoDTO> listaPedidos;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd / MM / yy");
     
     /**
      * Creates new form PanelHistorialPedido
@@ -52,11 +59,17 @@ public class PanelHistorialPedido extends javax.swing.JPanel {
         this.botonesEncabezado = new ArrayList<>();
         this.principal = principal;
         
-        cargarDatosSimulados();
+        cargarDatosReales();
         initComponents();
         iniciarComponentes();
         
-        ordenarYRenderizarLista("No. Pedido");
+        if (!listaPedidos.isEmpty()) {
+            ordenarYRenderizarLista("No. Pedido");
+        } else {
+            JLabel lblVacio = new JLabel("Aún no tienes pedidos registrados.");
+            lblVacio.setAlignmentX(CENTER_ALIGNMENT);
+            panelContenedorLista.add(lblVacio);
+        }
     }
     
     /**
@@ -188,17 +201,25 @@ public class PanelHistorialPedido extends javax.swing.JPanel {
         //Ordena lista de pedidos según lo que pidamos
         Collections.sort(listaPedidos, (p1, p2) -> {
             switch (criterio) {
-                case "Fecha": return p1.fecha.compareTo(p2.fecha);
-                case "Estado": return p1.estado.compareTo(p2.estado);
-                case "Precio": return Integer.compare(p1.precio, p2.precio);
-                default: return p1.noPedido.compareTo(p2.noPedido);
+                case "Fecha":
+                    return p1.getFechahora().compareTo(p2.getFechahora());
+                case "Estado":
+                    return p1.getEstado().compareTo(p2.getEstado());
+                case "Precio":
+                    return Float.compare(p1.getTotal(), p2.getTotal());
+                default:
+                    return Integer.compare(p1.getIdPedido(), p2.getIdPedido());
             }
         });
 
         panelContenedorLista.removeAll();
-        for (Pedido p : listaPedidos) {
-            panelContenedorLista.add(crearFilaPedido(p.noPedido, p.fecha, p.estado, "$" + p.precio));
-            panelContenedorLista.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre filas
+        for (PedidoDTO p : listaPedidos) {
+            String fechaFormateada = sdf.format(p.getFechahora());
+            String idFormateado = String.valueOf(p.getIdPedido());
+            String precioFormateado = String.format("$%.2f", p.getTotal());
+
+            panelContenedorLista.add(crearFilaPedido(idFormateado, fechaFormateada, p.getEstado(), precioFormateado));
+            panelContenedorLista.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
         panelContenedorLista.revalidate();
@@ -257,6 +278,21 @@ public class PanelHistorialPedido extends javax.swing.JPanel {
         return sep;
     }
     
+    private void cargarDatosReales() {
+        try {
+            // Obtenemos el ID del cliente logueado
+            int idCliente = SesionCliente.getCliente().getIdCliente();
+
+            // Llamada al BO
+            IPedidoAgendadoBO pedidoAgendadoBO = FabricaBOs.obtenerPedidoAgendadoBO();
+            this.listaPedidos = pedidoAgendadoBO.obtenerPedidosPorCliente(idCliente);
+
+        } catch (NegocioException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            this.listaPedidos = new ArrayList<>(); // Lista vacía para evitar NullPointerException
+        }
+    }
+    /*
     //CARGAR DATOS SOLO DEBUG 
     private void cargarDatosSimulados() {
         listaPedidos = new ArrayList<>();
@@ -277,7 +313,7 @@ public class PanelHistorialPedido extends javax.swing.JPanel {
             this.precio = precio;
         }
     }
-    
+    */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

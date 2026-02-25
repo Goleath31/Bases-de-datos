@@ -34,11 +34,12 @@ public class DialogIniciarSesion extends javax.swing.JDialog {
 
     /**
      * Creates new form DialogIniciarSesion
+     * @param principal
      */
     public DialogIniciarSesion(FramePrincipal principal) {
         super(principal, "Aviso", true);
-        this.setUndecorated(true);
         this.principal = principal;
+        this.setUndecorated(true);
         iniciarComponentes();
         this.setUndecorated(true); 
     }
