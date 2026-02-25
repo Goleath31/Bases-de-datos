@@ -8,27 +8,54 @@ package persistencia.fabrica;
  *
  * @author golea
  */
+import persistencia.DAOs.ClienteDAO;
+import persistencia.DAOs.CuponDAO;
 import persistencia.DAOs.EmpleadoDAO;
+import persistencia.DAOs.IClienteDAO;
+import persistencia.DAOs.ICuponDAO;
 import persistencia.DAOs.IEmpleadoDAO;
+import persistencia.DAOs.IPedidoAgendadoDAO;
 import persistencia.DAOs.IPedidoDAO;
 import persistencia.DAOs.IProductoDAO;
+import persistencia.DAOs.ITelefonoDAO;
+import persistencia.DAOs.PedidoAgendadoDAO;
 import persistencia.DAOs.PedidoDAO;
 import persistencia.DAOs.ProductoDAO;
+import persistencia.DAOs.TelefonoDAO;
 import persistencia.conexion.ConexionBD;
 import persistencia.conexion.IConexionBD;
 
 public class FabricaDAOs {
-
+    
+    private static IConexionBD conexion = new ConexionBD();
+    
     public static IPedidoDAO obtenerPedidoDAO() {
-        IConexionBD conexion = new ConexionBD();
         return new PedidoDAO(conexion);
     }
 
     public static IProductoDAO obtenerProductoDAO() {
-        return new ProductoDAO(new ConexionBD());
+        return new ProductoDAO(conexion);
     }
 
     public static IEmpleadoDAO obtenerEmpleadoDAO() {
-        return new EmpleadoDAO(new ConexionBD());
+        return new EmpleadoDAO(conexion);
     }
+    
+    public static IClienteDAO obtenerClienteDAO(){
+        return new ClienteDAO(conexion);
+    }
+    
+    public static ICuponDAO obtenerCuponDAO(){
+        return new CuponDAO(conexion);
+    }
+    
+    public static IPedidoAgendadoDAO obtenerPedidoAgendadoDAO(){
+        return new PedidoAgendadoDAO(conexion);
+    }
+    
+    public static ITelefonoDAO obtenerTelefonoDAO(){
+        return new TelefonoDAO(conexion);
+    }
+    
+    
 }

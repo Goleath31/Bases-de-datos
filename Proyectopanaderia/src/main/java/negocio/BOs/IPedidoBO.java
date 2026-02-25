@@ -36,6 +36,7 @@ public interface IPedidoBO {
     public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles) throws NegocioException;
 
     public void registrarPedidoExpress(PedidoExpressDTO pedidoExpress, List<DetallePedidoDTO> detalles) throws NegocioException;
+    
 
     public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws NegocioException;
 
