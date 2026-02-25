@@ -103,4 +103,17 @@ public class ProductoBO implements IProductoBO {
             throw new NegocioException("Error al obtener el catálogo: " + ex.getMessage());
         }
     }
+    
+    @Override
+    public List<String> obtenerNombresProductos() throws NegocioException {
+        try {
+            List<String> productos = productoDAO.obtenerNombresProductos();
+            if (productos.isEmpty()) {
+                throw new NegocioException("No hay productos disponibles en este momento.");
+            }
+            return productos;
+        } catch (PersistenciaException ex) {
+            throw new NegocioException(ex.getMessage());
+        }
+    }
 }

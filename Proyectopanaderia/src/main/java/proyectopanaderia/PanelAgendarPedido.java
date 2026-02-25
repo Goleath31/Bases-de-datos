@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -25,6 +26,11 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.border.EmptyBorder;
+import negocio.BOs.IProductoBO;
+import negocio.BOs.ProductoBO;
+import negocio.excepciones.NegocioException;
+import persistencia.DAOs.ProductoDAO;
+import persistencia.conexion.ConexionBD;
 
 /**
  *
@@ -210,28 +216,43 @@ public class PanelAgendarPedido extends javax.swing.JPanel {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //Simula backend para comprobar que funciona la pantalla, modificar posteriormente
-                String[] productosBack = {"Conchas", "Pan de Muerto", "Baguette"};
-                String elegido = (String) JOptionPane.showInputDialog(PanelAgendarPedido.this, 
-                        "Seleccione un producto:", "", 
-                        JOptionPane.QUESTION_MESSAGE, null, productosBack, productosBack[0]);
+            try {
+                // 1. Obtenemos la lista real desde el BO
+                IProductoBO productoBO = new ProductoBO(new ProductoDAO(new ConexionBD())); 
+                List<String> productosLista = productoBO.obtenerNombresProductos();
+                
+                // 2. Convertimos la lista a Array para el JOptionPane
+                String[] productosBack = productosLista.toArray(new String[0]);
+
+                String elegido = (String) JOptionPane.showInputDialog(
+                        PanelAgendarPedido.this, 
+                        "Seleccione un producto:", 
+                        "Catálogo de Productos", 
+                        JOptionPane.QUESTION_MESSAGE, 
+                        null, 
+                        productosBack, 
+                        productosBack[0]);
                 
                 if (elegido != null) {
-                    // VERIFICACIÓN DE DUPLICADOS
                     if (productosSeleccionados.contains(elegido)) {
                         JOptionPane.showMessageDialog(panel, 
-                            "El producto '" + elegido + "' ya está en el pedido.\nModifica la cantidad directamente en la lista.", 
+                            "El producto '" + elegido + "' ya está en el pedido.", 
                             "Producto duplicado", JOptionPane.WARNING_MESSAGE);
                     } else {
                         productosSeleccionados.add(elegido);
                         agregarFilaProducto(elegido);
                     }
                 }
+            } catch (NegocioException ex) {
+                JOptionPane.showMessageDialog(PanelAgendarPedido.this, 
+                    "Error al cargar productos: " + ex.getMessage(), 
+                    "Error de base de datos", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
+    });
 
-        return panel;
-    }
+    return panel;
+}
     
     /**
      * Metodo de ayuda para agregar fila nueva del producto que se busca 

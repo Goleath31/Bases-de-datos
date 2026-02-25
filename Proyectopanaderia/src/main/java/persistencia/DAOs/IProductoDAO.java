@@ -21,7 +21,9 @@ public interface IProductoDAO {
     public void agregarProducto(Producto producto) throws PersistenciaException;
 
     public List<Producto> buscarProductos(String filtro) throws PersistenciaException;
-    
+
     public List<Producto> obtenerTodosLosProductosActivos() throws PersistenciaException;
+
+    public List<String> obtenerNombresProductos() throws PersistenciaException;
 
 }

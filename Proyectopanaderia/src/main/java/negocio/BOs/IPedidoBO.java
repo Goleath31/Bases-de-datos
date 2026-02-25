@@ -15,7 +15,6 @@ import negocio.excepciones.NegocioException;
 import persistencia.dominio.Cupon;
 import persistencia.dominio.DetallePedido;
 
-
 public interface IPedidoBO {
 
     public void registrarPedido(PedidoNuevoDTO pedido) throws NegocioException;
@@ -32,12 +31,11 @@ public interface IPedidoBO {
 
     public void avanzarEstado(int idPedido, String estadoActual) throws NegocioException;
 
-
     public void registrarPedidoAgendado(PedidoAgendadoDTO pedido, List<DetallePedidoDTO> detalles) throws NegocioException;
 
     public void registrarPedidoExpress(PedidoExpressDTO pedidoExpress, List<DetallePedidoDTO> detalles) throws NegocioException;
-    
 
     public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws NegocioException;
+
 
 }

@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class ConexionBD implements IConexionBD {
     private final String cadenaConexion = "jdbc:mysql://localhost:3306/panaderia_db";
     private final String usuario = "root";
-    private final String password = "itson";
+    private final String password = "goleath9090";
 
     @Override
     public Connection crearConexion() throws SQLException {

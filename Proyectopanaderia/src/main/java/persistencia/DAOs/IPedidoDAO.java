@@ -18,11 +18,11 @@ import persistencia.dominio.PedidoProgramado;
 import persistencia.excepciones.PersistenciaException;
 
 public interface IPedidoDAO {
-    
+
     public int contarPedidosActivos(int idCliente) throws PersistenciaException;
-    
+
     public void agregarPedido(PedidoNuevoDTO pedido) throws PersistenciaException;
-    
+
     public List<PedidoEntregaDTO> buscarPedidos(String filtro) throws PersistenciaException;
 
     public String obtenerEstadoPedido(int idPedido) throws PersistenciaException;
@@ -36,19 +36,18 @@ public interface IPedidoDAO {
     public List<PedidoEntregaDTO> obtenerPedidosPreparacion() throws PersistenciaException;
 
     public void actualizarEstadoPedido(int idPedido, String nuevoEstado) throws PersistenciaException;
-        
+
     public void pasarAListo(int idPedido) throws PersistenciaException;
-    
+
     public void pasarANoEntregado(int idPedido) throws PersistenciaException;
-    
+
     public void pasarACancelado(int idPedido) throws PersistenciaException;
-    
-    
-    
+
     public void agregarPedidoProgramado(PedidoProgramado pedidoProgramado, List<DetallePedido> listaDetallePedido) throws PersistenciaException;
-    
+
     public void agregarPedidoExpress(PedidoExpress pedidoExpress, List<DetallePedido> listaDetallePedido) throws PersistenciaException;
-    
+
     public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws PersistenciaException;
-    
+
+
 }

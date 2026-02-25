@@ -22,4 +22,6 @@ public interface IProductoBO {
     public List<Producto> filtrarPorEstado(String estado) throws NegocioException;
     
     public List<ProductoDTO> obtenerTodosLosProductosActivos() throws NegocioException;
+    
+    public List<String> obtenerNombresProductos() throws NegocioException;
 }

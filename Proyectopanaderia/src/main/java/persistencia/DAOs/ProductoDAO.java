@@ -133,4 +133,22 @@ public class ProductoDAO implements IProductoDAO {
             throw new PersistenciaException("No se pudo cargar el catálogo de productos.");
         }
     }
+    
+    public List<String> obtenerNombresProductos() throws PersistenciaException {
+        List<String> nombres = new ArrayList<>();
+        // Solo productos con estado 'Disponible' según el script SQL 
+        String query = "SELECT nombre FROM Producto WHERE estado = 'Disponible'";
+
+        try (Connection conn = conexionBD.crearConexion(); 
+             PreparedStatement ps = conn.prepareStatement(query); 
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                nombres.add(rs.getString("nombre"));
+            }
+            return nombres;
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Error al consultar nombres de productos: " + ex.getMessage());
+        }
+    }
 }

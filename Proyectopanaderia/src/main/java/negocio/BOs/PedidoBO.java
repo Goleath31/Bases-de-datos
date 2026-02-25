@@ -349,5 +349,6 @@ public class PedidoBO implements IPedidoBO {
             throw new NegocioException("Error al filtrar la lista de pedidos: " + e.getMessage());
         }
     }
+    
 
 }
