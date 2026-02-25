@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +38,7 @@ public class ClienteDAO implements IClienteDAO{
                        INSERT INTO cliente (nombre, apellido_paterno, apellido_materno, domicilio, fecha_nacimiento, correo, contrasena) VALUES(?, ?, ?, ?, ?, ?, ?)
                        """;
         
-        try(Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)){
+        try(Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
             
             ps.setString(1, cliente.getNombre());
             ps.setString(2, cliente.getApellidoPaterno());
