@@ -109,4 +109,28 @@ public class ProductoDAO implements IProductoDAO {
         }
         return lista;
     }
+
+    @Override
+    public List<Producto> obtenerTodosLosProductosActivos() throws PersistenciaException {
+        List<Producto> lista = new ArrayList<>();
+        String sql = "SELECT id_producto, nombre, tipo, precio, estado, descripcion FROM Producto WHERE estado = 'Disponible'";
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Producto p = new Producto();
+                p.setId(rs.getInt("id_producto"));
+                p.setNombre(rs.getString("nombre"));
+                p.setTipo(rs.getString("tipo"));
+                p.setPrecio(rs.getFloat("precio"));
+                p.setEstado(rs.getString("estado"));
+                p.setDescripcion(rs.getString("descripcion"));
+                lista.add(p);
+            }
+            return lista;
+        } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "Error al consultar catálogo", e);
+            throw new PersistenciaException("No se pudo cargar el catálogo de productos.");
+        }
+    }
 }

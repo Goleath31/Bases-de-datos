@@ -5,6 +5,7 @@
 package negocio.BOs;
 
 import java.util.List;
+import negocio.DTOs.ProductoDTO;
 import negocio.excepciones.NegocioException;
 import persistencia.dominio.Producto;
 
@@ -19,4 +20,6 @@ public interface IProductoBO {
     public List<Producto> buscarProductos(String filtro) throws NegocioException;
 
     public List<Producto> filtrarPorEstado(String estado) throws NegocioException;
+    
+    public List<ProductoDTO> obtenerTodosLosProductosActivos() throws NegocioException;
 }
