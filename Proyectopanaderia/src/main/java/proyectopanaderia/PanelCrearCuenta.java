@@ -16,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,6 +25,9 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.border.EmptyBorder;
+import negocio.DTOs.ClienteDTO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -34,6 +38,14 @@ public class PanelCrearCuenta extends javax.swing.JPanel {
     private FramePrincipal principal;
     Date fechaSeleccionada;
 
+    private JTextField txtCorreo;
+    private JTextField txtNombres;
+    private JTextField txtApPaterno;
+    private JTextField txtApMaterno;
+    private JTextField txtTelefono;
+    private JTextField txtDomicilio;
+    private JPasswordField txtPassword;
+    
     //paleta de colores
     private Color colorHeader = Color.decode("#13315C");
     private Color colorFondo = Color.decode("#EEF4ED");
@@ -73,18 +85,41 @@ public class PanelCrearCuenta extends javax.swing.JPanel {
         panelFormulario.setLayout(new BoxLayout(panelFormulario, BoxLayout.Y_AXIS));
         panelFormulario.setOpaque(false);
 
-        panelFormulario.add(crearFilaInputUnico("correo electrónico", false));
-        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelFormulario.add(crearFilaInputUnico("Nombres", false));
-        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelFormulario.add(crearFilaInputDoble("Apellido paterno", "Apellido materno"));
-        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelFormulario.add(crearFilaSpinnerFecha("Fecha de nacimiento"));
-        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelFormulario.add(crearFilaInputUnico("Numero de telefono", false));
+        // Correo
+        txtCorreo = crearTextField("correo electrónico", false);
+        panelFormulario.add(envolverEnPanelAzul(txtCorreo));
         panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        panelFormulario.add(crearFilaInputUnico("Contraseña", true));
+        // Nombres
+        txtNombres = crearTextField("Nombres", false);
+        panelFormulario.add(envolverEnPanelAzul(txtNombres));
+        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Apellidos (Doble)
+        txtApPaterno = crearTextField("Apellido paterno", false);
+        txtApMaterno = crearTextField("Apellido materno", false);
+        panelFormulario.add(crearFilaInputDobleManual(txtApPaterno, txtApMaterno));
+        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
+        
+        // FEcha
+        panelFormulario.add(crearFilaSpinnerFecha("Fecha de nacimiento"));
+        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
+        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
+        
+        // Teléfono
+        txtTelefono = crearTextField("Numero de telefono", false);
+        panelFormulario.add(envolverEnPanelAzul(txtTelefono));
+        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
+        
+        txtDomicilio = crearTextField("Domicilio completo (Calle, Número, Colonia)", false);
+        panelFormulario.add(envolverEnPanelAzul(txtDomicilio));
+        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Contraseña
+        txtPassword = (JPasswordField) crearTextField("Contraseña", true);
+        panelFormulario.add(envolverEnPanelAzul(txtPassword));
+        panelFormulario.add(Box.createRigidArea(new Dimension(0, 15)));
+        
 
         
         JPanel panelBoton = new JPanel();
@@ -102,8 +137,38 @@ public class PanelCrearCuenta extends javax.swing.JPanel {
         btnCrear.setMaximumSize(new Dimension(200, 45));
 
         btnCrear.addActionListener(e -> {
-            //logica agregar cuenta aqui
-            JOptionPane.showMessageDialog(this, "Cuenta creada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            String correo = txtCorreo.getText();
+            String nombre = txtNombres.getText();
+            String apPaterno = txtApPaterno.getText();
+            String apMaterno = txtApMaterno.getText();
+            String domicilio = txtDomicilio.getText();
+            String password = new String(txtPassword.getPassword());
+            
+            if (nombre.equals("Nombres") || correo.equals("correo electrónico")) {
+                JOptionPane.showMessageDialog(this, "Por favor llena todos los campos");
+                return;
+            }
+            
+            try {
+                ClienteDTO dto = new ClienteDTO();
+                dto.setNombre(nombre);
+                dto.setApellidoPaterno(apPaterno);
+                dto.setApellidoMaterno(apMaterno);
+                dto.setCorreo(correo);
+                dto.setDomicilio(domicilio);
+                dto.setContraseña(password);
+                dto.setFechaNacimiento(fechaSeleccionada); 
+
+                FabricaBOs.obtenerClienteBO().agregarCliente(dto);
+
+                JOptionPane.showMessageDialog(this, "Cuenta creada exitosamente");
+                principal.mostrarPanel(new PanelIndexCliente(principal));
+
+            } catch (NegocioException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
             principal.mostrarPanel(new PanelIndexCliente(principal)); 
         });
 
@@ -231,6 +296,21 @@ public class PanelCrearCuenta extends javax.swing.JPanel {
         });
 
         return txt;
+    }
+    
+    private JPanel envolverEnPanelAzul(JComponent componente) {
+        JPanel panelFila = configurarPanelAzul();
+        panelFila.add(componente);
+        return panelFila;
+    }
+
+    private JPanel crearFilaInputDobleManual(JTextField c1, JTextField c2) {
+        JPanel panelFila = configurarPanelAzul();
+        panelFila.setLayout(new BoxLayout(panelFila, BoxLayout.X_AXIS));
+        panelFila.add(c1);
+        panelFila.add(Box.createRigidArea(new Dimension(20, 0)));
+        panelFila.add(c2);
+        return panelFila;
     }
     
     /**
