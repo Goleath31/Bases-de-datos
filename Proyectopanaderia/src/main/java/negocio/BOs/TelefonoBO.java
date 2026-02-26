@@ -166,7 +166,7 @@ public class TelefonoBO implements ITelefonoBO {
             Telefono entidad = new Telefono();
             entidad.setNumero(telefonoDTO.getNumero());
             entidad.setEtiqueta(telefonoDTO.getEtiqueta());
-            entidad.setId(telefonoDTO.getIdCliente());
+            entidad.setId_cliente(telefonoDTO.getIdCliente());
 
             Telefono resultado = telefonoDAO.crearTelefono(entidad);
 

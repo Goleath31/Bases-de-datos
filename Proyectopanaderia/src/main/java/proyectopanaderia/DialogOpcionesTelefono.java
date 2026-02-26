@@ -8,6 +8,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import negocio.BOs.ITelefonoBO;
+import negocio.DTOs.ClienteDTO;
+import negocio.DTOs.TelefonoDTO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -16,6 +23,9 @@ import java.awt.*;
 public class DialogOpcionesTelefono extends javax.swing.JDialog {
 
     private JPanel panelListaTelefonos;
+    
+    private final ClienteDTO clienteActivo = SesionCliente.getCliente();
+    private final ITelefonoBO telefonoBO = FabricaBOs.obtenerTelefonoBO();
     
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
@@ -28,6 +38,7 @@ public class DialogOpcionesTelefono extends javax.swing.JDialog {
         super(parent, true);
         this.setUndecorated(true);
         iniciarComponentes();
+        cargarTelefonos();
         this.setSize(896, 672);
         this.setLocationRelativeTo(parent); 
         this.setUndecorated(true); 
@@ -47,13 +58,14 @@ public class DialogOpcionesTelefono extends javax.swing.JDialog {
         panelListaTelefonos.setLayout(new BoxLayout(panelListaTelefonos, BoxLayout.Y_AXIS));
         panelListaTelefonos.setOpaque(false);
 
+        /*
         //SOLO PARA DEBUGEAR CAMBIAR AL CONECTAR CON BACKEND
         panelListaTelefonos.add(crearFilaTelefono("Numero de casa", "402 438 2790"));
         panelListaTelefonos.add(Box.createRigidArea(new Dimension(0, 20)));
         panelListaTelefonos.add(crearFilaTelefono("Numero trabajo", "402 438 2790"));
         panelListaTelefonos.add(Box.createRigidArea(new Dimension(0, 20)));
         panelListaTelefonos.add(crearFilaTelefono("Numero novia", "402 438 2790"));
-
+        */
         JScrollPane scrollTelefonos = new JScrollPane(panelListaTelefonos);
         scrollTelefonos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollTelefonos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -66,6 +78,16 @@ public class DialogOpcionesTelefono extends javax.swing.JDialog {
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         bottomPanel.setOpaque(false);
         bottomPanel.setMaximumSize(new Dimension(800, 60));
+        
+        JButton btnAgregar = new JButton("+");
+        btnAgregar.setFont(new Font("SansSerif", Font.BOLD, 40));
+        btnAgregar.setBackground(colorBotones);
+        btnAgregar.setForeground(Color.WHITE);
+        btnAgregar.setPreferredSize(new Dimension(80, 60));
+        btnAgregar.addActionListener(e -> agregarNuevoTelefono());
+
+        bottomPanel.add(btnAgregar); // Añadir el botón +
+        bottomPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Espacio
 
         JButton btnRegresar = new JButton("Regresar");
         btnRegresar.setFont(new Font("SansSerif", Font.PLAIN, 24));
@@ -88,8 +110,7 @@ public class DialogOpcionesTelefono extends javax.swing.JDialog {
         this.add(mainContent);
     }
     
-    
-    private JPanel crearFilaTelefono(String tipo, String numero) {
+    private JPanel crearFilaTelefono(TelefonoDTO dto) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setBackground(colorPaneles);
@@ -101,49 +122,48 @@ public class DialogOpcionesTelefono extends javax.swing.JDialog {
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setOpaque(false);
 
-        JLabel lblTipo = new JLabel(tipo);
+        JLabel lblTipo = new JLabel(dto.getEtiqueta());
         lblTipo.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        lblTipo.setForeground(Color.BLACK);
 
-        //arreglo de 1 posición para poder modificarlo al editar
-        final String[] numeroActual = {numero};
-        JLabel lblNumero = new JLabel(numeroActual[0]);
+        JLabel lblNumero = new JLabel(dto.getNumero());
         lblNumero.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        lblNumero.setForeground(Color.BLACK);
 
         textPanel.add(lblTipo);
         textPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         textPanel.add(lblNumero);
 
+        // BOTÓN EDITAR
         JButton btnEditar = new JButton("✎");
         btnEditar.setFont(new Font("SansSerif", Font.PLAIN, 32));
         btnEditar.setContentAreaFilled(false);
         btnEditar.setBorderPainted(false);
-        btnEditar.setFocusPainted(false);
-        btnEditar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
         btnEditar.addActionListener(e -> {
-            String nuevoNumero = JOptionPane.showInputDialog(this, "Editar número:", numeroActual[0]);
-            //AÑADIR VALIACION REGEX
-            if (nuevoNumero != null && !nuevoNumero.trim().isEmpty()) {
-                numeroActual[0] = nuevoNumero;
-                lblNumero.setText(nuevoNumero);
+            String nuevoNum = JOptionPane.showInputDialog(this, "Nuevo número (10 dígitos):", dto.getNumero());
+            if (nuevoNum != null) {
+                try {
+                    dto.setNumero(nuevoNum.trim());
+                    telefonoBO.editarTelefono(dto.getIdTelefono(), dto);
+                    lblNumero.setText(dto.getNumero());
+                } catch (NegocioException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
-        //botón eliminar
-        JButton btnEliminar = new JButton("🗑"); 
+        // BOTÓN ELIMINAR
+        JButton btnEliminar = new JButton("🗑");
         btnEliminar.setFont(new Font("SansSerif", Font.PLAIN, 32));
         btnEliminar.setContentAreaFilled(false);
         btnEliminar.setBorderPainted(false);
-        btnEliminar.setFocusPainted(false);
-        btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEliminar.addActionListener(e -> {
-            int confirmacion = JOptionPane.showConfirmDialog(this, "¿Seguro que deseas eliminar este número?", "Confirmar", JOptionPane.YES_NO_OPTION);
-            if (confirmacion == JOptionPane.YES_OPTION) {
-                panelListaTelefonos.remove(panel);
-                panelListaTelefonos.revalidate();
-                panelListaTelefonos.repaint();
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar " + dto.getEtiqueta() + "?");
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    telefonoBO.eliminarTelefono(dto.getIdTelefono());
+                    cargarTelefonos(); // Refrescamos la lista
+                } catch (NegocioException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage());
+                }
             }
         });
 
@@ -154,6 +174,46 @@ public class DialogOpcionesTelefono extends javax.swing.JDialog {
         panel.add(btnEliminar);
 
         return panel;
+    }
+
+    private void cargarTelefonos() {
+        panelListaTelefonos.removeAll();
+        try {
+            
+            List<TelefonoDTO> lista = telefonoBO.consultarTelefonos(clienteActivo.getIdCliente());
+            for (TelefonoDTO t : lista) {
+                panelListaTelefonos.add(crearFilaTelefono(t));
+                panelListaTelefonos.add(Box.createRigidArea(new Dimension(0, 20)));
+            }
+        } catch (NegocioException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+        panelListaTelefonos.revalidate();
+        panelListaTelefonos.repaint();
+    }
+
+    private void agregarNuevoTelefono() {
+        JTextField txtEtiqueta = new JTextField();
+        JTextField txtNumero = new JTextField();
+        Object[] formulario = {
+            "Etiqueta (ej. Trabajo):", txtEtiqueta,
+            "Número (10 dígitos):", txtNumero
+        };
+
+        int result = JOptionPane.showConfirmDialog(this, formulario, "Nuevo Teléfono", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            try {
+                TelefonoDTO nuevo = new TelefonoDTO();
+                nuevo.setEtiqueta(txtEtiqueta.getText().trim());
+                nuevo.setNumero(txtNumero.getText().trim());
+                nuevo.setIdCliente(clienteActivo.getIdCliente());
+
+                telefonoBO.crearTelefono(nuevo);
+                cargarTelefonos();
+            } catch (NegocioException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     /**

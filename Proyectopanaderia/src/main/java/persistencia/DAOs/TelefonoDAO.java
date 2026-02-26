@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -149,7 +150,7 @@ public class TelefonoDAO implements ITelefonoDAO {
                        VALUES (?, ?, ?)
                        """;
 
-        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, telefono.getNumero());
             ps.setString(2, telefono.getEtiqueta());
             ps.setInt(3, telefono.getId_cliente());

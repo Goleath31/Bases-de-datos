@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.border.EmptyBorder;
 import negocio.DTOs.ClienteDTO;
+import negocio.DTOs.TelefonoDTO;
 import negocio.excepciones.NegocioException;
 import negocio.fabrica.FabricaBOs;
 
@@ -161,6 +162,15 @@ public class PanelCrearCuenta extends javax.swing.JPanel {
                 dto.setFechaNacimiento(fechaSeleccionada); 
 
                 FabricaBOs.obtenerClienteBO().agregarCliente(dto);
+                ClienteDTO idCliente = FabricaBOs.obtenerClienteBO().leerClientePorCorreo(correo);
+                TelefonoDTO telefono = new TelefonoDTO();
+                
+                telefono.setEtiqueta("Defaul");
+                telefono.setNumero(txtTelefono.getText());
+                telefono.setIdCliente(idCliente.getIdCliente());
+                
+                FabricaBOs.obtenerTelefonoBO().crearTelefono(telefono);
+                
 
                 JOptionPane.showMessageDialog(this, "Cuenta creada exitosamente");
                 principal.mostrarPanel(new PanelIndexCliente(principal));

@@ -32,7 +32,7 @@ public class ConexionBD implements IConexionBD {
     /**
      * Contraseña para la autenticación en MySQL.
      */
-    private final String password = "goleath9090";
+    private final String password = "itson";
 
     /**
      * Crea una conexión física con la base de datos utilizando JDBC.
