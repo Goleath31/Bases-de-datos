@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import negocio.DTOs.DetallePedidoDTO;
+import negocio.DTOs.ProductoDTO;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -43,6 +46,7 @@ public class PanelConfirmarPedidoAgendado extends javax.swing.JPanel {
     private Color colorGrisClaro = Color.decode("#D5D5D5");
     private List<DetallePedidoDTO> listaDetallesPedido;
     private Date fechaSeleccionada;
+    private Map<ProductoDTO, Integer> cantidadesPedido;
 
     /**
      * Creates new form PanelConfirmarPedidoAgendado
@@ -96,7 +100,7 @@ public class PanelConfirmarPedidoAgendado extends javax.swing.JPanel {
         for (DetallePedidoDTO detalle : listaDetallesPedido) {
             double subtotal = detalle.getCantidad() * detalle.getPrecioUnitario();
             total += subtotal;
-            panelListaProductos.add(crearFilaProducto("Producto ID: " + detalle.getIdProducto(), detalle.getCantidad(), subtotal));
+            panelListaProductos.add(crearFilaProducto("Producto: " + detalle.getIdProducto(), detalle.getCantidad(), subtotal));
             panelListaProductos.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 

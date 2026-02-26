@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -30,6 +31,7 @@ import javax.swing.border.EmptyBorder;
 import negocio.BOs.IProductoBO;
 import negocio.BOs.ProductoBO;
 import negocio.DTOs.DetallePedidoDTO;
+import negocio.DTOs.ProductoDTO;
 import negocio.excepciones.NegocioException;
 import persistencia.DAOs.ProductoDAO;
 import persistencia.conexion.ConexionBD;
@@ -44,6 +46,7 @@ public class PanelAgendarPedido extends javax.swing.JPanel {
     private Date fechaSeleccionada;
     private Set<String> productosSeleccionados = new HashSet<>();
     private List<DetallePedidoDTO> listaDetallesPedido = new ArrayList<>();
+    private Map<ProductoDTO, Integer> cantidadesPedido;
 
     // Paleta de colores
     private Color colorHeader = Color.decode("#13315C");

@@ -80,5 +80,13 @@ public interface IProductoDAO {
      * @throws PersistenciaException Si ocurre un error en la consulta.
      */
     public List<String> obtenerNombresProductos() throws PersistenciaException;
+    
+    /**
+    * Obtiene el nombre de un producto a partir de su identificador único.
+    * * @param idProducto Identificador del producto en la base de datos.
+    * @return El nombre del producto si se encuentra, null en caso contrario.
+    * @throws PersistenciaException Si ocurre un error en la consulta SQL.
+    */
+    public String obtenerNombreProductoPorId(int idProducto) throws PersistenciaException;
 
 }

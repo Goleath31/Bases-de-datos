@@ -204,4 +204,32 @@ public class ProductoDAO implements IProductoDAO {
             throw new PersistenciaException("Error al consultar nombres de productos: " + ex.getMessage());
         }
     }
+
+    /**
+     * Regresa nombre de producto segn su id
+     * @param idProducto
+     * @return nombre producto null en caso contrarior
+     * @throws PersistenciaException 
+     */
+    @Override
+    public String obtenerNombreProductoPorId(int idProducto) throws PersistenciaException {
+        String query = "SELECT nombre FROM Producto WHERE id_producto = ?";
+
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, idProducto);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("nombre");
+                }
+            }
+
+            return null;
+
+        } catch (SQLException ex) {
+            LOG.log(Level.SEVERE, "Error al obtener el nombre del producto con ID: " + idProducto, ex);
+            throw new PersistenciaException("Error al consultar el nombre del producto: " + ex.getMessage());
+        }
+    }
 }

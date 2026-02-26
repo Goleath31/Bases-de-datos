@@ -172,4 +172,25 @@ public class ProductoBO implements IProductoBO {
             throw new NegocioException(ex.getMessage());
         }
     }
+
+    @Override
+    public String obtenerNombreProductoPorId(int idProducto) throws NegocioException {
+        if (idProducto <= 0) {
+            throw new NegocioException("El ID del producto debe ser un número positivo.");
+        }
+
+        try {
+            String nombre = productoDAO.obtenerNombreProductoPorId(idProducto);
+
+            if (nombre == null || nombre.trim().isEmpty()) {
+                throw new NegocioException("No se encontró ningún producto con el ID: " + idProducto);
+            }
+
+            return nombre;
+
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, "Error de negocio al buscar producto " + idProducto, ex);
+            throw new NegocioException("Error al consultar el catálogo de productos.");
+        }
+    }
 }

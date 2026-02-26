@@ -81,4 +81,13 @@ public interface IProductoBO {
      * @throws NegocioException Si ocurre un error técnico.
      */
     public List<String> obtenerNombresProductos() throws NegocioException;
+    
+    /**
+     * Obtiene el nombre del producto validando que el ID sea mayor a cero.
+     *
+     * * @param idProducto Identificador del producto.
+     * @return El nombre del producto.
+     * @throws NegocioException Si el ID es inválido o el producto no existe.
+     */
+    public String obtenerNombreProductoPorId(int idProducto) throws NegocioException;
 }
