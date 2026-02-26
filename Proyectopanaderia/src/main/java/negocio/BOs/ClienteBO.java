@@ -15,25 +15,41 @@ import persistencia.excepciones.PersistenciaException;
 import proyectopanaderia.SesionCliente;
 
 /**
+ * Clase de Objeto de Negocio (BO) para la gestión de Clientes. Contiene la
+ * lógica de validación, registro, edición y autenticación de usuarios.
  *
- * @author joser
+ * * @author joser
+ *
  */
-public class ClienteBO implements IClienteBO{
+public class ClienteBO implements IClienteBO {
+
     private final IClienteDAO clienteDAO;
     private static final Logger LOG = Logger.getLogger(PedidoBO.class.getName());
 
+    /**
+     * Constructor que inyecta la dependencia del DAO de cliente.
+     *
+     * * @param clienteDAO Interfaz de acceso a datos para clientes.
+     */
     public ClienteBO(IClienteDAO clienteDAO) {
         this.clienteDAO = clienteDAO;
     }
-    
 
+    /**
+     * Registra un nuevo cliente en el sistema tras validar sus datos.
+     *
+     * * @param clienteDTO Objeto con la información del cliente a registrar.
+     * @return ClienteDTO El objeto registrado incluyendo su ID generado.
+     * @throws NegocioException Si los datos son inválidos o hay un error en la
+     * persistencia.
+     */
     @Override
     public ClienteDTO agregarCliente(ClienteDTO clienteDTO) throws NegocioException {
         if (clienteDTO == null) {
-            LOG.log( Level.WARNING, "Se intento agregar un cliente nulo");
+            LOG.log(Level.WARNING, "Se intento agregar un cliente nulo");
             throw new NegocioException("El cliente a agregar no puede ser null");
         }
-        
+
         validarCliente(clienteDTO);
         Cliente cliente = new Cliente();
         cliente.setNombre(clienteDTO.getNombre());
@@ -43,21 +59,29 @@ public class ClienteBO implements IClienteBO{
         cliente.setFechaNacimiento(clienteDTO.getFechaNacimiento());
         cliente.setCorreo(clienteDTO.getCorreo());
         cliente.setContraseña(clienteDTO.getContraseña());
-        
-        try{
+
+        try {
             clienteDAO.agregarCliente(cliente);
             clienteDTO.setIdCliente(cliente.getId());
-        
+
             return clienteDTO;
-        }
-        catch(PersistenciaException ex){
-            LOG.log( Level.WARNING, "Error al querer agregar un cliente " + ex.getMessage());
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.WARNING, "Error al querer agregar un cliente " + ex.getMessage());
             throw new NegocioException("Error al agrear un cliente " + ex.getMessage());
         }
-        
+
     }
 
-    @Override 
+    /**
+     * Actualiza la información de un cliente existente.
+     *
+     * * @param id Identificador único del cliente.
+     * @param clienteDTO Objeto con los nuevos datos del cliente.
+     * @return ClienteDTO Los datos actualizados.
+     * @throws NegocioException Si el ID es inválido, los datos son nulos o el
+     * cliente no existe.
+     */
+    @Override
     public ClienteDTO editarCliente(int id, ClienteDTO clienteDTO) throws NegocioException {
         if (id <= 0) {
             throw new NegocioException("El ID del cliente no es válido para edición.");
@@ -91,6 +115,14 @@ public class ClienteBO implements IClienteBO{
         }
     }
 
+    /**
+     * Busca un cliente en la base de datos mediante su correo electrónico.
+     *
+     * * @param correo Correo electrónico del cliente.
+     * @return ClienteDTO con la información encontrada.
+     * @throws NegocioException Si el formato del correo es inválido o no se
+     * encuentra el cliente.
+     */
     @Override
     public ClienteDTO leerClientePorCorreo(String correo) throws NegocioException {
         String regexCorreo = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -122,6 +154,16 @@ public class ClienteBO implements IClienteBO{
         }
     }
 
+    /**
+     * Valida las credenciales de acceso de un cliente e inicia su sesión
+     * global.
+     *
+     * * @param correo Correo electrónico del usuario.
+     * @param contraseña Contraseña del usuario.
+     * @return true si las credenciales son correctas.
+     * @throws NegocioException Si faltan datos, las credenciales son
+     * incorrectas o hay error de sistema.
+     */
     @Override
     public boolean validarCliente(String correo, String contraseña) throws NegocioException {
         if (correo == null || correo.trim().isEmpty()) {
@@ -155,7 +197,16 @@ public class ClienteBO implements IClienteBO{
             throw new NegocioException("Error al intentar validar las credenciales.");
         }
     }
-    
+
+    /**
+     * Realiza validaciones de formato y reglas de negocio sobre los datos de un
+     * cliente. Valida nombres, correo, contraseña (mínimo 4 caracteres con
+     * letra y número) y domicilio.
+     *
+     * * @param clienteDTO Objeto con los datos a validar.
+     * @throws NegocioException Si alguna validación de formato o regla de
+     * negocio falla.
+     */
     public void validarCliente(ClienteDTO clienteDTO) throws NegocioException {
         if (clienteDTO == null) {
             throw new NegocioException("Los datos del cliente no pueden ser nulos.");
@@ -201,6 +252,15 @@ public class ClienteBO implements IClienteBO{
         }
     }
 
+    /**
+     * Desactiva la cuenta de un cliente "ensuciando" su contraseña con un
+     * prefijo. Esto impide futuros inicios de sesión manteniendo la integridad
+     * referencial.
+     *
+     * * @param idCliente ID del cliente a desactivar.
+     * @throws NegocioException Si el ID es inválido, el cliente no existe o ya
+     * está desactivado.
+     */
     @Override
     public void desactivarCuenta(int idCliente) throws NegocioException {
         if (idCliente <= 0) {
@@ -233,5 +293,5 @@ public class ClienteBO implements IClienteBO{
             throw new NegocioException("No se pudo desactivar la cuenta en este momento.");
         }
     }
-    
+
 }

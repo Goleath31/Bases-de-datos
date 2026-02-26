@@ -25,18 +25,34 @@ import persistencia.dominio.PedidoProgramado;
 import persistencia.excepciones.PersistenciaException;
 
 /**
+ * Objeto de Negocio (BO) para la gestión integral de pedidos. Controla el ciclo
+ * de vida de pedidos Express y Agendados, validando reglas de negocio como el
+ * límite de pedidos activos por cliente y la seguridad por PIN.
  *
- * @author golea
+ * * @author golea
  */
 public class PedidoBO implements IPedidoBO {
 
     private final IPedidoDAO pedidoDAO;
     private static final Logger LOG = Logger.getLogger(PedidoBO.class.getName());
 
+    /**
+     * Constructor que inyecta la dependencia del DAO de pedidos.
+     *
+     * @param pedidoDAO Interfaz de persistencia para pedidos.
+     */
     public PedidoBO(IPedidoDAO pedidoDAO) {
         this.pedidoDAO = pedidoDAO;
     }
 
+    /**
+     * Registra un pedido básico validando que el cliente no exceda el máximo de
+     * 3 pedidos activos.
+     *
+     * @param pedidoDTO Datos del pedido a registrar.
+     * @throws NegocioException Si el cliente ya tiene el cupo máximo de pedidos
+     * activos.
+     */
     @Override
     public void registrarPedido(PedidoNuevoDTO pedidoDTO) throws NegocioException {
         try {
@@ -51,6 +67,14 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Procesa la entrega física de un pedido verificando que su estado actual
+     * sea "Listo".
+     *
+     * @param idPedido ID del pedido a entregar.
+     * @param metodoPago Forma de pago utilizada.
+     * @throws NegocioException Si el pedido no está listo para entrega.
+     */
     @Override
     public void procesarEntrega(int idPedido, String metodoPago) throws NegocioException {
         try {
@@ -67,6 +91,14 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Avanza el pedido a través del flujo de estados definido: Pendiente ->
+     * Listo -> Cancelado -> No Entregado.
+     *
+     * @param idPedido ID del pedido a modificar.
+     * @param estadoActual Estado previo al cambio.
+     * @throws NegocioException Si ocurre un error en la persistencia.
+     */
     @Override
     public void validarPinExpress(int idPedido, String pin) throws NegocioException {
         try {
@@ -79,6 +111,14 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Busca pedidos que están en espera de ser entregados, permitiendo filtrar
+     * por texto.
+     *
+     * * @param filtro Criterio de búsqueda (nombre cliente, folio, etc.).
+     * @return Lista de {@link PedidoEntregaDTO} que coinciden con el filtro.
+     * @throws NegocioException Si ocurre un error al recuperar la información.
+     */
     @Override
     public List<PedidoEntregaDTO> buscarPedidosPendientesEntrega(String filtro) throws NegocioException {
         try {
@@ -88,6 +128,14 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Obtiene la lista de cupones de descuento que se encuentran vigentes
+     * actualmente.
+     *
+     * * @return Lista de objetos {@link Cupon}.
+     * @throws NegocioException Si hay un fallo en la consulta a la base de
+     * datos.
+     */
     @Override
     public List<Cupon> obtenerCuponesVigentes() throws NegocioException {
         try {
@@ -97,6 +145,13 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Lista todos los pedidos que se encuentran actualmente en la fase de
+     * preparación.
+     *
+     * * @return Lista de {@link PedidoEntregaDTO} en preparación.
+     * @throws NegocioException Si ocurre un error de persistencia.
+     */
     @Override
     public List<PedidoEntregaDTO> listarPedidosPreparacion() throws NegocioException {
         try {
@@ -106,6 +161,16 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Avanza el estado de un pedido siguiendo el flujo lógico establecido:
+     * Pendiente -> Listo -> Cancelado -> No Entregado.
+     *
+     * * @param idPedido ID del pedido a actualizar.
+     * @param estadoActual El estado en el que se encuentra el pedido antes del
+     * cambio.
+     * @throws NegocioException Si ocurre un error al actualizar el estado en
+     * BD.
+     */
     @Override
     public void avanzarEstado(int idPedido, String estadoActual) throws NegocioException {
         String nuevoEstado = "";
@@ -132,6 +197,15 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Registra un pedido de tipo Express junto con sus artículos detallados.
+     * Realiza validaciones de integridad y formato antes de la persistencia.
+     *
+     * * @param pedidoExpressDTO Datos generales del pedido express.
+     * @param detallesDTO Lista de artículos (productos y cantidades) incluidos.
+     * @throws NegocioException Si los parámetros son nulos, la lista está vacía
+     * o fallan las reglas de negocio.
+     */
     @Override
     public void registrarPedidoExpress(PedidoExpressDTO pedidoExpressDTO, List<DetallePedidoDTO> detallesDTO) throws NegocioException {
         if (pedidoExpressDTO == null || detallesDTO.isEmpty()) {
@@ -171,6 +245,14 @@ public class PedidoBO implements IPedidoBO {
 
     }
 
+    /**
+     * Registra un pedido agendado/programado, permitiendo el uso de cupones.
+     *
+     * * @param pedidoAgendadoDTO Datos de cabecera del pedido agendado.
+     * @param detallesDTO Lista de artículos asociados al pedido.
+     * @throws NegocioException Si hay errores en las validaciones de negocio o
+     * persistencia.
+     */
     @Override
     public void registrarPedidoAgendado(PedidoAgendadoDTO pedidoAgendadoDTO, List<DetallePedidoDTO> detallesDTO) throws NegocioException {
         if (pedidoAgendadoDTO == null || detallesDTO.isEmpty()) {
@@ -212,9 +294,13 @@ public class PedidoBO implements IPedidoBO {
 
     }
 
-
     /**
      * Valida los datos de un DTO de Pedido Exprés antes de enviarlos al DAO.
+     * Verifica nulidad, longitud del folio y presencia de PIN.
+     *
+     * * @param pedidoExpress Objeto DTO con la información del pedido.
+     * @throws NegocioException Si algún campo obligatorio falta o excede los
+     * límites.
      */
     public void validarPedidoExpress(PedidoExpressDTO pedidoExpress) throws NegocioException {
 
@@ -251,8 +337,12 @@ public class PedidoBO implements IPedidoBO {
     }
 
     /**
-     * Valida los datos de un artículo a agregar en el pedido exprés. Lanza una
-     * excepción si algún dato rompe las reglas de negocio.
+     * Valida los datos de un artículo individual para un pedido exprés.
+     * Verifica ID de producto, cantidades lógicas y notas.
+     *
+     * * @param item DTO que representa el detalle del pedido.
+     * @throws NegocioException Si la cantidad es menor a 1, excede 500 o las
+     * notas son muy largas.
      */
     public void validarItemPedidoExpress(DetallePedidoDTO item) throws NegocioException {
 
@@ -286,7 +376,11 @@ public class PedidoBO implements IPedidoBO {
     }
 
     /**
-     * Valida los datos principales de un Pedido Agendado (Programado).
+     * Valida la integridad de un pedido agendado.
+     *
+     * * @param pedidoDTO DTO del pedido agendado.
+     * @throws NegocioException Si el objeto es nulo, el ID del cliente o cupón
+     * no son válidos.
      */
     private void validarPedidoAgendado(PedidoAgendadoDTO pedidoDTO) throws NegocioException {
 
@@ -308,8 +402,11 @@ public class PedidoBO implements IPedidoBO {
     }
 
     /**
-     * Valida los datos de un artículo individual a agregar en el pedido
-     * agendado.
+     * Valida un artículo individual destinado a un pedido agendado.
+     *
+     * * @param item Detalle del artículo a validar.
+     * @throws NegocioException Si los datos del producto o cantidades son
+     * incorrectos.
      */
     private void validarItemPedidoAgendado(DetallePedidoDTO item) throws NegocioException {
 
@@ -341,6 +438,14 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
+    /**
+     * Realiza una búsqueda avanzada de pedidos aplicando un filtro de texto.
+     *
+     * * @param filtro Cadena de texto para filtrar los registros.
+     * @return Lista de {@link PedidoEntregaDTO} filtrados.
+     * @throws NegocioException Si ocurre un error en la capa de persistencia
+     * durante el filtrado.
+     */
     @Override
     public List<PedidoEntregaDTO> buscarPedidosAvanzado(String filtro) throws NegocioException {
         try {
@@ -349,6 +454,5 @@ public class PedidoBO implements IPedidoBO {
             throw new NegocioException("Error al filtrar la lista de pedidos: " + e.getMessage());
         }
     }
-    
 
 }
