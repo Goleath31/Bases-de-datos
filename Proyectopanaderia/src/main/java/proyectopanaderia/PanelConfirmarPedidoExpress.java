@@ -11,6 +11,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -21,6 +24,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
+import negocio.DTOs.DetallePedidoDTO;
+import negocio.DTOs.PedidoExpressDTO;
+import negocio.DTOs.ProductoDTO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -29,6 +37,7 @@ import javax.swing.border.EmptyBorder;
 public class PanelConfirmarPedidoExpress extends javax.swing.JPanel {
 
     private FramePrincipal principal;
+    private Map<ProductoDTO, Integer> cantidadesPedido;
 
     // Paleta de colores
     private Color colorHeader = Color.decode("#13315C");
@@ -39,8 +48,9 @@ public class PanelConfirmarPedidoExpress extends javax.swing.JPanel {
     /**
      * Creates new form PanelConfirmarPedidoExpress
      */
-    public PanelConfirmarPedidoExpress(FramePrincipal principal) {
+    public PanelConfirmarPedidoExpress(FramePrincipal principal, Map<ProductoDTO, Integer> cantidadesPedido) {
         this.principal = principal;
+        this.cantidadesPedido = cantidadesPedido;
         initComponents();
         iniciarComponentes();
     }
@@ -48,20 +58,7 @@ public class PanelConfirmarPedidoExpress extends javax.swing.JPanel {
     public void iniciarComponentes(){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(colorFondo);
-        //this.setBorder(new EmptyBorder(20, 40, 20, 40));
 
-
-        /*
-        JLabel lblMiga = new JLabel("Confirmación de pago express");
-        lblMiga.setForeground(Color.GRAY);
-        lblMiga.setFont(new Font("Arial", Font.PLAIN, 12));
-        
-        JPanel panelMiga = new JPanel();
-        panelMiga.setLayout(new BoxLayout(panelMiga, BoxLayout.X_AXIS));
-        panelMiga.setOpaque(false);
-        panelMiga.setMaximumSize(new Dimension(850, 20));
-        panelMiga.add(lblMiga);
-        panelMiga.add(Box.createHorizontalGlue());*/
 
         JPanel panelCabecera = new JPanel();
         panelCabecera.setLayout(new BoxLayout(panelCabecera, BoxLayout.X_AXIS));
@@ -93,11 +90,21 @@ public class PanelConfirmarPedidoExpress extends javax.swing.JPanel {
 
         //Agregar aqui la lista de productos
         //Solo para debug temporalmente
+        /*
         for (int i = 1; i <= 5; i++) {
             panelListaProductos.add(crearFilaProducto("Producto Express " + i, 1, 299.00));
             panelListaProductos.add(Box.createRigidArea(new Dimension(0, 10)));
         }
-
+        */
+        cantidadesPedido.forEach((producto, cantidad) ->{
+            if (cantidad > 0) {
+                panelListaProductos.add(crearFilaProducto(producto.getNombre(), cantidad, (producto.getPrecio() * cantidad)));
+                panelListaProductos.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+            
+        });
+        
+        
         JScrollPane scrollProductos = new JScrollPane(panelListaProductos);
         scrollProductos.setBorder(BorderFactory.createEmptyBorder());
         scrollProductos.getViewport().setBackground(colorPaneles);
@@ -123,11 +130,32 @@ public class PanelConfirmarPedidoExpress extends javax.swing.JPanel {
         btnConfirmar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PanelConfirmarPedidoExpress.this, 
-                    "¡Tu pedido express se ha confirmado rápidamente!", 
-                    "Compra Exitosa", 
-                    JOptionPane.INFORMATION_MESSAGE);
-                principal.mostrarPanel(new PanelIndexCliente(principal)); 
+                try {
+                    String folio = GeneradorFolioPin.generarFolio();
+                    String pin = GeneradorFolioPin.generarPin();
+                    List<DetallePedidoDTO> detallesPedidoDTO = new ArrayList<>();
+                    PedidoExpressDTO pedidoExpressDTO = new PedidoExpressDTO(folio, pin);
+                    
+                    cantidadesPedido.forEach((producto, cantidad) -> {
+                        if (cantidad > 0) {
+                            DetallePedidoDTO detalle = new DetallePedidoDTO();
+                            detalle.setCantidad(cantidad);
+                            detalle.setIdProducto(producto.getIdProducto());
+                            detalle.setNotas("");
+                            detalle.setPrecioUnitario(producto.getPrecio());
+                            detallesPedidoDTO.add(detalle);
+                        }
+
+                    });
+                    
+                    FabricaBOs.obtenerPedidoBO().registrarPedidoExpress(pedidoExpressDTO, detallesPedidoDTO);
+                    
+                    
+                } catch (NegocioException ex) {
+                    System.out.println("error al registrar el pedido");
+                }
+                JOptionPane.showMessageDialog(PanelConfirmarPedidoExpress.this, "Pedido creado con exito");
+                principal.mostrarPanel(new PanelIndexCliente(principal));
             }
         });
 

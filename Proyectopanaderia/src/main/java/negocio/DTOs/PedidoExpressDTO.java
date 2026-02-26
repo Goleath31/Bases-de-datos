@@ -19,6 +19,11 @@ public class PedidoExpressDTO {
         this.pinSeguridad = pinSeguridad;
     }
 
+    public PedidoExpressDTO(String folio, String pinSeguridad) {
+        this.folio = folio;
+        this.pinSeguridad = pinSeguridad;
+    }
+
     public int getIdPedido() {
         return idPedido;
     }

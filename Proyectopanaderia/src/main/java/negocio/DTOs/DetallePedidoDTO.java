@@ -25,6 +25,14 @@ public class DetallePedidoDTO {
         this.notas = notas;
         this.precioUnitario = precioUnitario;
     }
+    
+    public DetallePedidoDTO(int idPedido, int idProducto, int cantidad, double precioUnitario) {
+        this.idPedido = idPedido;
+        this.idProducto = idProducto;
+        this.cantidad = cantidad;
+        this.notas = "";
+        this.precioUnitario = precioUnitario;
+    }
 
     public int getIdPedido() {
         return idPedido;

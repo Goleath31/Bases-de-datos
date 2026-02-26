@@ -7,14 +7,22 @@ package proyectopanaderia;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
+import negocio.DTOs.ProductoDTO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -30,6 +38,8 @@ public class PanelPedidoExpress extends javax.swing.JPanel {
     private Color colorFondo = Color.decode("#EEF4ED");
     private Color colorPaneles = Color.decode("#8DA9C4");
     private Color colorConfirmar = Color.decode("#134074");
+    
+    private Map<ProductoDTO, Integer> cantidadesPedido = new HashMap<>();
 
     /**
      * Creates new form PanelPedidoExpress
@@ -115,7 +125,22 @@ public class PanelPedidoExpress extends javax.swing.JPanel {
         btnConfirmar.setForeground(Color.WHITE);
         btnConfirmar.setFocusPainted(false);
         btnConfirmar.addActionListener(e -> {
-            principal.mostrarPanel(new PanelConfirmarPedidoExpress(principal));
+            List<ProductoDTO> seleccionados = new ArrayList<>();
+
+            cantidadesPedido.forEach((prod, cant) -> {
+                if (cant > 0) {
+                    System.out.println("Producto: " + prod.getNombre() + " Cantidad: " + cant);
+                    seleccionados.add(prod);
+                }
+            });
+
+            if (seleccionados.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona al menos un producto.");
+                return;
+            }
+
+            System.out.println(cantidadesPedido);
+            principal.mostrarPanel(new PanelConfirmarPedidoExpress(principal, cantidadesPedido));
         });
         
         bottomPanel.add(btnRegresar);
@@ -138,20 +163,32 @@ public class PanelPedidoExpress extends javax.swing.JPanel {
     
     
     private void cargarProductosDisponibles() {
-        //SOLO DEPURACION POR AHORA
         //Agregar interaccion con el backend aquí
-        String[] inventario = {"Producto 1....", "Producto 2....", "Producto 3....", "Producto 4...."};
+        try{
+            List<ProductoDTO> productosDisponibles = FabricaBOs.obtenerProductoBO().obtenerTodosLosProductosActivos();
 
-        for (String nombreProd : inventario) {
-            agregarFilaProducto(nombreProd);
+            panelListaProductos.removeAll();
+            cantidadesPedido.clear();
+
+            for (ProductoDTO producto : productosDisponibles) {
+                cantidadesPedido.put(producto, 0);
+                agregarFilaProducto(producto);
+            }
+
+            panelListaProductos.revalidate();
+            panelListaProductos.repaint();
         }
+        catch(NegocioException ex){
+           
+        }
+
     }
     
     /**
      * Metodo de soporte para agregar un producto al panel con sus respectivos datos
      * @param nombreProducto 
      */
-    private void agregarFilaProducto(String nombreProducto) {
+    private void agregarFilaProducto(ProductoDTO producto) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setBackground(colorPaneles);
@@ -159,31 +196,29 @@ public class PanelPedidoExpress extends javax.swing.JPanel {
         panel.setPreferredSize(new Dimension(800, 70));
         panel.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel lblNombre = new JLabel(nombreProducto);
+        JLabel lblNombre = new JLabel(producto.getNombre());
         lblNombre.setFont(new Font("SansSerif", Font.PLAIN, 20));
         lblNombre.setForeground(Color.WHITE);
 
-        // Estado del producto (Empezamos en 0 para pedido express)
-        final int[] cantidad = {0};
 
-        JLabel lblCant = new JLabel("  " + cantidad[0] + "  ");
-        lblCant.setForeground(Color.WHITE);
-        lblCant.setFont(new Font("SansSerif", Font.PLAIN, 18));
-
+        JLabel lblCant = new JLabel("  0  ");
+    
         JButton btnMenos = new JButton("-");
-        btnMenos.setFocusPainted(false);
         btnMenos.addActionListener(e -> {
-            if (cantidad[0] > 0) { 
-                cantidad[0]--;
-                lblCant.setText("  " + cantidad[0] + "  ");
+            int actual = cantidadesPedido.get(producto);
+            if (actual > 0) {
+                actual--;
+                cantidadesPedido.put(producto, actual);
+                lblCant.setText("  " + actual + "  ");
             }
         });
 
         JButton btnMas = new JButton("+");
-        btnMas.setFocusPainted(false);
         btnMas.addActionListener(e -> {
-            cantidad[0]++;
-            lblCant.setText("  " + cantidad[0] + "  ");
+            int actual = cantidadesPedido.get(producto);
+            actual++;
+            cantidadesPedido.put(producto, actual);
+            lblCant.setText("  " + actual + "  ");
         });
 
         panel.add(lblNombre);
@@ -193,7 +228,7 @@ public class PanelPedidoExpress extends javax.swing.JPanel {
         panel.add(btnMas);
 
         panelListaProductos.add(panel);
-        panelListaProductos.add(Box.createRigidArea(new Dimension(0, 10))); // Gap entre productos
+        panelListaProductos.add(Box.createRigidArea(new Dimension(0, 10)));
     }
     
     /**
