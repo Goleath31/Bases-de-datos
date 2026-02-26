@@ -13,6 +13,13 @@ import persistencia.conexion.IConexionBD;
 import persistencia.dominio.Producto;
 import persistencia.excepciones.PersistenciaException;
 
+/**
+ * Clase de Acceso a Datos (DAO) para la gestión de Productos. Implementa
+ * operaciones para el mantenimiento del catálogo, incluyendo búsquedas
+ * avanzadas mediante procedimientos almacenados.
+ *
+ * * @version 1.0
+ */
 public class ProductoDAO implements IProductoDAO {
 
     private final IConexionBD conexionBD;
@@ -22,6 +29,14 @@ public class ProductoDAO implements IProductoDAO {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Recupera el catálogo completo de productos registrados, sin importar su
+     * estado.
+     *
+     * * @return Lista de todos los objetos {@link Producto}.
+     * @throws PersistenciaException Si ocurre un error al consultar la tabla
+     * Producto.
+     */
     @Override
     public List<Producto> obtenerTodosLosProductos() throws PersistenciaException {
         List<Producto> lista = new ArrayList<>();
@@ -47,6 +62,13 @@ public class ProductoDAO implements IProductoDAO {
 
     }
 
+    /**
+     * Actualiza la información técnica y comercial de un producto existente.
+     *
+     * * @param producto Objeto conteniendo el ID del producto y sus nuevos
+     * valores (nombre, tipo, precio, etc.).
+     * @throws PersistenciaException Si ocurre un error en la sentencia UPDATE.
+     */
     @Override
     public void actualizarProducto(Producto producto) throws PersistenciaException {
         String sql = "UPDATE Producto SET nombre=?, tipo=?, descripcion=?, precio=?, estado=? WHERE id_producto=?";
@@ -65,6 +87,13 @@ public class ProductoDAO implements IProductoDAO {
         }
     }
 
+    /**
+     * Registra un nuevo producto en el catálogo del sistema.
+     *
+     * * @param producto Objeto con los datos del nuevo producto a insertar.
+     * @throws PersistenciaException Si la inserción falla por restricciones de
+     * base de datos.
+     */
     @Override
     public void agregarProducto(Producto producto) throws PersistenciaException {
         String sql = "INSERT INTO Producto (nombre, tipo, descripcion, precio, estado) VALUES (?, ?, ?, ?, ?)";
@@ -83,6 +112,16 @@ public class ProductoDAO implements IProductoDAO {
         }
     }
 
+    /**
+     * Realiza una búsqueda avanzada de productos utilizando el procedimiento
+     * almacenado {@code BuscarProductoCompleto}.
+     *
+     * * @param filtro Cadena de texto para filtrar por diversos criterios del
+     * producto.
+     * @return Lista de productos que coinciden con el criterio de búsqueda.
+     * @throws PersistenciaException Si el procedimiento almacenado falla o no
+     * existe.
+     */
     @Override
     public List<Producto> buscarProductos(String filtro) throws PersistenciaException {
         List<Producto> lista = new ArrayList<>();
@@ -110,6 +149,13 @@ public class ProductoDAO implements IProductoDAO {
         return lista;
     }
 
+    /**
+     * Obtiene únicamente los productos que tienen el estado 'Disponible'. Útil
+     * para mostrar el catálogo a clientes o en la toma de pedidos.
+     *
+     * * @return Lista de productos activos/disponibles.
+     * @throws PersistenciaException Si no se puede acceder al catálogo.
+     */
     @Override
     public List<Producto> obtenerTodosLosProductosActivos() throws PersistenciaException {
         List<Producto> lista = new ArrayList<>();
@@ -133,15 +179,22 @@ public class ProductoDAO implements IProductoDAO {
             throw new PersistenciaException("No se pudo cargar el catálogo de productos.");
         }
     }
-    
+
+    /**
+     * Recupera una lista simplificada que contiene solo los nombres de los
+     * productos disponibles.
+     *
+     * * @return Lista de strings con los nombres de productos con estado
+     * 'Disponible'.
+     * @throws PersistenciaException Si ocurre un error en la consulta
+     * selectiva.
+     */
     public List<String> obtenerNombresProductos() throws PersistenciaException {
         List<String> nombres = new ArrayList<>();
         // Solo productos con estado 'Disponible' según el script SQL 
         String query = "SELECT nombre FROM Producto WHERE estado = 'Disponible'";
 
-        try (Connection conn = conexionBD.crearConexion(); 
-             PreparedStatement ps = conn.prepareStatement(query); 
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 nombres.add(rs.getString("nombre"));

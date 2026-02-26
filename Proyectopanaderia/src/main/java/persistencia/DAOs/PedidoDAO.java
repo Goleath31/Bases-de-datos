@@ -22,18 +22,37 @@ import persistencia.dominio.PedidoProgramado;
 import persistencia.excepciones.PersistenciaException;
 
 /**
+ * Clase de Acceso a Datos (DAO) para la gestión de Pedidos en la base de datos.
+ * Implementa la interfaz {@link IPedidoDAO} y maneja operaciones para pedidos
+ * generales, express y programados, incluyendo el manejo de transacciones y
+ * llamadas a procedimientos almacenados.
  *
- * @author golea
+ * * @author golea
+ * @version 1.0
  */
 public class PedidoDAO implements IPedidoDAO {
 
     private final IConexionBD conexionBD;
     private static final Logger LOG = Logger.getLogger(PedidoDAO.class.getName());
 
+    /**
+     * Constructor único que recibe la configuración de conexión.
+     *
+     * * @param conexionBD Interfaz para la creación de conexiones a la base de
+     * datos.
+     */
     public PedidoDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Cuenta cuántos pedidos activos tiene un cliente específico. Se consideran
+     * activos aquellos que no están 'Entregado', 'Cancelado' o 'No Reclamado'.
+     *
+     * * @param idCliente Identificador único del cliente.
+     * @return Cantidad de pedidos en curso.
+     * @throws PersistenciaException Si ocurre un error en la consulta SQL.
+     */
     @Override
     public int contarPedidosActivos(int idCliente) throws PersistenciaException {
         String sql = "SELECT COUNT(*) FROM Pedido WHERE id_cliente = ? AND estado NOT IN ('Entregado', 'Cancelado', 'No Reclamado')";
@@ -461,6 +480,5 @@ public class PedidoDAO implements IPedidoDAO {
         }
         return lista;
     }
-
 
 }
