@@ -8,9 +8,23 @@ import persistencia.dominio.Cupon;
 import persistencia.excepciones.PersistenciaException;
 
 /**
+ * Interfaz de Objeto de Acceso a Datos (DAO) para la entidad Cupon. Define las
+ * operaciones de lectura y validación de cupones de descuento en el sistema de
+ * persistencia.
  *
- * @author joser
+ * * @author joser
  */
 public interface ICuponDAO {
+
+    /**
+     * Busca y recupera la información de un cupón mediante su código
+     * alfanumérico.
+     *
+     * * @param codigo El código único del cupón (ej. "DESCUENTO20").
+     * @return Un objeto {@link Cupon} con los detalles del descuento, o null si
+     * el código no existe en la base de datos.
+     * @throws PersistenciaException Si ocurre un error técnico al acceder a la
+     * fuente de datos o la conexión falla.
+     */
     public Cupon consultarCupon(String codigo) throws PersistenciaException;
 }

@@ -1,13 +1,5 @@
 package persistencia.fabrica;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-/**
- *
- * @author golea
- */
 import persistencia.DAOs.ClienteDAO;
 import persistencia.DAOs.CuponDAO;
 import persistencia.DAOs.EmpleadoDAO;
@@ -25,37 +17,87 @@ import persistencia.DAOs.TelefonoDAO;
 import persistencia.conexion.ConexionBD;
 import persistencia.conexion.IConexionBD;
 
+/**
+ * Fábrica encargada de centralizar la creación de los Objetos de Acceso a Datos
+ * (DAOs). * Esta clase implementa el patrón de diseño Factory para desacoplar
+ * la lógica de creación de los DAOs del resto de la aplicación, inyectando de
+ * manera centralizada la conexión a la base de datos.
+ *
+ * * @author golea
+ * @version 1.0
+ */
 public class FabricaDAOs {
-    
+
+    /**
+     * Instancia única de la conexión a la base de datos para ser compartida
+     * entre todos los DAOs generados por esta fábrica.
+     */
     private static IConexionBD conexion = new ConexionBD();
-    
+
+    /**
+     * Proporciona una instancia de la interfaz para el manejo de pedidos.
+     *
+     * * @return Una implementación de {@link IPedidoDAO} configurada con la
+     * conexión actual.
+     */
     public static IPedidoDAO obtenerPedidoDAO() {
         return new PedidoDAO(conexion);
     }
 
+    /**
+     * Proporciona una instancia de la interfaz para el manejo de productos.
+     *
+     * * @return Una implementación de {@link IProductoBO} configurada con la
+     * conexión actual.
+     */
     public static IProductoDAO obtenerProductoDAO() {
         return new ProductoDAO(conexion);
     }
 
+    /**
+     * Proporciona una instancia de la interfaz para el manejo de empleados.
+     *
+     * * @return Una implementación de {@link IEmpleadoDAO}.
+     */
     public static IEmpleadoDAO obtenerEmpleadoDAO() {
         return new EmpleadoDAO(conexion);
     }
-    
-    public static IClienteDAO obtenerClienteDAO(){
+
+    /**
+     * Proporciona una instancia de la interfaz para el manejo de clientes.
+     *
+     * * @return Una implementación de {@link IClienteDAO}.
+     */
+    public static IClienteDAO obtenerClienteDAO() {
         return new ClienteDAO(conexion);
     }
-    
-    public static ICuponDAO obtenerCuponDAO(){
+
+    /**
+     * Proporciona una instancia de la interfaz para el manejo de cupones.
+     *
+     * * @return Una implementación de {@link ICuponDAO}.
+     */
+    public static ICuponDAO obtenerCuponDAO() {
         return new CuponDAO(conexion);
     }
-    
-    public static IPedidoAgendadoDAO obtenerPedidoAgendadoDAO(){
+
+    /**
+     * Proporciona una instancia de la interfaz para el manejo de pedidos
+     * agendados.
+     *
+     * * @return Una implementación de {@link IPedidoAgendadoDAO}.
+     */
+    public static IPedidoAgendadoDAO obtenerPedidoAgendadoDAO() {
         return new PedidoAgendadoDAO(conexion);
     }
-    
-    public static ITelefonoDAO obtenerTelefonoDAO(){
+
+    /**
+     * Proporciona una instancia de la interfaz para el manejo de teléfonos.
+     *
+     * * @return Una implementación de {@link ITelefonoDAO}.
+     */
+    public static ITelefonoDAO obtenerTelefonoDAO() {
         return new TelefonoDAO(conexion);
     }
-    
-    
+
 }

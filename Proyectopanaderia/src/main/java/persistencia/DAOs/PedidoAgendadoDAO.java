@@ -17,20 +17,26 @@ import persistencia.dominio.Pedido;
 import persistencia.excepciones.PersistenciaException;
 
 /**
+ * DAO especializado en la gestión de pedidos agendados (programados). Realiza
+ * cruces entre las tablas Pedido y Pedido_Programado.
  *
  * @author joser
  */
-public class PedidoAgendadoDAO implements IPedidoAgendadoDAO{
-    
+public class PedidoAgendadoDAO implements IPedidoAgendadoDAO {
+
     private final IConexionBD conexionBD;
     private static final Logger LOG = Logger.getLogger(PedidoDAO.class.getName());
 
     public PedidoAgendadoDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
     }
-    
-    
 
+    /**
+     * Obtiene el historial de pedidos programados de un cliente específico.
+     *
+     * @param idCliente ID único del cliente.
+     * @return Lista de objetos {@link Pedido}.
+     */
     @Override
     public List<Pedido> consultarPedidoPorCliente(int idCliente) throws PersistenciaException {
         String query = """
@@ -42,19 +48,18 @@ public class PedidoAgendadoDAO implements IPedidoAgendadoDAO{
                        """;
         List<Pedido> lista = new ArrayList<>();
 
-        try (Connection conn = conexionBD.crearConexion(); 
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, idCliente);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Pedido p = new Pedido();
-                    p.setId(rs.getInt("id_pedido")); 
+                    p.setId(rs.getInt("id_pedido"));
 
                     java.sql.Timestamp ts = rs.getTimestamp("fecha_hora");
                     if (ts != null) {
-                        p.setFecha(new java.util.Date(ts.getTime())); 
+                        p.setFecha(new java.util.Date(ts.getTime()));
                     }
 
                     p.setTotal(rs.getFloat("total"));
@@ -71,5 +76,5 @@ public class PedidoAgendadoDAO implements IPedidoAgendadoDAO{
             throw new PersistenciaException("Error al obtener el historial de pedidos: " + ex.getMessage());
         }
     }
-    
+
 }
