@@ -11,11 +11,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -27,6 +31,7 @@ public class DialogOpcionesCuenta extends javax.swing.JDialog {
     private Color colorBtnClaro = Color.decode("#8DA9C4");
     private Color colorBtnOscuro = Color.decode("#13315C");
     private Color colorBorde = Color.decode("#1C5282");
+    private static final Logger LOG = Logger.getLogger(DialogOpcionesCuenta.class.getName());
     
     private FramePrincipal principal;
     /**
@@ -81,8 +86,12 @@ public class DialogOpcionesCuenta extends javax.swing.JDialog {
         btnDesactivar.setPreferredSize(new Dimension(300, 130));
 
         btnDesactivar.addActionListener(e -> {
-            //logica desactivar cuenta
-            //boton de "estás seguro" (?)
+            try{
+                FabricaBOs.obtenerClienteBO().desactivarCuenta(SesionCliente.getCliente().getIdCliente());
+            }catch(NegocioException ex){
+                LOG.log(Level.WARNING, "Error al quere desactivar la cuenta." );
+                System.out.println("Problemas al querer desactivar la cuenta");
+            }
             this.dispose();
         });
 
