@@ -91,7 +91,7 @@ public class ClienteBO implements IClienteBO {
             throw new NegocioException("Los datos de actualización no pueden ser nulos.");
         }
 
-        validarCliente(clienteDTO);
+        validarDatosSinContrasena(clienteDTO);
 
         Cliente clienteEntidad = new Cliente();
         clienteEntidad.setId(id);
@@ -119,6 +119,7 @@ public class ClienteBO implements IClienteBO {
      * Busca un cliente en la base de datos mediante su correo electrónico.
      *
      * * @param correo Correo electrónico del cliente.
+     * @param correo
      * @return ClienteDTO con la información encontrada.
      * @throws NegocioException Si el formato del correo es inválido o no se
      * encuentra el cliente.
@@ -180,6 +181,7 @@ public class ClienteBO implements IClienteBO {
 
                 throw new NegocioException("Correo o contraseña incorrectos.");
             }
+            
             Cliente clienteEntidad = clienteDAO.leerClientePorCorreo(correo);
             ClienteDTO clienteDTO = new ClienteDTO();
             clienteDTO.setIdCliente(clienteEntidad.getId());
@@ -188,7 +190,9 @@ public class ClienteBO implements IClienteBO {
             clienteDTO.setApellidoMaterno(clienteEntidad.getApellidoMaterno());
             clienteDTO.setDomicilio(clienteEntidad.getDomicilio());
             clienteDTO.setCorreo(clienteEntidad.getCorreo());
+            clienteDTO.setFechaNacimiento(clienteEntidad.getFechaNacimiento());
 
+            
             SesionCliente.iniciarSesion(clienteDTO);
             return true;
 
@@ -251,6 +255,48 @@ public class ClienteBO implements IClienteBO {
             throw new NegocioException("El domicilio debe ser más específico (mínimo 10 caracteres).");
         }
     }
+    
+    public void validarDatosSinContrasena(ClienteDTO clienteDTO) throws NegocioException {
+        if (clienteDTO == null) {
+            throw new NegocioException("Los datos del cliente no pueden ser nulos.");
+        }
+
+        // --- Validación de Nombres y Apellidos ---
+        // Regex: Solo letras, eñes, acentos y espacios
+        String regexNombre = "^[a-zA-ZñÑáéíóúÁÉÍÓÚ\\s]+$";
+
+        if (clienteDTO.getNombre() == null || clienteDTO.getNombre().trim().isEmpty() || !clienteDTO.getNombre().matches(regexNombre)) {
+            throw new NegocioException("El nombre es inválido o contiene caracteres no permitidos.");
+        }
+
+        if (clienteDTO.getApellidoPaterno() == null || clienteDTO.getApellidoPaterno().trim().isEmpty() || !clienteDTO.getApellidoPaterno().matches(regexNombre)) {
+            throw new NegocioException("El apellido paterno es inválido.");
+        }
+
+        // El materno se valida solo si el usuario ingresó algo
+        if (clienteDTO.getApellidoMaterno() != null && !clienteDTO.getApellidoMaterno().trim().isEmpty()) {
+            if (!clienteDTO.getApellidoMaterno().matches(regexNombre)) {
+                throw new NegocioException("El apellido materno contiene caracteres no permitidos.");
+            }
+        }
+
+        // --- Validación de Correo ---
+        String regexCorreo = "^[A-Za-z0-9+_.-]+@(.+)$";
+        if (clienteDTO.getCorreo() == null || !clienteDTO.getCorreo().matches(regexCorreo)) {
+            throw new NegocioException("El formato del correo electrónico no es válido.");
+        }
+
+        // --- Validación de Fecha de Nacimiento ---
+        if (clienteDTO.getFechaNacimiento() == null) {
+            throw new NegocioException("La fecha de nacimiento es obligatoria.");
+        }
+
+        // --- Validación de Domicilio ---
+        if (clienteDTO.getDomicilio() == null || clienteDTO.getDomicilio().trim().length() < 10) {
+            throw new NegocioException("El domicilio debe ser más específico (mínimo 10 caracteres).");
+        }
+    }
+    
 
     /**
      * Desactiva la cuenta de un cliente "ensuciando" su contraseña con un

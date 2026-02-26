@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,7 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import negocio.DTOs.ClienteDTO;
+import negocio.excepciones.NegocioException;
+import negocio.fabrica.FabricaBOs;
 
 /**
  *
@@ -25,9 +31,8 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
     FramePrincipal principal;
     
     //VARIABLES QUE SIMULAN EL BACKED SOLO TEMPORAL
-    private final String[] nombreCliente = {"Juan Rodriguez Villanueva"};
-    private final String[] direccionCliente = {"Rio de la juventud #34 Col. Itson"};
-    private final String[] fechaNacimiento = {"30 de noviembre del 2001"};
+    private ClienteDTO clienteActivo = SesionCliente.getCliente();
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd 'de' MMMM 'del' yyyy");
     
     private Color colorHeader = Color.decode("#13315C");
     private Color colorFondo = Color.decode("#EEF4ED");
@@ -107,11 +112,11 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
         panelDatos.setOpaque(false);
 
         //cuadros de informacion
-        panelDatos.add(crearRecuadroDato("Nombre", nombreCliente));
+        panelDatos.add(crearRecuadroDato("Nombre", clienteActivo.getNombre() + " " + clienteActivo.getApellidoPaterno()));
         panelDatos.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelDatos.add(crearRecuadroDato("Dirección", direccionCliente));
+        panelDatos.add(crearRecuadroDato("Dirección", clienteActivo.getDomicilio()));
         panelDatos.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelDatos.add(crearRecuadroDato("Fecha de nacimiento", fechaNacimiento));
+        panelDatos.add(crearRecuadroDato("Fecha de nacimiento", sdf.format(clienteActivo.getFechaNacimiento())));
 
         JSeparator sep2 = new JSeparator();
         sep2.setMaximumSize(new Dimension(860, 1));
@@ -160,11 +165,12 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
 
     /**
      * Metodo de ayuda para dar formato a paneles de datos
+     *
      * @param etiqueta etiqueta del panel
      * @param variableValor dato a insertar
      * @return JPanel con formato con los datos
      */
-    private JPanel crearRecuadroDato(String etiqueta, String[] variableValor) {
+    private JPanel crearRecuadroDato(String etiqueta, String valorInicial) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setBackground(colorPaneles);
@@ -172,7 +178,6 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
         panel.setPreferredSize(new Dimension(800, 80));
         panel.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setOpaque(false);
@@ -181,35 +186,81 @@ public class PanelGestionarPerfil extends javax.swing.JPanel {
         lblEtiqueta.setFont(new Font("SansSerif", Font.PLAIN, 16));
         lblEtiqueta.setForeground(Color.BLACK);
 
-        JLabel lblValor = new JLabel(variableValor[0]);
+        JLabel lblValor = new JLabel(valorInicial);
         lblValor.setFont(new Font("SansSerif", Font.PLAIN, 22));
         lblValor.setForeground(Color.WHITE);
 
         textPanel.add(lblEtiqueta);
-        textPanel.add(Box.createRigidArea(new Dimension(0, 5))); 
+        textPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         textPanel.add(lblValor);
 
-        JButton btnLapiz = new JButton("✎");
-        btnLapiz.setFont(new Font("SansSerif", Font.BOLD, 28));
-        btnLapiz.setFocusPainted(false);
-        btnLapiz.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        //lógica para editar el dato
-        btnLapiz.addActionListener(e -> {
-            String nuevoDato = JOptionPane.showInputDialog(this, "Editar " + etiqueta + ":", variableValor[0]);
-            
-            // Si el usuario no canceló y no dejó el campo vacío
-            if (nuevoDato != null && !nuevoDato.trim().isEmpty()) {
-                variableValor[0] = nuevoDato; 
-                lblValor.setText(nuevoDato);  
-            }
-        });
-
         panel.add(textPanel);
-        panel.add(Box.createHorizontalGlue()); 
-        panel.add(btnLapiz);
+        panel.add(Box.createHorizontalGlue());
+
+        if (!etiqueta.equalsIgnoreCase("Fecha de nacimiento")) {
+            JButton btnLapiz = new JButton("✎");
+            btnLapiz.setFont(new Font("SansSerif", Font.BOLD, 28));
+            btnLapiz.setFocusPainted(false);
+            btnLapiz.setContentAreaFilled(false); // Para que se vea más limpio
+            btnLapiz.setBorderPainted(false);
+            btnLapiz.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            btnLapiz.addActionListener(e -> {
+                if (etiqueta.equals("Nombre")) {
+                    JTextField txtNombre = new JTextField(clienteActivo.getNombre());
+                    JTextField txtApeP = new JTextField(clienteActivo.getApellidoPaterno());
+                    JTextField txtApeM = new JTextField(clienteActivo.getApellidoMaterno());
+
+                    Object[] formulario = {
+                        "Nombre:", txtNombre,
+                        "Apellido Paterno:", txtApeP,
+                        "Apellido Materno:", txtApeM
+                    };
+
+                    int res = JOptionPane.showConfirmDialog(this, formulario, "Editar Nombre", JOptionPane.OK_CANCEL_OPTION);
+                    if (res == JOptionPane.OK_OPTION) {
+                        clienteActivo.setNombre(txtNombre.getText().trim());
+                        clienteActivo.setApellidoPaterno(txtApeP.getText().trim());
+                        clienteActivo.setApellidoMaterno(txtApeM.getText().trim());
+
+                        lblValor.setText(clienteActivo.getNombre() + " " + clienteActivo.getApellidoPaterno());
+                        persistirCambios(); 
+                    }
+                } else if (etiqueta.equals("Dirección")) {
+                    String nuevo = JOptionPane.showInputDialog(this, "Editar Dirección:", clienteActivo.getDomicilio());
+                    if (nuevo != null && !nuevo.trim().isEmpty()) {
+                        clienteActivo.setDomicilio(nuevo.trim());
+                        lblValor.setText(nuevo.trim());
+                        persistirCambios();
+                    }
+                }
+            });
+            panel.add(btnLapiz);
+        }
 
         return panel;
+    }
+    
+    public void persistirCambios() {
+        try {
+            ClienteDTO clienteActualizado = new ClienteDTO();
+
+            clienteActualizado.setIdCliente(clienteActivo.getIdCliente()); 
+            clienteActualizado.setNombre(clienteActivo.getNombre());
+            clienteActualizado.setApellidoPaterno(clienteActivo.getApellidoPaterno());
+            clienteActualizado.setApellidoMaterno(clienteActivo.getApellidoMaterno());
+            clienteActualizado.setDomicilio(clienteActivo.getDomicilio());
+            clienteActualizado.setFechaNacimiento(clienteActivo.getFechaNacimiento());
+            clienteActualizado.setCorreo(clienteActivo.getCorreo());
+
+            FabricaBOs.obtenerClienteBO().editarCliente(SesionCliente.getCliente().getIdCliente(),clienteActualizado);
+            
+            JOptionPane.showMessageDialog(this, "Datos guardados correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NegocioException ex) {
+            JOptionPane.showMessageDialog(this, "Error al guardar los cambios: " + ex.getMessage(),
+                    "Error de persistencia", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**

@@ -70,7 +70,7 @@ public class ClienteDAO implements IClienteDAO{
     @Override
     public Cliente editarCliente(int id, Cliente cliente) throws PersistenciaException {
         String query = """
-                       UPDATE cliente SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, domicilio = ?, fecha_nacimiendo = ? WHERE id_cliente = ?
+                       UPDATE cliente SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, domicilio = ? WHERE id_cliente = ?
                        """;
         
         try(Connection conn = conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(query)){
@@ -78,8 +78,7 @@ public class ClienteDAO implements IClienteDAO{
             ps.setString(2, cliente.getApellidoPaterno());
             ps.setString(3, cliente.getApellidoMaterno());
             ps.setString(4, cliente.getDomicilio());
-            ps.setDate(5, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
-            ps.setInt(6, cliente.getId());
+            ps.setInt(5, cliente.getId());
             int filasAfectadas = ps.executeUpdate();
             if (filasAfectadas > 0) {
                 return cliente; 
@@ -115,6 +114,7 @@ public class ClienteDAO implements IClienteDAO{
                     if(fechaSql != null) {
                         clienteRetornable.setFechaNacimiento(fechaSql);
                     }
+                    
                     return clienteRetornable;
                 }
             }

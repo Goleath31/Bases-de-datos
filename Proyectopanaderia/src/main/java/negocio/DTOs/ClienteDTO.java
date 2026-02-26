@@ -187,4 +187,9 @@ public class ClienteDTO {
         this.contraseña = contraseña;
     }
 
+    @Override
+    public String toString() {
+        return "ClienteDTO{" + "idCliente=" + idCliente + ", nombre=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", domicilio=" + domicilio + ", fechaNacimiento=" + fechaNacimiento + ", correo=" + correo + ", contrase\u00f1a=" + contraseña + '}';
+    }
+
 }

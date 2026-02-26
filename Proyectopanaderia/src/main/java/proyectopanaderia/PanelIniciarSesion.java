@@ -172,7 +172,7 @@ public class PanelIniciarSesion extends javax.swing.JPanel {
             bo.validarCliente(correo, password);
 
             JOptionPane.showMessageDialog(this, "Bienvenido " + SesionCliente.getCliente().getNombre());
-
+            System.out.println(SesionCliente.getCliente().toString());
             principal.mostrarPanel(new PanelIndexCliente(principal));
 
         } catch (NegocioException ex) {

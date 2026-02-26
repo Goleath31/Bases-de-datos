@@ -16,7 +16,7 @@ public class SesionCliente {
     public static void iniciarSesion(ClienteDTO cliente) {
         clienteSesion = cliente;
     }
-
+    
     public static void cerrarSesion() {
         clienteSesion = null;
     }
