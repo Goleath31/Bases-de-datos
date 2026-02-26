@@ -15,16 +15,31 @@ import persistencia.DAOs.IProductoDAO;
 import persistencia.dominio.Producto;
 import persistencia.excepciones.PersistenciaException;
 
+/**
+ * Clase de Objeto de Negocio (BO) para la gestión del catálogo de productos.
+ * Implementa la lógica para listar, agregar y actualizar productos con
+ * validaciones de precio.
+ */
 public class ProductoBO implements IProductoBO {
 
     private final IProductoDAO productoDAO;
     private static final Logger LOG = Logger.getLogger(ProductoBO.class.getName());
-    
 
+    /**
+     * Constructor que inyecta la dependencia del DAO de productos.
+     *
+     * @param productoDAO DAO para persistencia de productos.
+     */
     public ProductoBO(IProductoDAO productoDAO) {
         this.productoDAO = productoDAO;
     }
 
+    /**
+     * Recupera todos los productos (incluyendo inactivos) del sistema.
+     *
+     * @return Lista de entidades {@link Producto}.
+     * @throws NegocioException Si hay un error de acceso a datos.
+     */
     @Override
     public List<Producto> listarProductos() throws NegocioException {
         try {
@@ -34,6 +49,13 @@ public class ProductoBO implements IProductoBO {
         }
     }
 
+    /**
+     * Actualiza un producto existente previa validación de que el precio no sea
+     * negativo.
+     *
+     * @param producto Entidad con los datos nuevos.
+     * @throws NegocioException Si el precio es menor a cero.
+     */
     @Override
     public void actualizar(Producto producto) throws NegocioException {
         if (producto.getPrecio() < 0) {
@@ -47,6 +69,13 @@ public class ProductoBO implements IProductoBO {
         }
     }
 
+    /**
+     * Registra un nuevo producto validando campos obligatorios.
+     *
+     * @param producto Entidad a persistir.
+     * @throws NegocioException Si el nombre está vacío o el precio es menor o
+     * igual a cero.
+     */
     @Override
     public void agregar(Producto producto) throws NegocioException {
         if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
@@ -63,6 +92,12 @@ public class ProductoBO implements IProductoBO {
         }
     }
 
+    /**
+     * Realiza una búsqueda de productos filtrando por nombre o descripción.
+     *
+     * @param filtro Texto de búsqueda.
+     * @return Lista de productos coincidentes.
+     */
     @Override
     public List<Producto> buscarProductos(String filtro) throws NegocioException {
         try {
@@ -72,12 +107,26 @@ public class ProductoBO implements IProductoBO {
         }
     }
 
+    /**
+     * Filtra una lista de productos según su estado (ej. Activo/Inactivo)
+     * mediante Streams.
+     *
+     * @param estado Estado deseado.
+     * @return Lista filtrada de productos.
+     */
     public List<Producto> filtrarPorEstado(String estado) throws NegocioException {
         return listarProductos().stream()
                 .filter(p -> p.getEstado().equalsIgnoreCase(estado))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Mapea y retorna únicamente los productos que se encuentran en estado
+     * Activo.
+     *
+     * @return Lista de {@link ProductoDTO} para la interfaz de usuario.
+     * @throws NegocioException Si ocurre un error al cargar el catálogo.
+     */
     @Override
     public List<ProductoDTO> obtenerTodosLosProductosActivos() throws NegocioException {
         List<ProductoDTO> listaDTO = new ArrayList<>();
@@ -103,7 +152,14 @@ public class ProductoBO implements IProductoBO {
             throw new NegocioException("Error al obtener el catálogo: " + ex.getMessage());
         }
     }
-    
+
+    /**
+     * Obtiene solo los nombres de los productos para su uso en selectores o
+     * combos.
+     *
+     * @return Lista de Strings con los nombres.
+     * @throws NegocioException Si no hay productos disponibles.
+     */
     @Override
     public List<String> obtenerNombresProductos() throws NegocioException {
         try {

@@ -15,17 +15,34 @@ import persistencia.dominio.Telefono;
 import persistencia.excepciones.PersistenciaException;
 
 /**
+ * Clase de Objeto de Negocio (BO) para la gestión de teléfonos de clientes.
+ * Proporciona validaciones de formato y lógica para el CRUD de números
+ * telefónicos.
  *
- * @author joser
+ * * @author joser
  */
 public class TelefonoBO implements ITelefonoBO {
+
     private final ITelefonoDAO telefonoDAO;
     private static final Logger LOG = Logger.getLogger(TelefonoBO.class.getName());
 
+    /**
+     * Constructor que inicializa el DAO de teléfonos.
+     *
+     * @param telefonoDAO Interfaz de persistencia para el acceso a datos.
+     */
     public TelefonoBO(ITelefonoDAO telefonoDAO) {
         this.telefonoDAO = telefonoDAO;
     }
 
+    /**
+     * Consulta todos los teléfonos registrados para un cliente específico.
+     *
+     * * @param idCliente Identificador único del cliente.
+     * @return Lista de {@link TelefonoDTO} asociados al cliente.
+     * @throws NegocioException Si el ID no es válido o hay un error en la base
+     * de datos.
+     */
     @Override
     public List<TelefonoDTO> consultarTelefonos(int idCliente) throws NegocioException {
         if (idCliente <= 0) {
@@ -58,6 +75,15 @@ public class TelefonoBO implements ITelefonoBO {
         return listaTelefonosDTO;
     }
 
+    /**
+     * Actualiza la información de un teléfono existente.
+     *
+     * * @param idTelefono ID del registro a modificar.
+     * @param telefonoNuevoDTO Objeto con los nuevos datos (número y etiqueta).
+     * @return El DTO con los datos actualizados.
+     * @throws NegocioException Si el ID es inválido o los datos no cumplen con
+     * el formato.
+     */
     @Override
     public TelefonoDTO editarTelefono(int idTelefono, TelefonoDTO telefonoNuevoDTO) throws NegocioException {
         if (idTelefono <= 0) {
@@ -86,6 +112,13 @@ public class TelefonoBO implements ITelefonoBO {
         }
     }
 
+    /**
+     * Elimina un registro telefónico de la base de datos.
+     *
+     * * @param idTelefono Identificador del teléfono.
+     * @return true si la eliminación fue exitosa.
+     * @throws NegocioException Si el registro no existe o falla la conexión.
+     */
     @Override
     public boolean eliminarTelefono(int idTelefono) throws NegocioException {
         if (idTelefono <= 0) {
@@ -109,6 +142,14 @@ public class TelefonoBO implements ITelefonoBO {
         }
     }
 
+    /**
+     * Crea un nuevo registro telefónico asociado a un cliente.
+     *
+     * * @param telefonoDTO Datos del teléfono a crear.
+     * @return El DTO con el ID generado en la base de datos.
+     * @throws NegocioException Si faltan datos obligatorios o el cliente no
+     * existe.
+     */
     @Override
     public TelefonoDTO crearTelefono(TelefonoDTO telefonoDTO) throws NegocioException {
         if (telefonoDTO == null) {
@@ -148,11 +189,14 @@ public class TelefonoBO implements ITelefonoBO {
             throw new NegocioException("Error al guardar en el sistema: " + ex.getMessage());
         }
     }
-    
-    
+
     /**
-     * Valida que el teléfono tenga un formato de 10 dígitos y que la etiqueta
-     * sea válida.
+     * Valida que el teléfono tenga un formato de 10 dígitos numéricos y una
+     * etiqueta de longitud adecuada.
+     *
+     * * @param telefono DTO a validar.
+     * @throws NegocioException Si el número no tiene 10 dígitos o la etiqueta
+     * falta.
      */
     private void validarDatosTelefono(TelefonoDTO telefono) throws NegocioException {
         if (telefono == null) {

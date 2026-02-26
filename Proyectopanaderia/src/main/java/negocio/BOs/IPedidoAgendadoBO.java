@@ -9,9 +9,18 @@ import negocio.DTOs.PedidoDTO;
 import negocio.excepciones.NegocioException;
 
 /**
+ * Interfaz de Negocio especializada en la gestión de Pedidos Agendados. Se
+ * enfoca en las operaciones de recuperación de pedidos programados por cliente.
  *
- * @author joser
+ * * @author joser
  */
 public interface IPedidoAgendadoBO {
-        public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException;
+
+    /**
+     * Obtiene el historial de pedidos realizados por un cliente específico.
+     * @param idCliente Identificador único del cliente.
+     * @return Lista de {@link PedidoDTO} asociados al cliente.
+     * @throws NegocioException Si el ID del cliente es inválido o no tiene pedidos.
+     */
+    public List<PedidoDTO> obtenerPedidosPorCliente(int idCliente) throws NegocioException;
 }
