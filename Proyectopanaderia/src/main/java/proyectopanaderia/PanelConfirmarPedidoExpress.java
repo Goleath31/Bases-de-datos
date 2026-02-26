@@ -136,6 +136,7 @@ public class PanelConfirmarPedidoExpress extends javax.swing.JPanel {
                     List<DetallePedidoDTO> detallesPedidoDTO = new ArrayList<>();
                     PedidoExpressDTO pedidoExpressDTO = new PedidoExpressDTO(folio, pin);
                     
+                    
                     cantidadesPedido.forEach((producto, cantidad) -> {
                         if (cantidad > 0) {
                             DetallePedidoDTO detalle = new DetallePedidoDTO();
@@ -149,13 +150,13 @@ public class PanelConfirmarPedidoExpress extends javax.swing.JPanel {
                     });
                     
                     FabricaBOs.obtenerPedidoBO().registrarPedidoExpress(pedidoExpressDTO, detallesPedidoDTO);
-                    
+                    principal.mostrarPanel(new PanelDetallesPedidoExpress(principal, pedidoExpressDTO));
                     
                 } catch (NegocioException ex) {
                     System.out.println("error al registrar el pedido");
                 }
                 JOptionPane.showMessageDialog(PanelConfirmarPedidoExpress.this, "Pedido creado con exito");
-                principal.mostrarPanel(new PanelIndexCliente(principal));
+                
             }
         });
 
