@@ -29,6 +29,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import negocio.DTOs.DetallePedidoDTO;
 import negocio.DTOs.ProductoDTO;
+import negocio.excepciones.NegocioException;
 import negocio.fabrica.FabricaBOs;
 
 /**
@@ -98,10 +99,16 @@ public class PanelConfirmarPedidoAgendado extends javax.swing.JPanel {
         // Renderizado dinámico de la lista recibida
         double total = 0;
         for (DetallePedidoDTO detalle : listaDetallesPedido) {
-            double subtotal = detalle.getCantidad() * detalle.getPrecioUnitario();
-            total += subtotal;
-            panelListaProductos.add(crearFilaProducto("Producto: " + detalle.getIdProducto(), detalle.getCantidad(), subtotal));
-            panelListaProductos.add(Box.createRigidArea(new Dimension(0, 10)));
+            try{
+                double subtotal = detalle.getCantidad() * detalle.getPrecioUnitario();
+                total += subtotal;
+                panelListaProductos.add(crearFilaProducto("Producto: " + FabricaBOs.obtenerProductoBO().obtenerNombreProductoPorId(detalle.getIdProducto()), detalle.getCantidad(), subtotal));
+                panelListaProductos.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+            catch(NegocioException ex){
+                System.out.println("Error al buscar el id del producto." + ex.getMessage());
+            
+            }
         }
 
         JScrollPane scrollProductos = new JScrollPane(panelListaProductos);
